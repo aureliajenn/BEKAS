@@ -1,0 +1,33 @@
+# Python environments and generated caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local reconstruction data, downloaded binaries, and runtime logs
+/data/
+/images/
+/tools/
+*.log
+
+# Local configuration and development TLS certificates/private keys
+.env
+.env.*
+!.env.example
+/.certs/
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini

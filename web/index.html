@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10110f">
+  <title>Forma — Photogrammetry Workbench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:dark;--bg:#10110f;--panel:#171815;--panel-2:#1d1f1b;--line:#30322c;--muted:#92958a;--text:#f2f1e9;--accent:#d6fa73;--danger:#ff8c78;--mono:"DM Mono",monospace;--sans:"DM Sans",sans-serif;--display:Manrope,sans-serif}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -30%,#363b24 0,transparent 44%),var(--bg);color:var(--text);font:14px var(--sans);min-height:100vh}button,input{font:inherit}button{cursor:pointer}.shell{max-width:1240px;padding:0 34px 60px;margin:auto}.topbar{height:82px;border-bottom:1px solid #ffffff12;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);font:700 17px var(--display);letter-spacing:-.6px}.brand-icon{width:29px;height:29px;border:1px solid #d6fa7390;border-radius:9px;display:grid;place-items:center;color:var(--accent);font-size:18px}.top-right{display:flex;align-items:center;gap:13px;color:var(--muted);font-size:12px}.status-light{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px #d6fa73aa}.hero{padding:54px 0 35px}.eyebrow{font:11px var(--mono);letter-spacing:1.1px;color:var(--accent);text-transform:uppercase}.hero h1{font:500 clamp(35px,5vw,59px)/1.08 var(--display);letter-spacing:-2.6px;margin:14px 0 12px;max-width:760px}.hero p{color:#a9aa9f;font-size:15px;line-height:1.7;margin:0;max-width:660px}.hero p strong{color:var(--text);font-weight:500}.layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,.8fr);gap:18px;align-items:start}.panel{border:1px solid var(--line);background:linear-gradient(145deg,#1a1b17ed,#151613ed);border-radius:16px;overflow:hidden}.panel-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid #ffffff0d}.panel-title{font:600 14px var(--display);letter-spacing:-.2px}.panel-kicker{font:10px var(--mono);color:var(--muted);letter-spacing:.5px;text-transform:uppercase}.upload-zone{margin:20px;min-height:255px;border:1px dashed #5e624f;border-radius:12px;background:radial-gradient(ellipse at 50% 0%,#d6fa730b,transparent 72%),#141512;display:flex;align-items:center;justify-content:center;text-align:center;transition:.2s;padding:24px}.upload-zone.drag{border-color:var(--accent);background:#d6fa7310}.upload-inner{max-width:450px}.upload-symbol{width:48px;height:48px;margin:0 auto 17px;border:1px solid #424638;border-radius:15px;display:grid;place-items:center;color:var(--accent);font-size:23px}.upload-inner h2{font:600 16px var(--display);margin:0 0 7px}.upload-inner p{font-size:12px;line-height:1.7;color:var(--muted);margin:0 0 16px}.browse{background:#d6fa73;color:#191b13;border:0;border-radius:7px;padding:10px 17px;font-weight:700;font-size:12px}.browse:hover,.start:hover{background:#e5ff9f}.small-meta{color:#777a70;font:10px var(--mono);margin-top:13px}.field-wrap{padding:0 20px 18px}.field-wrap label{display:block;color:var(--muted);font-size:11px;margin-bottom:8px}.field-wrap input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:#11120f;color:var(--text);outline:none}.field-wrap input:focus{border-color:#8ba54d}.preview-head{padding:0 20px 10px;display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:11px}.clear{background:none;border:0;color:#b3b6a9;font-size:11px;padding:4px}.clear:hover{color:var(--danger)}.thumbs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;padding:0 20px 18px}.thumb{position:relative;aspect-ratio:1;border-radius:7px;overflow:hidden;background:#24251f;border:1px solid #ffffff0b}.thumb img{width:100%;height:100%;object-fit:cover}.thumb span{position:absolute;left:5px;bottom:5px;background:#10110fc9;color:#dfdfd3;font:9px var(--mono);padding:3px 5px;border-radius:4px}.thumb.more{display:grid;place-items:center;color:var(--accent);font:12px var(--mono)}.hint{margin:0 20px 20px;padding:12px 13px;background:#d6fa7309;border:1px solid #d6fa7319;border-radius:8px;color:#b8bba9;font-size:11px;line-height:1.6}.hint b{color:var(--accent);font-weight:500}.right-col{display:grid;gap:14px}.protocol{padding:18px 19px}.protocol h3{font:600 13px var(--display);margin:0 0 15px}.spec-row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-top:1px solid #ffffff0b;font-size:11px}.spec-row span:first-child{color:var(--muted)}.spec-row strong{font-weight:500;text-align:right}.pipeline{padding:18px 19px}.pipeline h3{font:600 13px var(--display);margin:0 0 17px}.steps{display:grid;gap:0}.step{display:flex;gap:11px;position:relative;padding-bottom:16px}.step:last-child{padding-bottom:0}.step:not(:last-child):before{content:"";position:absolute;top:17px;bottom:-1px;left:7px;width:1px;background:#35372f}.step-icon{position:relative;z-index:1;flex:none;width:15px;height:15px;border:1px solid #515449;background:#1a1b17;border-radius:50%;color:#8c8f83;font:8px var(--mono);display:grid;place-items:center}.step.current .step-icon,.step.done .step-icon{border-color:var(--accent);background:var(--accent);color:#17190f}.step-label{font-size:11px;color:#aeb0a4;line-height:15px}.step.current .step-label{color:var(--text)}.run-row{padding:15px 20px;border-top:1px solid #ffffff0d;display:flex;align-items:center;justify-content:space-between;gap:14px}.run-note{font-size:10px;color:var(--muted);line-height:1.5}.start{background:var(--accent);border:0;color:#191b13;border-radius:8px;padding:12px 17px;font-weight:700;font-size:12px;white-space:nowrap}.start:disabled{opacity:.45;cursor:not-allowed}.notice{margin:14px 20px 18px;border-radius:8px;padding:11px 12px;font-size:11px;line-height:1.6}.notice.warn{background:#e7aa4010;border:1px solid #e7aa4033;color:#e2c38a}.notice.good{background:#d6fa730c;border:1px solid #d6fa7327;color:#c9d9a0}.results{margin-top:24px}.results[hidden],.notice[hidden],.preview[hidden]{display:none}.results-head{display:flex;align-items:end;justify-content:space-between;margin:30px 0 12px}.results-head h2{font:600 20px var(--display);margin:0 0 4px;letter-spacing:-.6px}.results-head p{color:var(--muted);margin:0;font-size:11px}.job-list{display:grid;gap:10px}.job-card{padding:17px 19px;border:1px solid var(--line);background:#171815;border-radius:12px}.job-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.job-name{font:600 13px var(--display)}.badge{border:1px solid #525547;border-radius:100px;padding:4px 8px;font:9px var(--mono);text-transform:uppercase;color:#c8cabd}.badge.running,.badge.queued{color:var(--accent);border-color:#d6fa7355}.badge.failed{color:var(--danger);border-color:#ff8c7855}.job-sub{color:var(--muted);font-size:11px;margin:8px 0 12px}.progress{height:3px;border-radius:4px;background:#30322b;overflow:hidden}.progress i{display:block;height:100%;background:var(--accent);transition:width .3s}.job-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.job-actions a,.log-toggle{color:#d5d7ca;text-decoration:none;border:1px solid #393b34;border-radius:6px;background:#1b1d18;padding:7px 9px;font-size:10px}.job-actions a:hover,.log-toggle:hover{border-color:#a3bd5c;color:var(--accent)}.job-error{color:var(--danger);font-size:11px;line-height:1.6;margin-top:10px}.log-box{margin-top:10px;padding:11px;border-radius:7px;background:#0d0e0c;color:#b7baad;font:10px/1.6 var(--mono);white-space:pre-wrap;max-height:230px;overflow:auto}.footer{padding-top:30px;color:#696c61;font:10px var(--mono);display:flex;justify-content:space-between}.toast{position:fixed;right:22px;bottom:22px;z-index:5;background:#292b24;border:1px solid #484b3d;padding:12px 15px;border-radius:8px;color:var(--text);font-size:12px;box-shadow:0 12px 40px #0008}.toast.error{border-color:#a94e41}.empty{color:var(--muted);font-size:12px;padding:19px;border:1px dashed var(--line);border-radius:10px}
+    @media(max-width:850px){.layout{grid-template-columns:1fr}.right-col{grid-template-columns:1fr 1fr}.hero{padding-top:40px}}@media(max-width:580px){.shell{padding:0 16px 40px}.topbar{height:68px}.hero{padding:34px 0 25px}.hero h1{letter-spacing:-1.6px}.hero p{font-size:13px}.right-col{grid-template-columns:1fr}.upload-zone{margin:14px;min-height:225px}.field-wrap{padding:0 14px 16px}.thumbs{padding:0 14px 14px;grid-template-columns:repeat(4,minmax(0,1fr))}.preview-head,.hint{margin-left:14px;margin-right:14px}.run-row{padding:14px}.footer{gap:15px;flex-direction:column}.top-right{font-size:10px}}
+  </style>
+  <style>
+    .mode-tabs{display:flex;gap:5px;margin:15px 20px 0;padding:4px;border:1px solid var(--line);border-radius:9px;background:#11120f}.mode-tab{flex:1;background:transparent;border:0;color:var(--muted);padding:9px;border-radius:6px;font-size:11px}.mode-tab.active{background:#303329;color:var(--accent)}.scan-intro{padding:35px 20px 28px;text-align:center}.scan-intro .upload-inner{max-width:470px;margin:auto}.scan-intro p{margin:0 auto 14px}.scan-name{text-align:left;margin:17px 0 12px;padding:0}.scan-name input{text-align:left}.camera-view{padding:16px 20px 19px}.video-wrap{position:relative;overflow:hidden;aspect-ratio:4/3;max-height:440px;border-radius:11px;background:#090a08;border:1px solid #37392f}.video-wrap video{width:100%;height:100%;object-fit:cover;display:block}.aim-frame{position:absolute;inset:19% 23%;border:1px solid #d6fa7380;border-radius:43%;pointer-events:none}.aim-frame i{position:absolute;width:13px;height:13px;border-color:var(--accent);border-style:solid}.aim-frame i:nth-child(1){top:-1px;left:-1px;border-width:2px 0 0 2px}.aim-frame i:nth-child(2){top:-1px;right:-1px;border-width:2px 2px 0 0}.aim-frame i:nth-child(3){bottom:-1px;left:-1px;border-width:0 0 2px 2px}.aim-frame i:nth-child(4){bottom:-1px;right:-1px;border-width:0 2px 2px 0}.camera-live{position:absolute;left:11px;top:11px;border:1px solid #ffffff2b;background:#11120fba;border-radius:30px;padding:6px 9px;font:9px var(--mono);letter-spacing:.5px;display:flex;align-items:center;gap:7px}.live-dot{width:6px;height:6px;border-radius:50%;background:#fa806b;box-shadow:0 0 8px #fa806b}.quality-line{min-height:37px;display:flex;align-items:center;gap:8px;color:#bbbdb2;font-size:10px}.quality-dot{width:7px;height:7px;border-radius:50%;background:#77796f;flex:none}.quality-dot.good{background:var(--accent);box-shadow:0 0 10px #d6fa7380}.quality-dot.bad{background:var(--danger)}.quality-stats{margin-left:auto;font:9px var(--mono);color:#85877c}.ring-heading{display:flex;align-items:center;justify-content:space-between;margin-top:8px}.ring-heading>div{display:grid;gap:4px}.ring-heading strong{font-size:11px;font-weight:500}.ring-count{font:10px var(--mono);color:var(--accent)}.ring-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.ring-tab{background:#11120f;border:1px solid var(--line);border-radius:7px;color:#999c90;padding:9px 7px;font-size:10px}.ring-tab b{font:10px var(--mono);margin-right:4px}.ring-tab.active{border-color:#91aa51;color:var(--accent);background:#d6fa730a}.ring-tab.complete{color:#e0e2d7}.ring-tab.complete:after{content:" ✓";color:var(--accent)}.orbit-track{height:3px;background:#30322b;border-radius:3px;margin-top:10px;overflow:hidden}.orbit-track i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}.scan-instructions{font-size:10px;line-height:1.5;color:var(--muted);margin:10px 0 14px;min-height:15px}.scan-controls{display:grid;grid-template-columns:1fr 54px 1fr;align-items:center;gap:9px}.secondary-button{border:1px solid #3b3d35;background:#20211d;color:#c4c6ba;border-radius:7px;padding:10px 8px;font-size:10px;white-space:nowrap}.secondary-button[aria-pressed="true"]{border-color:#8ba54d;color:var(--accent)}.auto-indicator{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:5px}.secondary-button[aria-pressed="false"] .auto-indicator{background:#77796f}.shutter{width:51px;height:51px;border:2px solid #d9edaf;border-radius:50%;background:transparent;display:grid;place-items:center;margin:auto}.shutter span{width:37px;height:37px;border-radius:50%;background:var(--accent);transition:transform .12s}.shutter:active span{transform:scale(.83)}.shutter:disabled{opacity:.35}.upload-capture{justify-self:stretch}.upload-capture:disabled{opacity:.4;cursor:not-allowed}.capture-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;color:var(--muted);font:9px var(--mono)}.frame-strip{display:flex;gap:6px;overflow-x:auto;padding:11px 0 2px;scrollbar-width:thin}.frame-thumb{position:relative;flex:none;width:48px;height:48px;border:1px solid #424439;border-radius:6px;overflow:hidden}.frame-thumb img{width:100%;height:100%;object-fit:cover}.frame-thumb span{position:absolute;bottom:2px;left:3px;background:#10110fce;padding:2px 4px;border-radius:3px;font:8px var(--mono)}.upload-progress{height:4px;margin:13px 20px 0;border-radius:5px;background:#33352d;overflow:hidden}.upload-progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .15s}.upload-status{padding:8px 20px 12px;color:var(--muted);font-size:10px}.model-viewer-panel{margin-top:17px}.viewer-download{color:var(--accent);text-decoration:none;font-size:10px;border:1px solid #d6fa7340;border-radius:6px;padding:8px 10px}.model-viewer{position:relative;height:min(68vh,570px);min-height:350px;background:radial-gradient(ellipse at center,#282b22,#11120f 72%)}.model-viewer canvas{display:block;width:100%;height:100%;touch-action:none}.viewer-loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:12px;pointer-events:none}.viewer-loading[hidden]{display:none}
+    @media(max-width:580px){.mode-tabs{margin:12px 14px 0}.scan-intro{padding:27px 14px 24px}.camera-view{padding:13px 14px 16px}.video-wrap{aspect-ratio:3/4;max-height:55vh}.aim-frame{inset:20% 18%}.scan-controls{grid-template-columns:1fr 48px 1fr;gap:5px}.shutter{width:46px;height:46px}.shutter span{width:33px;height:33px}.secondary-button{font-size:9px;padding:9px 5px}.model-viewer{height:60vh;min-height:320px}.upload-progress{margin-left:14px;margin-right:14px}.upload-status{padding-left:14px}}
+  </style>
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/"}}</script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="#"><span class="brand-icon">◈</span>forma<span style="color:var(--muted);font-weight:400">/studio</span></a>
+      <div class="top-right"><span class="status-light" id="healthLight"></span><span id="healthText">Checking workstation</span><span style="color:#505248">·</span><span>LOCAL WORKSTATION</span></div>
+    </header>
+    <section class="hero">
+      <div class="eyebrow">Photogrammetry workbench &nbsp; / &nbsp; 01</div>
+      <h1>Turn a walk around an object into its digital twin.</h1>
+      <p>Circle an object with your phone. Sharp, distinct RGB views flow to <strong>COLMAP</strong> and <strong>OpenMVS</strong>, then return as a textured 3D model—no LiDAR required.</p>
+    </section>
+    <section class="layout">
+      <article class="panel">
+        <div class="panel-head"><div class="panel-title">New object scan</div><div class="panel-kicker">RGB capture / no depth sensor</div></div>
+        <div class="mode-tabs"><button id="cameraModeButton" class="mode-tab active" type="button">Camera scan</button><button id="uploadModeButton" class="mode-tab" type="button">Upload photos</button></div>
+        <section class="camera-panel" id="cameraPanel">
+          <div class="scan-intro" id="scanIntro"><div class="upload-inner"><div class="upload-symbol">◉</div><h2>Scan with your phone camera</h2><p>Keep the object still. Walk around it through low, middle, and high viewpoints. Forma filters blurry, overexposed, and repeated frames.</p><div class="field-wrap scan-name"><label for="scanName">Object name</label><input id="scanName" maxlength="80" placeholder="e.g. ceramic vase"></div><button class="browse" id="startScanButton" type="button">Start Scan&nbsp; ↗</button><div class="small-meta" id="cameraHelp">Camera access requires HTTPS, or localhost on same device.</div></div></div>
+          <div class="camera-view" id="cameraView" hidden>
+            <div class="video-wrap"><video id="cameraVideo" autoplay muted playsinline></video><div class="aim-frame"><i></i><i></i><i></i><i></i></div><div class="camera-live"><span class="live-dot"></span> LIVE RGB</div></div>
+            <div class="quality-line"><span id="qualityDot" class="quality-dot"></span><span id="qualityMessage">Checking frame quality…</span><span class="quality-stats" id="qualityStats">—</span></div>
+            <div class="ring-heading"><div><span class="panel-kicker">Guided orbit</span><strong>Change camera height between rings</strong></div><span id="ringCount" class="ring-count">00 / 18</span></div>
+            <div class="ring-tabs"><button class="ring-tab active" data-ring="low" type="button"><b>01</b> Low</button><button class="ring-tab" data-ring="middle" type="button"><b>02</b> Middle</button><button class="ring-tab" data-ring="high" type="button"><b>03</b> High</button></div>
+            <div class="orbit-track"><i id="orbitProgress"></i></div>
+            <div class="scan-instructions" id="scanInstructions">Start near object height. Move about 10–15° after each accepted frame; pause briefly for sharp focus.</div>
+            <div class="scan-controls"><button class="secondary-button" id="autoCaptureButton" type="button" aria-pressed="true"><span class="auto-indicator"></span> Auto capture on</button><button class="shutter" id="captureButton" type="button" aria-label="Capture frame"><span></span></button><button class="secondary-button upload-capture" id="finishScanButton" type="button" disabled>Upload scan&nbsp; ↗</button></div>
+            <div class="capture-footer"><span id="captureSummary">0 frames kept · 18 target per ring</span><div><button class="clear" id="clearScanButton" type="button">Reset scan</button><button class="clear" id="stopCameraButton" type="button">Close camera</button></div></div>
+            <div class="frame-strip" id="frameStrip"></div>
+            <div class="upload-progress" id="scanUploadProgress" hidden><i></i></div><div class="upload-status" id="scanUploadStatus" hidden></div>
+          </div>
+        </section>
+        <section class="upload-mode" id="uploadMode" hidden>
+        <div class="upload-zone" id="dropZone" role="button" tabindex="0" aria-label="Choose object photos">
+          <div class="upload-inner"><div class="upload-symbol">↥</div><h2>Bring your views together</h2><p>Drag image files here, or choose from your device.<br>Capture from several angles with generous overlap.</p><button class="browse" id="browseButton" type="button">Select images</button><div class="small-meta">JPG · PNG · WEBP &nbsp; / &nbsp; UP TO 150 FRAMES</div></div>
+        </div>
+        <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple hidden>
+        <div class="field-wrap"><label for="captureName">Capture name</label><input id="captureName" maxlength="80" placeholder="e.g. ceramic-vase-front-and-back"></div>
+        <div class="preview" id="preview" hidden><div class="preview-head"><span id="photoSummary">0 images selected</span><button class="clear" id="clearButton" type="button">Clear selection</button></div><div class="thumbs" id="thumbs"></div><div class="hint"><b>Capture tip:</b> move the camera between shots. Keep one lens and focal length, lock focus/exposure, and cover the object from low, middle, and high angles.</div></div>
+        <div class="run-row"><div class="run-note" id="runNote">At least 12 sharp, overlapping views.<br>Recommended: 60–100 photos across 3 elevation rings.</div><button class="start" id="startButton" type="button" disabled>Reconstruct&nbsp; ↗</button></div>
+        <div class="upload-progress" id="fileUploadProgress" hidden><i></i></div><div class="upload-status" id="fileUploadStatus" hidden></div>
+        </section>
+      </article>
+      <aside class="right-col">
+        <section class="panel protocol"><h3>Good scan habits</h3><div class="spec-row"><span>Coverage</span><strong>Low · middle · high</strong></div><div class="spec-row"><span>Motion</span><strong>Slow orbit, pause</strong></div><div class="spec-row"><span>Lighting</span><strong>Soft &amp; consistent</strong></div><div class="spec-row"><span>Camera</span><strong>Rear lens · 1×</strong></div><div class="spec-row"><span>Object</span><strong>Rigid, matte, textured</strong></div></section>
+        <section class="panel pipeline"><h3>Reconstruction pipeline</h3><div class="steps" id="pipelineSteps"><div class="step" data-stage="Extracting"><div class="step-icon">01</div><div class="step-label">Feature extraction · SIFT</div></div><div class="step" data-stage="Matching"><div class="step-icon">02</div><div class="step-label">Image matching · geometric checks</div></div><div class="step" data-stage="camera poses"><div class="step-icon">03</div><div class="step-label">Camera poses · bundle adjustment</div></div><div class="step" data-stage="dense"><div class="step-icon">04</div><div class="step-label">Dense point cloud · depth maps</div></div><div class="step" data-stage="mesh"><div class="step-icon">05</div><div class="step-label">Mesh generation · texture mapping</div></div><div class="step" data-stage="GLB"><div class="step-icon">06</div><div class="step-label">Export · PLY / GLB</div></div></div></section>
+      </aside>
+    </section>
+    <section class="results" id="results" hidden><div class="results-head"><div><h2>Reconstruction jobs</h2><p>Local jobs and downloadable artifacts.</p></div></div><div class="job-list" id="jobList"></div><section class="panel model-viewer-panel" id="modelViewerPanel" hidden><div class="panel-head"><div><div class="panel-title">Your 3D model</div><div class="panel-kicker">Drag to orbit · pinch/scroll to zoom</div></div><a class="viewer-download" id="viewerDownload" href="#" download>Download GLB ↓</a></div><div class="model-viewer" id="modelViewer"><div class="viewer-loading" id="viewerStatus">Loading textured model…</div></div></section></section>
+    <footer class="footer"><span>FORMA / LOCAL RECONSTRUCTION LAB</span><span>RGB IN &nbsp; → &nbsp; GEOMETRY OUT</span></footer>
+  </main>
+  <div id="toast" class="toast" hidden></div>
+  <script type="module">
+    const fileInput = document.querySelector('#fileInput');
+    const dropZone = document.querySelector('#dropZone');
+    const startButton = document.querySelector('#startButton');
+    const selected = new Map();
+    const jobs = new Map();
+    const expandedLogs = new Set();
+    let pollTimer;
+    let cameraStream;
+    let qualityTimer;
+    let autoCapture = true;
+    let currentRing = 'low';
+    let lastAcceptedAt = 0;
+    let latestQuality;
+    const ringTarget = 18;
+    const ringNames = { low: 'low', middle: 'middle', high: 'high' };
+    const ringFrames = { low: 0, middle: 0, high: 0 };
+    const signatures = [];
+    const analysisCanvas = document.createElement('canvas');
+    analysisCanvas.width = 128;
+    analysisCanvas.height = 96;
+    const analysisContext = analysisCanvas.getContext('2d', { willReadFrequently: true });
+    let activeViewerJob = null;
+    let viewerRenderer;
+
+    function toast(message, error = false) {
+      const element = document.querySelector('#toast');
+      element.textContent = message;
+      element.classList.toggle('error', error);
+      element.hidden = false;
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => { element.hidden = true; }, 4200);
+    }
+
+    function formatBytes(bytes) {
+      return bytes > 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
+    }
+
+    function formatDuration(seconds = 0) {
+      const value = Math.max(0, Math.floor(seconds));
+      return value < 60 ? `${value}s` : `${Math.floor(value / 60)}m ${value % 60}s`;
+    }
+
+    function renderSelection() {
+      const preview = document.querySelector('#preview');
+      const thumbs = document.querySelector('#thumbs');
+      const files = [...selected.values()];
+      preview.hidden = files.length === 0;
+      startButton.disabled = files.length < 12;
+      document.querySelector('#photoSummary').textContent = `${files.length} ${files.length === 1 ? 'image' : 'images'} selected · ${formatBytes(files.reduce((sum, file) => sum + file.size, 0))}`;
+      if (files.length < 12) document.querySelector('#runNote').textContent = `Select ${12 - files.length} more ${12 - files.length === 1 ? 'photo' : 'photos'} to begin. Recommended: 60–100 views.`;
+      else document.querySelector('#runNote').textContent = `${files.length} photos ready. Keep original resolution for fine detail.`;
+      thumbs.replaceChildren();
+      files.slice(0, 19).forEach((file, index) => {
+        const tile = document.createElement('div');
+        tile.className = 'thumb';
+        const image = document.createElement('img');
+        image.src = URL.createObjectURL(file);
+        image.alt = file.name;
+        image.onload = () => URL.revokeObjectURL(image.src);
+        const label = document.createElement('span');
+        label.textContent = String(index + 1).padStart(2, '0');
+        tile.append(image, label);
+        thumbs.append(tile);
+      });
+      if (files.length > 19) {
+        const more = document.createElement('div');
+        more.className = 'thumb more';
+        more.textContent = `+${files.length - 19}`;
+        thumbs.append(more);
+      }
+    }
+
+    function addFiles(fileList) {
+      const accepted = [...fileList].filter(file => file.type.startsWith('image/'));
+      if (accepted.length !== fileList.length) toast('Some files were skipped. Use JPG, PNG, or WebP photos.', true);
+      for (const file of accepted) {
+        const key = `${file.name}:${file.size}:${file.lastModified}`;
+        if (selected.has(key)) continue;
+        if (selected.size >= 150) { toast('Maximum 150 photos per reconstruction.', true); break; }
+        selected.set(key, file);
+      }
+      if (selected.size) {
+        document.querySelector('#captureName').value ||= [...selected.values()][0].name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ');
+      }
+      renderSelection();
+    }
+
+    document.querySelector('#browseButton').addEventListener('click', event => { event.stopPropagation(); fileInput.click(); });
+    dropZone.addEventListener('click', event => { if (event.target.id !== 'browseButton') fileInput.click(); });
+    dropZone.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') fileInput.click(); });
+    fileInput.addEventListener('change', () => { addFiles(fileInput.files); fileInput.value = ''; });
+    document.querySelector('#clearButton').addEventListener('click', () => { selected.clear(); renderSelection(); });
+    for (const eventName of ['dragenter', 'dragover']) dropZone.addEventListener(eventName, event => { event.preventDefault(); dropZone.classList.add('drag'); });
+    for (const eventName of ['dragleave', 'drop']) dropZone.addEventListener(eventName, event => { event.preventDefault(); dropZone.classList.remove('drag'); });
+    dropZone.addEventListener('drop', event => addFiles(event.dataTransfer.files));
+
+    async function loadHealth() {
+      try {
+        const response = await fetch('/api/health');
+        const health = await response.json();
+        const light = document.querySelector('#healthLight');
+        const label = document.querySelector('#healthText');
+        if (health.pipeline_ready) {
+          label.textContent = `Tools ready · SfM ${health.accelerators.colmap.toUpperCase()} · MVS ${health.accelerators.openmvs.toUpperCase()}`;
+        } else {
+          light.style.background = '#e7aa40';
+          light.style.boxShadow = '0 0 14px #e7aa4088';
+          label.textContent = 'Setup needed';
+          const warning = document.createElement('div');
+          warning.className = 'notice warn';
+          warning.id = 'toolNotice';
+          warning.textContent = `Install COLMAP + OpenMVS before starting a reconstruction. Missing: ${health.missing_tools.join(', ')}. Upload validation and previews still work; jobs fail preflight until tools are installed and the server is restarted.`;
+          document.querySelector('.panel').append(warning);
+        }
+      } catch {
+        document.querySelector('#healthText').textContent = 'Server unavailable';
+      }
+    }
+
+    function renderJobs() {
+      const results = document.querySelector('#results');
+      const list = document.querySelector('#jobList');
+      results.hidden = jobs.size === 0;
+      list.replaceChildren();
+      for (const job of [...jobs.values()].reverse()) {
+        const card = document.createElement('article');
+        card.className = 'job-card';
+        const top = document.createElement('div');
+        top.className = 'job-top';
+        const title = document.createElement('div');
+        title.className = 'job-name';
+        title.textContent = job.name;
+        const badge = document.createElement('span');
+        badge.className = `badge ${job.status}`;
+        badge.textContent = job.status;
+        top.append(title, badge);
+        const sub = document.createElement('div');
+        sub.className = 'job-sub';
+        const processInfo = job.process_info || {};
+        const stageProgress = processInfo.stage_progress_percent == null ? '' : ` · stage ${Math.round(processInfo.stage_progress_percent)}%`;
+        sub.textContent = `${job.stage} · ${job.progress}% overall${stageProgress} · ${formatDuration(processInfo.elapsed_seconds)} · ${job.profile || 'fast'} profile · ${job.image_count} photos${job.registered_images ? ` · ${job.registered_images} registered` : ''}`;
+        const bar = document.createElement('div');
+        bar.className = 'progress';
+        const fill = document.createElement('i');
+        fill.style.width = `${job.progress}%`;
+        bar.append(fill);
+        card.append(top, sub, bar);
+        const actions = document.createElement('div');
+        actions.className = 'job-actions';
+        for (const artifact of job.artifacts || []) {
+          const link = document.createElement('a');
+          link.href = artifact.url;
+          link.textContent = `Download ${artifact.name}`;
+          link.download = '';
+          actions.append(link);
+        }
+        const logButton = document.createElement('button');
+        logButton.className = 'log-toggle';
+        logButton.textContent = expandedLogs.has(job.id) ? 'Hide log' : 'View log';
+        actions.append(logButton);
+        card.append(actions);
+        if (job.error) {
+          const error = document.createElement('div');
+          error.className = 'job-error';
+          error.textContent = job.error;
+          card.append(error);
+        }
+        const log = document.createElement('pre');
+        log.className = 'log-box';
+        log.hidden = !expandedLogs.has(job.id);
+        log.textContent = (job.log_tail || []).join('\n') || 'Waiting for pipeline output…';
+        logButton.addEventListener('click', () => {
+          if (expandedLogs.has(job.id)) expandedLogs.delete(job.id);
+          else expandedLogs.add(job.id);
+          log.hidden = !expandedLogs.has(job.id);
+          logButton.textContent = log.hidden ? 'View log' : 'Hide log';
+          if (!log.hidden) log.scrollTop = log.scrollHeight;
+        });
+        if (!log.hidden) log.scrollTop = log.scrollHeight;
+        card.append(log);
+        list.append(card);
+      }
+      const completed = [...jobs.values()].find(job => job.status === 'completed' && job.artifacts?.some(item => item.name === 'model.glb'));
+      if (completed) showModel(completed);
+      else document.querySelector('#modelViewerPanel').hidden = true;
+    }
+
+    async function refreshJobs() {
+      try {
+        const response = await fetch('/api/jobs');
+        if (!response.ok) return;
+        const data = await response.json();
+        for (const job of data.jobs) jobs.set(job.id, job);
+        renderJobs();
+        if ([...jobs.values()].some(job => ['queued', 'running'].includes(job.status))) pollTimer = setTimeout(refreshJobs, 1800);
+      } catch { /* Retry on next job submission or polling cycle. */ }
+    }
+
+    function submitJob(photos, name, progressElement, statusElement) {
+      if (photos.length < 12) return Promise.reject(new Error('Choose at least 12 photos.'));
+      if (progressElement) progressElement.hidden = false;
+      if (statusElement) { statusElement.hidden = false; statusElement.textContent = 'Uploading photos…'; }
+      const data = new FormData();
+      data.append('name', name || 'Untitled capture');
+      photos.forEach(photo => data.append('files', photo, photo.name));
+      return new Promise((resolve, reject) => {
+        const request = new XMLHttpRequest();
+        request.open('POST', '/api/jobs');
+        request.upload.onprogress = event => {
+          if (!event.lengthComputable || !progressElement) return;
+          const percent = Math.round(event.loaded / event.total * 100);
+          progressElement.querySelector('i').style.width = `${percent}%`;
+          if (statusElement) statusElement.textContent = `Uploading ${percent}% · ${formatBytes(event.loaded)} of ${formatBytes(event.total)}`;
+        };
+        request.onload = () => {
+          let result;
+          try { result = JSON.parse(request.responseText); }
+          catch { reject(new Error('Server returned an invalid response.')); return; }
+          if (request.status < 200 || request.status >= 300) { reject(new Error(result.detail || 'Upload failed.')); return; }
+          resolve(result);
+        };
+        request.onerror = () => reject(new Error('Network interrupted. Current upload cannot resume; reconnect and upload again.'));
+        request.onabort = () => reject(new Error('Upload cancelled.'));
+        request.send(data);
+      });
+    }
+
+    function addJob(job) {
+      jobs.set(job.id, job);
+      renderJobs();
+      toast('Photos received. Reconstruction job started.');
+      clearTimeout(pollTimer);
+      refreshJobs();
+    }
+
+    async function submitCameraScan() {
+      const photos = [...selected.values()];
+      const name = document.querySelector('#scanName').value.trim() || 'Phone scan';
+      const button = document.querySelector('#finishScanButton');
+      button.disabled = true;
+      button.textContent = 'Uploading…';
+      try {
+        const job = await submitJob(photos, name, document.querySelector('#scanUploadProgress'), document.querySelector('#scanUploadStatus'));
+        stopCamera();
+        selected.clear();
+        ringFrames.low = ringFrames.middle = ringFrames.high = 0;
+        signatures.length = 0;
+        document.querySelector('#frameStrip').replaceChildren();
+        updateCaptureUI();
+        addJob(job);
+      } catch (error) {
+        toast(error.message || 'Upload failed.', true);
+        button.disabled = false;
+      } finally {
+        button.textContent = 'Upload scan  ↗';
+      }
+    }
+
+    startButton.addEventListener('click', async () => {
+      const photos = [...selected.values()];
+      if (photos.length < 12) return;
+      startButton.disabled = true;
+      startButton.textContent = 'Uploading…';
+      try {
+        const result = await submitJob(photos, document.querySelector('#captureName').value.trim(), document.querySelector('#fileUploadProgress'), document.querySelector('#fileUploadStatus'));
+        selected.clear();
+        renderSelection();
+        addJob(result);
+      } catch (error) {
+        toast(error.message || 'Upload failed.', true);
+        startButton.disabled = false;
+      } finally {
+        startButton.textContent = 'Reconstruct  ↗';
+        renderSelection();
+      }
+    });
+
+    function setCaptureMode(mode) {
+      const cameraMode = mode === 'camera';
+      document.querySelector('#cameraModeButton').classList.toggle('active', cameraMode);
+      document.querySelector('#uploadModeButton').classList.toggle('active', !cameraMode);
+      document.querySelector('#cameraPanel').hidden = !cameraMode;
+      document.querySelector('#uploadMode').hidden = cameraMode;
+      if (!cameraMode) stopCamera();
+    }
+
+    document.querySelector('#cameraModeButton').addEventListener('click', () => setCaptureMode('camera'));
+    document.querySelector('#uploadModeButton').addEventListener('click', () => setCaptureMode('upload'));
+
+    function stopCamera() {
+      clearInterval(qualityTimer);
+      qualityTimer = null;
+      if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
+      cameraStream = null;
+      document.querySelector('#cameraVideo').srcObject = null;
+      document.querySelector('#cameraView').hidden = true;
+      document.querySelector('#scanIntro').hidden = false;
+    }
+
+    async function startCamera() {
+      if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+        toast('Camera needs HTTPS. Open site with HTTPS on phone, or use localhost on this device.', true);
+        document.querySelector('#cameraHelp').textContent = 'Phone camera requires HTTPS. Plain http://PC-IP is blocked by mobile browsers.';
+        return;
+      }
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+        });
+        const video = document.querySelector('#cameraVideo');
+        video.srcObject = cameraStream;
+        await video.play();
+        document.querySelector('#scanIntro').hidden = true;
+        document.querySelector('#cameraView').hidden = false;
+        document.querySelector('#scanName').value ||= 'Phone object scan';
+        qualityTimer = setInterval(analyzeLiveFrame, 320);
+        toast('Camera ready. Circle the object slowly.');
+      } catch (error) {
+        const messages = {
+          NotAllowedError: 'Allow camera permission in browser settings, then try again.',
+          NotFoundError: 'No camera found on this device.',
+          NotReadableError: 'Camera is busy in another app. Close that app and retry.',
+        };
+        toast(messages[error.name] || `Camera could not start: ${error.message}`, true);
+      }
+    }
+
+    function assessFrame() {
+      const video = document.querySelector('#cameraVideo');
+      if (!video.videoWidth || video.readyState < 2) return null;
+      analysisContext.drawImage(video, 0, 0, analysisCanvas.width, analysisCanvas.height);
+      const { data } = analysisContext.getImageData(0, 0, analysisCanvas.width, analysisCanvas.height);
+      const width = analysisCanvas.width;
+      const height = analysisCanvas.height;
+      const gray = new Uint8Array(width * height);
+      let clipped = 0;
+      let sum = 0;
+      for (let i = 0, pixel = 0; i < data.length; i += 4, pixel++) {
+        const value = 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+        gray[pixel] = value;
+        sum += value;
+        if (value < 9 || value > 246) clipped++;
+      }
+      let lapSum = 0;
+      let lapSquareSum = 0;
+      let samples = 0;
+      for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          const index = y * width + x;
+          const laplace = 4 * gray[index] - gray[index - 1] - gray[index + 1] - gray[index - width] - gray[index + width];
+          lapSum += laplace;
+          lapSquareSum += laplace * laplace;
+          samples++;
+        }
+      }
+      const meanLaplace = lapSum / samples;
+      const sharpness = lapSquareSum / samples - meanLaplace * meanLaplace;
+      const clipRatio = clipped / gray.length;
+      const meanLuma = sum / gray.length;
+      let nearestFrameDifference = Infinity;
+      for (const prior of signatures) {
+        let difference = 0;
+        for (let index = 0; index < gray.length; index += 12) difference += Math.abs(gray[index] - prior[index]);
+        nearestFrameDifference = Math.min(nearestFrameDifference, difference / Math.ceil(gray.length / 12));
+      }
+      const sharp = sharpness >= 18;
+      const exposure = clipRatio <= 0.22 && meanLuma >= 24 && meanLuma <= 232;
+      const distinct = nearestFrameDifference === Infinity || nearestFrameDifference >= 3.5;
+      return { gray, sharpness, clipRatio, meanLuma, sharp, exposure, distinct, good: sharp && exposure && distinct };
+    }
+
+    function analyzeLiveFrame() {
+      const result = assessFrame();
+      if (!result) return;
+      latestQuality = result;
+      const dot = document.querySelector('#qualityDot');
+      dot.classList.toggle('good', result.good);
+      dot.classList.toggle('bad', !result.good);
+      const message = !result.sharp ? 'Hold still · frame looks soft'
+        : !result.exposure ? 'Find even light · highlights/shadows clipped'
+        : !result.distinct ? 'Move around 10–15° · view too similar'
+        : 'Good frame · sharp and distinct';
+      document.querySelector('#qualityMessage').textContent = message;
+      document.querySelector('#qualityStats').textContent = `${Math.round(result.sharpness)} sharp · ${Math.round(result.clipRatio * 100)}% clipped`;
+      if (autoCapture && result.good && performance.now() - lastAcceptedAt > 1150) captureFrame(result);
+    }
+
+    function captureFrame(quality = latestQuality, manual = false) {
+      if (!quality?.sharp || (!quality.exposure && !manual) || (!quality.distinct && !manual)) {
+        toast('Wait for sharp focus and balanced exposure; move to a new viewpoint.', true);
+        return;
+      }
+      if (!quality.exposure) toast('Exposure risk saved manually. Check lighting before next frame.', true);
+      if (!quality.distinct) toast('Similar view saved manually. Keep moving for better coverage.');
+      if (ringFrames[currentRing] >= ringTarget) {
+        toast('This orbit ring is full. Raise/lower camera and choose another ring.');
+        return;
+      }
+      const video = document.querySelector('#cameraVideo');
+      const scale = Math.min(1, 2200 / Math.max(video.videoWidth, video.videoHeight));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(video.videoWidth * scale);
+      canvas.height = Math.round(video.videoHeight * scale);
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => {
+        if (!blob) { toast('Could not encode this camera frame.', true); return; }
+        const index = ringFrames[currentRing] + 1;
+        const name = `${(document.querySelector('#scanName').value.trim() || 'scan').replace(/[^\w-]+/g, '-').toLowerCase()}-${currentRing}-${String(index).padStart(2, '0')}.jpg`;
+        const photo = new File([blob], name, { type: 'image/jpeg', lastModified: Date.now() });
+        selected.set(`camera-${currentRing}-${index}`, photo);
+        ringFrames[currentRing] = index;
+        signatures.push(quality.gray);
+        lastAcceptedAt = performance.now();
+        const thumb = document.createElement('div');
+        thumb.className = 'frame-thumb';
+        const image = document.createElement('img');
+        image.src = URL.createObjectURL(blob);
+        image.onload = () => URL.revokeObjectURL(image.src);
+        const label = document.createElement('span');
+        label.textContent = String(selected.size).padStart(2, '0');
+        thumb.append(image, label);
+        document.querySelector('#frameStrip').append(thumb);
+        document.querySelector('#frameStrip').scrollLeft = document.querySelector('#frameStrip').scrollWidth;
+        updateCaptureUI();
+      }, 'image/jpeg', 0.92);
+    }
+
+    function updateCaptureUI() {
+      document.querySelector('#ringCount').textContent = `${String(ringFrames[currentRing]).padStart(2, '0')} / ${ringTarget}`;
+      document.querySelector('#orbitProgress').style.width = `${ringFrames[currentRing] / ringTarget * 100}%`;
+      document.querySelector('#captureSummary').textContent = `${selected.size} frames kept · ${Object.values(ringFrames).filter(count => count >= 4).length}/3 rings covered`;
+      document.querySelector('#captureButton').disabled = ringFrames[currentRing] >= ringTarget;
+      document.querySelector('#finishScanButton').disabled = selected.size < 12 || Object.values(ringFrames).some(count => count < 4);
+      document.querySelectorAll('.ring-tab').forEach(button => {
+        const ring = button.dataset.ring;
+        button.classList.toggle('active', ring === currentRing);
+        button.classList.toggle('complete', ringFrames[ring] >= ringTarget);
+      });
+      const advice = {
+        low: 'Keep camera near object center height. Walk slowly around the full object; pause briefly for sharp focus.',
+        middle: 'Raise camera about 25–35°. Keep object centered and continue around full circumference.',
+        high: 'Raise camera about 50–60° and angle down gently. Capture top surfaces without losing side overlap.',
+      };
+      document.querySelector('#scanInstructions').textContent = ringFrames[currentRing] >= ringTarget
+        ? 'Ring complete. Change camera height, tap another ring, then continue around the object.'
+        : advice[currentRing];
+    }
+
+    document.querySelector('#startScanButton').addEventListener('click', startCamera);
+    document.querySelector('#stopCameraButton').addEventListener('click', stopCamera);
+    document.querySelector('#clearScanButton').addEventListener('click', () => {
+      selected.clear();
+      ringFrames.low = ringFrames.middle = ringFrames.high = 0;
+      signatures.length = 0;
+      lastAcceptedAt = performance.now();
+      document.querySelector('#frameStrip').replaceChildren();
+      updateCaptureUI();
+    });
+    document.querySelector('#captureButton').addEventListener('click', () => captureFrame(latestQuality, true));
+    document.querySelector('#finishScanButton').addEventListener('click', submitCameraScan);
+    document.querySelector('#autoCaptureButton').addEventListener('click', event => {
+      autoCapture = !autoCapture;
+      event.currentTarget.setAttribute('aria-pressed', String(autoCapture));
+      event.currentTarget.innerHTML = `<span class="auto-indicator"></span> Auto capture ${autoCapture ? 'on' : 'off'}`;
+    });
+    document.querySelectorAll('.ring-tab').forEach(button => button.addEventListener('click', () => {
+      currentRing = button.dataset.ring;
+      updateCaptureUI();
+    }));
+
+    async function showModel(job) {
+      const panel = document.querySelector('#modelViewerPanel');
+      panel.hidden = false;
+      document.querySelector('#viewerDownload').href = job.artifacts.find(item => item.name === 'model.glb').url;
+      if (activeViewerJob === job.id) return;
+      activeViewerJob = job.id;
+      const container = document.querySelector('#modelViewer');
+      const status = document.querySelector('#viewerStatus');
+      status.hidden = false;
+      status.textContent = 'Loading textured model…';
+      let THREE;
+      let OrbitControls;
+      let GLTFLoader;
+      try {
+        [THREE, { OrbitControls }, { GLTFLoader }] = await Promise.all([
+          import('three'),
+          import('three/addons/controls/OrbitControls.js'),
+          import('three/addons/loaders/GLTFLoader.js'),
+        ]);
+      } catch (error) {
+        status.textContent = `Three.js viewer could not load: ${error.message}. Download GLB to view.`;
+        return;
+      }
+      if (viewerRenderer) {
+        viewerRenderer.dispose();
+        container.replaceChildren(status);
+      }
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color('#141511');
+      const camera = new THREE.PerspectiveCamera(38, container.clientWidth / container.clientHeight, 0.01, 100);
+      camera.position.set(2.4, 1.7, 2.8);
+      viewerRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      viewerRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      viewerRenderer.outputColorSpace = THREE.SRGBColorSpace;
+      viewerRenderer.setSize(container.clientWidth, container.clientHeight);
+      container.append(viewerRenderer.domElement);
+      const controls = new OrbitControls(camera, viewerRenderer.domElement);
+      controls.enableDamping = true;
+      scene.add(new THREE.HemisphereLight(0xf3f4df, 0x414439, 2.2));
+      const key = new THREE.DirectionalLight(0xffffff, 2.8);
+      key.position.set(3, 5, 4);
+      scene.add(key);
+      const loader = new GLTFLoader();
+      loader.load(job.artifacts.find(item => item.name === 'model.glb').url, gltf => {
+        const model = gltf.scene;
+        const bounds = new THREE.Box3().setFromObject(model);
+        const center = bounds.getCenter(new THREE.Vector3());
+        const size = bounds.getSize(new THREE.Vector3());
+        model.position.sub(center);
+        model.scale.setScalar(1.7 / Math.max(size.x, size.y, size.z, 0.001));
+        scene.add(model);
+        controls.target.set(0, 0, 0);
+        controls.update();
+        status.hidden = true;
+      }, undefined, error => {
+        status.textContent = `3D preview unavailable: ${error.message}. Download GLB to view.`;
+      });
+      const resize = new ResizeObserver(() => {
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        if (!width || !height) return;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        viewerRenderer.setSize(width, height);
+      });
+      resize.observe(container);
+      const render = () => {
+        if (activeViewerJob !== job.id) return;
+        requestAnimationFrame(render);
+        controls.update();
+        viewerRenderer.render(scene, camera);
+      };
+      render();
+    }
+
+    loadHealth();
+    refreshJobs();
+  </script>
+</body>
+</html>
