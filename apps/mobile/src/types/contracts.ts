@@ -62,3 +62,22 @@ export interface ApiError {
   retryable: boolean;
   job_id?: string;
 }
+
+// Draf bentuk respons GET /projects/{id}; samakan dengan backend saat endpoint dikunci.
+export interface JobState {
+  id: string;
+  status: JobStatus;
+  error?: ApiError;
+}
+
+export interface ProjectView {
+  id: string;
+  is_fixture?: boolean;
+  input_url?: string;
+  // worker_state: info operator/GPU di luar status job (DESIGN.md §7).
+  mesh: { job: JobState; url?: string; model?: string; fallback_used?: boolean; worker_state?: 'preparing' | 'unavailable' };
+  ideas: { job: JobState; result?: IdeasResult };
+  selected_idea_id?: string;
+  guide?: { job: JobState; result?: GuideResult };
+  illustrations: Record<string, { job: JobState; url?: string }>;
+}
