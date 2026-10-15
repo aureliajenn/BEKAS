@@ -17,7 +17,7 @@ import { getJSON, setJSON } from './storage';
 
 // ---------- Peserta: ID acak perangkat + RW. Bukan autentikasi (PRD §17.1). ----------
 
-type Participant = { id: string; rwId: string | null };
+type Participant = { id: string; rwId: string | null; registered?: boolean };
 const PARTICIPANT = 'bekas:participant';
 
 const uuid = () =>
@@ -27,11 +27,14 @@ const uuid = () =>
   });
 
 export async function getParticipant(): Promise<Participant> {
-  const saved = await getJSON<Participant>(PARTICIPANT);
-  if (saved) return saved;
-  const fresh = { id: uuid(), rwId: null };
-  await setJSON(PARTICIPANT, fresh);
-  return fresh;
+  const p = (await getJSON<Participant>(PARTICIPANT)) ?? { id: uuid(), rwId: null };
+  // Daftarkan sekali ke backend (upsert idempoten) agar dompet/verifikasi tidak 404 sebelum pilih RW.
+  if (!USE_FIXTURES && !p.registered) {
+    await call(`/participants/${p.id}`, { method: 'PUT', body: JSON.stringify({ rw_id: p.rwId }) });
+    p.registered = true;
+  }
+  await setJSON(PARTICIPANT, p);
+  return p;
 }
 
 export async function chooseRw(rwId: string): Promise<void> {
