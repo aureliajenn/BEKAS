@@ -3,6 +3,7 @@ import { Camera, Images } from 'lucide-react-native';
 import { ScrollView, Text, View } from 'react-native';
 import { router } from 'expo-router';
 
+import { goBack } from '@/lib/nav';
 import { Card, OfflineBanner, Pill, SafetyNote } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
@@ -23,7 +24,7 @@ const step = sampleGuide('idea-pot').steps[2];
 export default function DevComponents() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      <GreenHeader eyebrow="Halaman sementara" title="Komponen BEKAS" pose="menyapa" onBack={() => router.back()} />
+      <GreenHeader eyebrow="Halaman sementara" title="Komponen BEKAS" pose="menyapa" onBack={goBack} />
       <ScrollView contentContainerStyle={{ padding: space.screen, gap: space.lg, paddingBottom: 48 }}>
 
         <Text style={type.overline}>Skenario fixture (DESIGN.md §7)</Text>

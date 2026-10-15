@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { router } from 'expo-router';
 import { Check, Users } from 'lucide-react-native';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { goBack } from '@/lib/nav';
 import { Card, OfflineBanner } from '@/components/Card';
 import { PlainHeader } from '@/components/GreenHeader';
 import { StageStatus } from '@/components/StageStatus';
@@ -22,13 +22,13 @@ export default function RwScreen() {
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ['participant'] });
       await qc.invalidateQueries({ queryKey: ['leaderboard'] });
-      router.back();
+      goBack();
     },
   });
 
   return (
     <View style={styles.screen}>
-      <PlainHeader title="Pilih RW kamu" onBack={() => router.back()} />
+      <PlainHeader title="Pilih RW kamu" onBack={goBack} />
       <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: bottom + space.xxl }]}>
         <Text style={type.body}>Barang yang kamu olah ikut menambah angka RW-mu di leaderboard. Poin tetap masuk ke dompetmu sendiri.</Text>
         {rws.isError ? <OfflineBanner /> : null}

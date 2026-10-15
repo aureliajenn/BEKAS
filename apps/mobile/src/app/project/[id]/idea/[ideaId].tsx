@@ -4,6 +4,7 @@ import { BookOpen, Sparkles } from 'lucide-react-native';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { goBack } from '@/lib/nav';
 import { Card, difficultyTone, OfflineBanner, Pill, SafetyNote } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
@@ -38,7 +39,7 @@ export default function IdeaDetailScreen() {
 
   return (
     <View style={styles.screen}>
-      <GreenHeader title={idea.title} onBack={() => router.back()} pose="bawaBotol">
+      <GreenHeader title={idea.title} onBack={goBack} pose="bawaBotol">
         <View style={styles.pills}>
           <Pill label={idea.difficulty} tone={difficultyTone(idea.difficulty)} />
           <Pill label={`±${idea.estimated_minutes} menit`} />

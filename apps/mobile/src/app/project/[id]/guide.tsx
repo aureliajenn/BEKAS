@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { goBack } from '@/lib/nav';
 import { Card, OfflineBanner, Pill, SafetyNote } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
@@ -50,7 +51,7 @@ export default function GuideScreen() {
 
   return (
     <View style={styles.screen}>
-      <GreenHeader title={guide?.title ?? 'Panduan'} onBack={() => router.back()}>
+      <GreenHeader title={guide?.title ?? 'Panduan'} onBack={goBack}>
         {guide ? (
           <View style={styles.pills}>
             <Pill label={`${done.length} dari ${steps.length} langkah dicentang`} tone="easy" />

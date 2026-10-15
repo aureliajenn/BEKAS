@@ -4,6 +4,7 @@ import { Check, Send } from 'lucide-react-native';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { goBack } from '@/lib/nav';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { PlainHeader } from '@/components/GreenHeader';
 import { MascotBubble } from '@/components/MascotBubble';
@@ -28,7 +29,7 @@ export default function PreviewScreen() {
 
   return (
     <View style={styles.screen}>
-      <PlainHeader title="Pratinjau foto" onBack={() => router.back()} />
+      <PlainHeader title="Pratinjau foto" onBack={goBack} />
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.photoCard}>
           <Image source={{ uri }} style={styles.photo} resizeMode="cover" accessibilityLabel="Foto barang yang akan dikirim" />
@@ -49,7 +50,7 @@ export default function PreviewScreen() {
       </ScrollView>
 
       <View style={[styles.actions, { paddingBottom: bottom + space.md }]}>
-        <ChunkyButton label="Foto ulang" variant="secondary" disabled={send.isPending} onPress={() => router.back()} style={{ flex: 1 }} />
+        <ChunkyButton label="Foto ulang" variant="secondary" disabled={send.isPending} onPress={goBack} style={{ flex: 1 }} />
         <ChunkyButton
           label={send.isPending ? 'Mengunggah foto' : send.isError ? 'Coba lagi' : 'Kirim foto'}
           loading={send.isPending}
