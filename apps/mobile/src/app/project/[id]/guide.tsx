@@ -11,6 +11,7 @@ import { GreenHeader } from '@/components/GreenHeader';
 import { MascotBubble } from '@/components/MascotBubble';
 import { StageStatus } from '@/components/StageStatus';
 import { StepCard } from '@/components/StepCard';
+import { VerifyPanel } from '@/components/VerifyPanel';
 import { retryJob } from '@/lib/api';
 import { clearActiveProject, getDoneSteps, setDoneSteps } from '@/lib/storage';
 import { useProject } from '@/lib/useProject';
@@ -119,10 +120,11 @@ export default function GuideScreen() {
                 <Text style={[type.body, { textAlign: 'center', color: colors.muted }]}>
                   Semua {steps.length} langkah {guide.title.toLowerCase()} sudah kamu centang.
                 </Text>
+                {p ? <VerifyPanel project={p} /> : null}
                 <ChunkyButton
                   label="Foto barang lain"
-                  variant="cta"
-                  icon={<Camera size={22} color={colors.white} strokeWidth={2.5} />}
+                  variant="secondary"
+                  icon={<Camera size={22} color={colors.green700} strokeWidth={2.5} />}
                   onPress={async () => {
                     await clearActiveProject();
                     router.dismissTo('/');
