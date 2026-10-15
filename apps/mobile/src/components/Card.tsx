@@ -62,3 +62,23 @@ const styles = StyleSheet.create({
   banner: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.warnBg, padding: space.md },
   flex: { flex: 1 },
 });
+
+/** Progres data nyata (saldo, jumlah barang). Jangan dipakai untuk proses backend. */
+export function ProgressBar({ value, max, label }: { value: number; max: number; label: string }) {
+  const pct = max > 0 ? Math.min(1, Math.max(0, value / max)) : 0;
+  return (
+    <View
+      style={progress.track}
+      accessibilityRole="progressbar"
+      accessibilityLabel={label}
+      accessibilityValue={{ min: 0, max, now: Math.min(value, max) }}
+    >
+      <View style={[progress.fill, { width: `${pct * 100}%` }]} />
+    </View>
+  );
+}
+
+const progress = StyleSheet.create({
+  track: { height: 12, borderRadius: radius.pill, backgroundColor: colors.line, overflow: 'hidden' },
+  fill: { height: '100%', borderRadius: radius.pill, backgroundColor: colors.green500 },
+});

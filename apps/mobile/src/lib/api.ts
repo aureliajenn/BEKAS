@@ -1,10 +1,10 @@
 import { Asset } from 'expo-asset';
 
 import { icon3d } from '@/theme/assets';
-import type { ApiError, JobState, ProjectView } from '@/types/contracts';
+import type { ApiError, JobState, ProjectView, VerificationResult } from '@/types/contracts';
 
 import { SAMPLE_GLB, needsNewPhoto, sampleGuide, sampleIdeas } from './fixtures';
-import { getJSON, setJSON } from './storage';
+import { getJSON, listKeys, setJSON } from './storage';
 import { fromApi, type ProjectResponse } from './wire';
 
 const BASE = process.env.EXPO_PUBLIC_API_BASE_URL ?? '';
@@ -16,7 +16,7 @@ export class ApiFailure extends Error {
   }
 }
 
-async function call<T>(path: string, init?: RequestInit): Promise<T> {
+export async function call<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     ...init,
     headers: { 'Content-Type': 'application/json', ...init?.headers },
@@ -33,7 +33,7 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 // Minimal 16 karakter (syarat header Idempotency-Key di backend).
-const newKey = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}${Math.random().toString(36).slice(2)}`;
+export const newKey = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}${Math.random().toString(36).slice(2)}`;
 
 type Pending = { key: string; projectId?: string };
 
@@ -103,7 +103,7 @@ export async function retryJob(id: string, jobId: string): Promise<void> {
   });
 }
 
-type CreateProjectResponse = {
+export type CreateProjectResponse = {
   project_id: string;
   upload_target: { url: string; method: 'PUT'; headers: Record<string, string> };
 };
@@ -120,16 +120,21 @@ export const scenarios = {
   guide_fail: 'Panduan gagal dibuat',
   illustration_fail: 'Ilustrasi langkah 3 gagal',
   offline: 'Koneksi terputus 10 detik',
+  verify_rejected: 'Verifikasi ditolak sekali',
 } as const;
 export type Scenario = keyof typeof scenarios;
 
-type FixtureState = {
+export type FixtureState = {
   createdAt: number;
   inputUri: string;
   scenario: Scenario;
   ideaId?: string;
   guideAt?: number;
   retries?: Record<string, number>;
+  /** Verifikasi foto sesudah (PRD §17). */
+  verifyAt?: number;
+  afterUri?: string;
+  verifyAttempts?: number;
 };
 
 /** URI aset lokal, dipakai sebagai foto contoh dan ilustrasi contoh. */
@@ -137,7 +142,7 @@ export const assetUri = (mod: number) => Asset.fromModule(mod).uri;
 const sampleIllustrations = [icon3d.botol, icon3d.tasDaur, icon3d.tongBio, icon3d.daun, icon3d.tanamanListrik, icon3d.tasHijau];
 
 let uploadFailedOnce = false;
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function fixtureCreate(photoUri: string, scenario: Scenario) {
   await sleep(1200);
@@ -150,8 +155,33 @@ async function fixtureCreate(photoUri: string, scenario: Scenario) {
   return id;
 }
 
-async function fixtureState(id: string): Promise<FixtureState> {
+export async function fixtureState(id: string): Promise<FixtureState> {
   return (await getJSON<FixtureState>(`bekas:fixture:${id}`)) ?? { createdAt: Date.now(), inputUri: '', scenario: 'normal' };
+}
+
+export const setFixtureState = (id: string, s: FixtureState) => setJSON(`bekas:fixture:${id}`, s);
+
+/** Semua proyek contoh di HP ini; dompet contoh diturunkan dari sini supaya kredit poin tidak ganda. */
+export async function listFixtureProjects(): Promise<{ id: string; s: FixtureState }[]> {
+  const keys = await listKeys('bekas:fixture:contoh-');
+  return Promise.all(keys.map(async (k) => ({ id: k.slice('bekas:fixture:'.length), s: (await getJSON<FixtureState>(k))! })));
+}
+
+export const UPCYCLE_POINTS = 500;
+
+/** Verifikasi contoh: antre 1 dtk, diperiksa 3 dtk; skenario verify_rejected menolak percobaan pertama. */
+export function fixtureVerification(s: FixtureState): { job: JobState; result?: VerificationResult } | undefined {
+  if (!s.verifyAt) return undefined;
+  const t = Date.now() - s.verifyAt;
+  const job: JobState = { id: 'job-verification', status: t < 1000 ? 'queued' : t < 4000 ? 'running' : 'succeeded' };
+  if (job.status !== 'succeeded') return { job };
+  const rejected = s.scenario === 'verify_rejected' && (s.verifyAttempts ?? 1) === 1;
+  return {
+    job,
+    result: rejected
+      ? { approved: false, points: 0, reason: 'Foto belum menunjukkan hasil olahan dari botol yang sama. Coba foto hasilnya dari dekat dengan cahaya terang.' }
+      : { approved: true, points: UPCYCLE_POINTS },
+  };
 }
 
 /** Status job dari waktu berjalan; job yang di-retry berjalan 2 detik lalu sukses. */
@@ -189,6 +219,7 @@ async function fixtureProject(id: string): Promise<ProjectView> {
     },
     ideas: { job: ideas, result: ideas.status === 'succeeded' ? (sc === 'needs_new_photo' ? needsNewPhoto : sampleIdeas) : undefined },
     illustrations: {},
+    verification: fixtureVerification(s),
   };
 
   if (s.ideaId && s.guideAt) {

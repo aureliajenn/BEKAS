@@ -80,4 +80,83 @@ export interface ProjectView {
   selected_idea_id?: string;
   guide?: { job: JobState; result?: GuideResult };
   illustrations: Record<string, { job: JobState; url?: string }>;
+  verification?: { job: JobState; result?: VerificationResult };
+}
+
+// ---------- Reward (PRD bagian 17) ----------
+
+export interface VerificationResult {
+  approved: boolean;
+  reason?: string;
+  points: number;
+}
+
+export interface Rw {
+  rw_id: string;
+  name: string;
+  kelurahan: string;
+  captain_name: string;
+}
+
+export interface LedgerEntry {
+  entry_id: string;
+  amount: number;
+  source: 'upcycle' | 'redemption';
+  sumber_dana?: string;
+  description: string;
+  created_at: string;
+}
+
+export interface Redemption {
+  redemption_id: string;
+  reward_name: string;
+  points: number;
+  status: 'pending' | 'fulfilled' | 'rejected';
+  created_at: string;
+}
+
+export interface Wallet {
+  balance: number;
+  point_value_idr: number;
+  daily_cap: number;
+  verified_today: number;
+  ledger: LedgerEntry[];
+  redemptions: Redemption[];
+  is_fixture?: boolean;
+}
+
+export interface Reward {
+  reward_id: string;
+  name: string;
+  partner: string;
+  kind: 'pulsa' | 'token_listrik' | 'emas' | 'voucher';
+  price_points: number;
+  stock: number;
+}
+
+export interface LeaderboardRow {
+  rank: number;
+  rw_id: string;
+  name: string;
+  kelurahan: string;
+  items: number;
+  captain_name: string;
+}
+
+export interface Leaderboard {
+  month: string;
+  rows: LeaderboardRow[];
+  challenge: { title: string; target_items: number; reward: string; sponsor: string };
+  is_fixture?: boolean;
+}
+
+export interface BankSampah {
+  id: string;
+  name: string;
+  address: string;
+  hours: string;
+  accepts: string[];
+  prices: { type: string; price_per_kg: number }[];
+  lat: number;
+  lng: number;
 }

@@ -20,3 +20,7 @@ export async function getJSON<T>(key: string): Promise<T | null> {
 }
 
 export const setJSON = (key: string, value: unknown) => AsyncStorage.setItem(key, JSON.stringify(value));
+
+export async function listKeys(prefix: string): Promise<string[]> {
+  return (await AsyncStorage.getAllKeys()).filter((k) => k.startsWith(prefix));
+}

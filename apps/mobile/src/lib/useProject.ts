@@ -12,6 +12,7 @@ function allSettled(p?: ProjectView) {
     settled(p.mesh.job) &&
     settled(p.ideas.job) &&
     settled(p.guide?.job) &&
+    settled(p.verification?.job) &&
     Object.values(p.illustrations).every((i) => settled(i.job))
   );
 }

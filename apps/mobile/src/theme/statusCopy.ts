@@ -1,7 +1,7 @@
 // Teks status per komponen. Tampilkan NAMA TAHAP, jangan persentase (PRD bagian 4).
 
 export type JobStatus = 'queued' | 'running' | 'succeeded' | 'retry_wait' | 'failed';
-export type JobKind = 'upload' | 'mesh' | 'ideas' | 'guide' | 'illustration';
+export type JobKind = 'upload' | 'mesh' | 'ideas' | 'guide' | 'illustration' | 'verification';
 
 type Copy = Record<JobStatus, string>;
 
@@ -34,6 +34,13 @@ export const statusCopy: Record<JobKind, Copy> = {
     retry_wait: 'Mencoba menyusun panduan lagi',
     failed: 'Panduan gagal dibuat',
   },
+  verification: {
+    queued: 'Menunggu giliran pemeriksaan',
+    running: 'Memeriksa foto hasil karyamu',
+    succeeded: 'Pemeriksaan selesai',
+    retry_wait: 'Mencoba memeriksa lagi',
+    failed: 'Pemeriksaan gagal',
+  },
   illustration: {
     queued: 'Ilustrasi menunggu giliran',
     running: 'Ilustrasi sedang dibuat',
@@ -52,4 +59,5 @@ export const extraCopy = {
   meshDisclaimer: 'Model 3D ini hanya gambaran bentuk, bukan ukuran asli.',
   cachedSample: 'Contoh tersimpan',
   retry: 'Coba lagi',
+  pointValue: '1 poin = Rp1',
 } as const;

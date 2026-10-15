@@ -1,4 +1,4 @@
-import type { ApiError, GuideResult, IdeasResult, JobState, JobStatus, ProjectView } from '../types/contracts';
+import type { ApiError, GuideResult, IdeasResult, JobState, JobStatus, ProjectView, VerificationResult } from '../types/contracts';
 
 // Bentuk wire FastAPI (services/api/app/schemas/projects.py) → ProjectView untuk layar.
 
@@ -10,7 +10,9 @@ export type ProjectResponse = {
   ideas: IdeasResult | null;
   selected_idea_id: string | null;
   guide: GuideResult | null;
-  components: { mesh: Component; ideas: Component; guide: Component };
+  // verification: PRD 1.3 §17.3; opsional sampai backend reward siap.
+  components: { mesh: Component; ideas: Component; guide: Component; verification?: Component };
+  verification?: VerificationResult | null;
   illustrations: Record<string, Component>;
   assets: { kind: 'input' | 'mesh' | 'illustration'; step_id: string | null; url: string }[];
 };
@@ -32,6 +34,10 @@ export function fromApi(r: ProjectResponse): ProjectView {
     ideas: { job: toJob(r.components.ideas), result: r.ideas ?? undefined },
     selected_idea_id: r.selected_idea_id ?? undefined,
     guide: r.components.guide.status === 'not_started' ? undefined : { job: toJob(r.components.guide), result: r.guide ?? undefined },
+    verification:
+      !r.components.verification || r.components.verification.status === 'not_started'
+        ? undefined
+        : { job: toJob(r.components.verification), result: r.verification ?? undefined },
     illustrations: Object.fromEntries(
       Object.entries(r.illustrations).map(([step, c]) => [step, { job: toJob(c), url: asset('illustration', step) }]),
     ),
