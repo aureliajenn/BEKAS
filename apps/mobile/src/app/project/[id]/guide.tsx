@@ -13,12 +13,13 @@ import { MascotBubble } from '@/components/MascotBubble';
 import { StageStatus } from '@/components/StageStatus';
 import { StepCard } from '@/components/StepCard';
 import { VerifyPanel } from '@/components/VerifyPanel';
+import { Confetti, DecorCircle } from '@/components/shapes';
 import { retryJob } from '@/lib/api';
 import { clearActiveProject, getDoneSteps, setDoneSteps } from '@/lib/storage';
 import { useProject } from '@/lib/useProject';
 import { mascot } from '@/theme/assets';
 import { extraCopy } from '@/theme/statusCopy';
-import { colors, space, type } from '@/theme/tokens';
+import { colors, radius, space, type } from '@/theme/tokens';
 
 export default function GuideScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -115,12 +116,18 @@ export default function GuideScreen() {
             })}
 
             {allDone ? (
-              <Card style={styles.done}>
-                <Image source={mascot.senang} style={styles.doneMascot} resizeMode="contain" accessible={false} />
-                <Text style={[type.h2, { textAlign: 'center' }]}>Kerajinanmu jadi!</Text>
-                <Text style={[type.body, { textAlign: 'center', color: colors.muted }]}>
-                  Semua {steps.length} langkah {guide.title.toLowerCase()} sudah kamu centang.
-                </Text>
+              <View style={{ gap: space.lg }}>
+                <View style={styles.celebrate} accessibilityRole="header">
+                  <DecorCircle size={280} style={{ top: -110, right: -90 }} />
+                  <DecorCircle size={170} style={{ bottom: -70, left: -60 }} />
+                  <Confetti />
+                  <Text style={[type.overline, { color: colors.white }]}>Proyek selesai</Text>
+                  <Text style={[type.h1, styles.celebrateTitle]}>Kerajinanmu jadi!</Text>
+                  <Image source={mascot.senang} style={styles.doneMascot} resizeMode="contain" accessible={false} />
+                  <Text style={[type.body, styles.celebrateNote]}>
+                    Semua {steps.length} langkah {guide.title.toLowerCase()} sudah kamu centang.
+                  </Text>
+                </View>
                 {p ? <VerifyPanel project={p} /> : null}
                 <ChunkyButton
                   label="Foto barang lain"
@@ -130,9 +137,8 @@ export default function GuideScreen() {
                     await clearActiveProject();
                     router.dismissTo('/');
                   }}
-                  style={{ alignSelf: 'stretch' }}
                 />
-              </Card>
+              </View>
             ) : null}
           </>
         )}
@@ -146,6 +152,8 @@ const styles = StyleSheet.create({
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: space.sm },
   scroll: { padding: space.screen, gap: space.lg },
   kitHead: { flexDirection: 'row', alignItems: 'center', minHeight: 44 },
-  done: { alignItems: 'center', gap: space.md },
-  doneMascot: { width: 140, height: 170 },
+  celebrate: { backgroundColor: colors.green500, borderRadius: radius.card, overflow: 'hidden', alignItems: 'center', padding: space.xxl, gap: space.sm },
+  celebrateTitle: { color: colors.white, textAlign: 'center' },
+  celebrateNote: { color: colors.white, textAlign: 'center' },
+  doneMascot: { width: 190, height: 220 },
 });

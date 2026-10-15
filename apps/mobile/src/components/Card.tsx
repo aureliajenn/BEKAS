@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { extraCopy } from '../theme/statusCopy';
+import { Coin } from './shapes';
 import { chunkyDepth, colors, radius, space, type } from '../theme/tokens';
 
 /** Kartu putih dengan bayangan padat 5px (teknik sama dengan ChunkyButton). */
@@ -34,6 +35,16 @@ export function Pill({ label, tone = 'neutral' }: { label: string; tone?: PillTo
   );
 }
 
+/** Pill poin kuning dengan koin (DESIGN 2b: aksen hadiah). */
+export function PointsPill({ points }: { points: number }) {
+  return (
+    <View style={[styles.pill, styles.points]}>
+      <Coin size={14} />
+      <Text style={[type.pill, { color: colors.pillCachedFg }]}>+{points.toLocaleString('id-ID')} poin</Text>
+    </View>
+  );
+}
+
 /** Kesulitan dari backend berupa teks bebas; cocokkan kata kuncinya. */
 export const difficultyTone = (d: string): PillTone => (/mudah/i.test(d) ? 'easy' : /sulit/i.test(d) ? 'hard' : 'medium');
 
@@ -59,6 +70,7 @@ const styles = StyleSheet.create({
   cardDepth: { backgroundColor: colors.cardShadow, borderRadius: radius.card, paddingBottom: chunkyDepth },
   card: { backgroundColor: colors.white, borderRadius: radius.card, borderWidth: 2, borderColor: colors.line, padding: space.lg },
   pill: { borderRadius: radius.pill, paddingVertical: space.xs, paddingHorizontal: 10, alignSelf: 'flex-start' },
+  points: { flexDirection: 'row', alignItems: 'center', gap: space.xs, backgroundColor: colors.tileYellow },
   banner: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.warnBg, padding: space.md },
   flex: { flex: 1 },
 });

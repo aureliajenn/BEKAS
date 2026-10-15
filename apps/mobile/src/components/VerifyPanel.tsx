@@ -2,17 +2,18 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { Camera, Images, Wallet } from 'lucide-react-native';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { ApiFailure, assetUri, retryJob, USE_FIXTURES } from '../lib/api';
+import { ApiFailure, assetUri, retryJob, UPCYCLE_POINTS, USE_FIXTURES } from '../lib/api';
 import { pickPhoto } from '../lib/photo';
 import { startVerification } from '../lib/rewards';
 import { icon3d } from '../theme/assets';
 import { extraCopy } from '../theme/statusCopy';
 import { colors, radius, space, type } from '../theme/tokens';
 import type { ProjectView } from '../types/contracts';
-import { Pill } from './Card';
+import { Card, PointsPill } from './Card';
 import { ChunkyButton } from './ChunkyButton';
+import { Coin, Sparkle, Star } from './shapes';
 import { StageStatus } from './StageStatus';
 
 /** Verifikasi foto sesudah → poin upcycle (PRD 17, AC9). Dipasang di kartu selesai Panduan. */
@@ -42,27 +43,27 @@ export function VerifyPanel({ project }: { project: ProjectView }) {
   const canSend = !approved && !running && !send.isPending;
 
   return (
-    <View style={styles.panel}>
-      <Text style={[type.h3, { textAlign: 'center' }]}>
-        {approved ? 'Poin masuk ke dompetmu' : 'Dapatkan poin dari karyamu'}
-      </Text>
-
+    <Card style={{ gap: space.md }}>
       {approved ? (
         <>
-          <View style={{ alignSelf: 'center' }}>
-            <Pill label={`+${v.result!.points.toLocaleString('id-ID')} poin`} tone="easy" />
+          <Text style={[type.caption, { textAlign: 'center' }]}>Hadiah</Text>
+          <View style={styles.reward} accessibilityLabel={`Hadiah ${v.result!.points} poin masuk ke dompet`}>
+            <Sparkle size={14} color={colors.accentYellow} style={styles.sparkleA} />
+            <Star size={12} color={colors.green400} style={styles.sparkleB} />
+            <Text style={[type.display, { color: colors.green700 }]}>+{v.result!.points.toLocaleString('id-ID')}</Text>
+            <Coin size={36} />
           </View>
-          <Text style={[type.caption, { textAlign: 'center' }]}>{extraCopy.pointValue}</Text>
-          <ChunkyButton
-            label="Lihat dompet"
-            icon={<Wallet size={22} color={colors.white} strokeWidth={2.5} />}
-            onPress={() => router.push('/wallet')}
-          />
+          <Text style={[type.caption, { textAlign: 'center' }]}>Poin masuk ke dompetmu. {extraCopy.pointValue}</Text>
+          <ChunkyButton label="Lihat dompet" icon={<Wallet size={22} color={colors.white} strokeWidth={2.5} />} onPress={() => router.push('/wallet')} />
         </>
       ) : (
-        <Text style={[type.body, { textAlign: 'center', color: colors.muted }]}>
-          Foto hasil karyamu. Setelah diperiksa, poin upcycle masuk ke dompet.
-        </Text>
+        <View style={{ gap: space.xs }}>
+          <View style={styles.titleRow}>
+            <Text style={type.h3}>Dapatkan</Text>
+            <PointsPill points={UPCYCLE_POINTS} />
+          </View>
+          <Text style={[type.body, { color: colors.muted }]}>Foto hasil karyamu. Setelah diperiksa, poin upcycle masuk ke dompet.</Text>
+        </View>
       )}
 
       {running ? <StageStatus items={[{ kind: 'verification', status: v.job.status }]} /> : null}
@@ -90,12 +91,20 @@ export function VerifyPanel({ project }: { project: ProjectView }) {
 
       {canSend || send.isPending ? (
         <>
-          <ChunkyButton
-            label={send.isPending ? 'Mengunggah foto' : rejected ? 'Foto ulang' : 'Foto hasil karyamu'}
-            loading={send.isPending}
-            icon={<Camera size={22} color={colors.white} strokeWidth={2.5} />}
+          {/* Tombol putus-putus ala mockup: ajakan foto, bukan aksi utama layar. */}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={send.isPending ? 'Mengunggah foto' : rejected ? 'Foto ulang' : 'Foto hasil karyamu'}
+            accessibilityState={{ disabled: send.isPending, busy: send.isPending }}
+            disabled={send.isPending}
             onPress={() => choose('camera')}
-          />
+            style={({ pressed }) => [styles.dashed, pressed && { opacity: 0.8 }]}
+          >
+            {send.isPending ? <ActivityIndicator color={colors.green700} /> : <Camera size={22} color={colors.green700} strokeWidth={2.5} />}
+            <Text style={[type.button, { color: colors.green700 }]}>
+              {send.isPending ? 'Mengunggah foto' : rejected ? 'Foto ulang' : 'Foto hasil karyamu'}
+            </Text>
+          </Pressable>
           <ChunkyButton
             label="Pilih dari galeri"
             variant="secondary"
@@ -111,12 +120,27 @@ export function VerifyPanel({ project }: { project: ProjectView }) {
           ) : null}
         </>
       ) : null}
-    </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  panel: { alignSelf: 'stretch', gap: space.md, borderTopWidth: 2, borderTopColor: colors.line, paddingTop: space.lg },
+  titleRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  reward: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, backgroundColor: colors.green50, borderRadius: radius.card, paddingVertical: space.lg },
+  sparkleA: { position: 'absolute', top: space.md, right: '24%' },
+  sparkleB: { position: 'absolute', bottom: space.md, left: '24%' },
+  dashed: {
+    minHeight: 64,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: space.sm,
+    borderRadius: radius.card,
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: colors.green400,
+    backgroundColor: colors.green50,
+  },
   danger: { backgroundColor: colors.dangerBg, borderRadius: radius.iconButton, padding: space.md, gap: space.xs },
   devLink: { textAlign: 'center', textDecorationLine: 'underline' },
 });

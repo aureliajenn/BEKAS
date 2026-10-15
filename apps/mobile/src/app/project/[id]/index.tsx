@@ -81,7 +81,7 @@ export default function ResultScreen() {
                 {profile ? (
                   <View style={{ gap: space.md }}>
                     <Text style={type.h3}>Profil barang</Text>
-                    <Card style={{ gap: space.sm }}>
+                    <Card style={{ gap: space.sm, backgroundColor: colors.noteYellowBg, borderColor: colors.noteYellowBorder }}>
                       <Text style={type.bodyL}>{profile.label}</Text>
                       <Text style={type.body}>Terlihat: {profile.visible_parts.join(', ')}</Text>
                       <Text style={type.body}>Material: {profile.material_guess}</Text>

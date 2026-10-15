@@ -1,10 +1,11 @@
 import { ChevronRight } from 'lucide-react-native';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { UPCYCLE_POINTS } from '../lib/api';
 import type { CraftIdea } from '../types/contracts';
 import { ideaTiles } from '../theme/assets';
 import { colors, radius, space, type } from '../theme/tokens';
-import { Card, difficultyTone, Pill } from './Card';
+import { Card, difficultyTone, Pill, PointsPill } from './Card';
 
 type Props = { idea: CraftIdea; index: number; selected?: boolean; onPress: () => void };
 
@@ -28,7 +29,9 @@ export function IdeaCard({ idea, index, selected, onPress }: Props) {
           </Text>
           <View style={styles.pills}>
             <Pill label={idea.difficulty} tone={difficultyTone(idea.difficulty)} />
-            <Pill label={`±${idea.estimated_minutes} menit`} />
+            <Pill label={`±${idea.estimated_minutes} menit`} tone="info" />
+            {/* Poin upcycle diberikan setelah hasil diverifikasi (PRD 17.2), sama untuk setiap ide. */}
+            <PointsPill points={UPCYCLE_POINTS} />
           </View>
         </View>
         <ChevronRight size={22} color={colors.iconIdle} strokeWidth={2.5} />
