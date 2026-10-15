@@ -1,7 +1,7 @@
 // Halaman sementara untuk cek komponen di HP. Hapus sebelum rilis demo.
 import { Camera, Images } from 'lucide-react-native';
 import { ScrollView, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 
 import { goBack } from '@/lib/nav';
 import { Card, OfflineBanner, Pill, SafetyNote } from '@/components/Card';
@@ -22,6 +22,8 @@ const noop = () => {};
 const step = sampleGuide('idea-pot').steps[2];
 
 export default function DevComponents() {
+  // Halaman uji tidak tersedia di build rilis.
+  if (!__DEV__) return <Redirect href="/" />;
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <GreenHeader eyebrow="Halaman sementara" title="Komponen BEKAS" pose="menyapa" onBack={goBack} />

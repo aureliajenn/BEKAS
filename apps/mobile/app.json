@@ -8,7 +8,7 @@
       "web"
     ],
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/logo/logo-bekas-1024.png",
     "scheme": "bekas",
     "userInterfaceStyle": "light",
     "ios": {
@@ -17,16 +17,14 @@
     "android": {
       "package": "com.bekas.app",
       "adaptiveIcon": {
-        "backgroundColor": "#E8F0E5",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#B5E43B",
+        "foregroundImage": "./assets/logo/logo-bekas-1024.png"
       },
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/logo/logo-bekas.png"
     },
     "plugins": [
       "expo-router",
@@ -41,7 +39,9 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#F6F7F2"
+          "backgroundColor": "#F3FAF5",
+          "image": "./assets/logo/logo-bekas-1024.png",
+          "imageWidth": 320
         }
       ],
       "expo-asset"

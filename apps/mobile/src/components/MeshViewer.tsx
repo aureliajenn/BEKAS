@@ -4,10 +4,13 @@ import { WebView } from 'react-native-webview';
 
 import { colors } from '@/theme/tokens';
 
-// ponytail: model-viewer dari CDN versi terkunci; pindah ke bundle/backend sebelum demo offline (PRD §9).
+// Versi terkunci. Sebelum demo, host salinan tepercaya di backend lalu isi EXPO_PUBLIC_MODEL_VIEWER_SCRIPT_URL (PRD §9).
+const SCRIPT =
+  process.env.EXPO_PUBLIC_MODEL_VIEWER_SCRIPT_URL || 'https://cdn.jsdelivr.net/npm/@google/model-viewer@4.0.0/dist/model-viewer.min.js';
+
 const html = (src: string) => `<!doctype html><html><head>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.0.0/dist/model-viewer.min.js"></script>
+<script type="module" src="${SCRIPT}"></script>
 <style>html,body{margin:0;height:100%;background:${colors.green50}}model-viewer{width:100%;height:100%;--poster-color:transparent}</style>
 </head><body><model-viewer src="${encodeURI(src)}" camera-controls touch-action="pan-y" auto-rotate shadow-intensity="0.8" exposure="1.05" interaction-prompt="none"></model-viewer></body></html>`;
 

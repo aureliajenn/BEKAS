@@ -17,12 +17,16 @@ function allSettled(p?: ProjectView) {
   );
 }
 
-/** Polling 2,5 detik saat foreground; berhenti sendiri ketika semua job selesai/gagal. */
+/**
+ * Polling 2,5 detik saat foreground, melambat ke 6 detik setelah ±1 menit menunggu (PRD §9).
+ * Setelah semua job selesai, refetch tiap 5 menit hanya untuk menyegarkan signed URL aset.
+ * Berhenti saat app di background (focusManager di _layout).
+ */
 export function useProject(id: string) {
   return useQuery({
     queryKey: ['project', id],
     queryFn: () => getProject(id),
-    refetchInterval: (q) => (allSettled(q.state.data) ? false : 2500),
+    refetchInterval: (q) => (allSettled(q.state.data) ? 300_000 : q.state.dataUpdateCount > 24 ? 6000 : 2500),
     refetchOnWindowFocus: true,
     enabled: !!id,
   });
