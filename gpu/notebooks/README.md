@@ -1,6 +1,6 @@
-# Colab notebook
+# GPU notebooks (optional)
 
-PRD runtime: interactive Google Colab Free, operated by a team member. Notebook must not poll the backend, run a queue daemon, expose an application endpoint, or require a public tunnel.
+Vast.ai worker in [`../worker`](../worker/README.md) is the primary MVP GPU runtime. Notebooks are optional for experiments only; they do not participate in production job claiming or the automatic demo flow.
 
 Planned notebook flow:
 
@@ -11,4 +11,4 @@ Planned notebook flow:
 5. Validate GLB and write a result manifest with job/attempt IDs, input and output checksums, model/version, fallback, and per-stage timings.
 6. Let operator download output for import through `tools/operator`.
 
-Do not commit model weights, credentials, or generated customer photos. Use Colab Secrets for a Hugging Face read token when required.
+Do not commit model weights, credentials, or generated user photos. Use a secret store for a Hugging Face read token when required.

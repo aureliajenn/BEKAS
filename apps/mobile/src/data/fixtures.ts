@@ -1,0 +1,177 @@
+import type { GuideResult, IdeasResult } from '@/types/contracts';
+
+export const fixtureIdeas: IdeasResult = {
+  schema_version: '1.0',
+  input_status: 'accepted',
+  object_profile: {
+    label: 'Botol plastik',
+    visible_parts: ['Badan botol', 'Leher dan tutup'],
+    material_guess: 'Plastik, jenis resin belum diketahui',
+    uncertainties: ['Ukuran dan ketebalan tidak diketahui'],
+  },
+  ideas: [
+    {
+      id: 'desk-organizer',
+      title: 'Wadah alat tulis',
+      purpose: 'Merapikan pensil dan alat kecil di meja.',
+      difficulty: 'Mudah',
+      estimated_minutes: 15,
+      extra_materials: ['Selotip kain atau kertas warna'],
+      tools: ['Gunting', 'Spidol'],
+      safety_notes: ['Tepi potongan plastik bisa tajam. Tutup dengan selotip dan gunting menjauhi tangan.'],
+    },
+    {
+      id: 'seedling-pot',
+      title: 'Pot semai mini',
+      purpose: 'Memulai bibit tanaman dalam wadah ringan.',
+      difficulty: 'Mudah',
+      estimated_minutes: 20,
+      extra_materials: ['Media tanam', 'Bibit tanaman'],
+      tools: ['Gunting', 'Pelubang kecil'],
+      safety_notes: ['Minta bantuan orang dewasa saat membuat lubang drainase.'],
+    },
+    {
+      id: 'hanging-caddy',
+      title: 'Wadah gantung ringan',
+      purpose: 'Menggantung benda ringan di area kerja.',
+      difficulty: 'Sedang',
+      estimated_minutes: 25,
+      extra_materials: ['Tali kuat', 'Selotip kain'],
+      tools: ['Gunting', 'Pelubang kertas'],
+      safety_notes: ['Jangan gunakan untuk benda berat atau dekat sumber panas.'],
+    },
+  ],
+};
+
+const guides: Record<string, GuideResult> = {
+  'desk-organizer': {
+    schema_version: '1.0',
+    idea_id: 'desk-organizer',
+    title: 'Wadah alat tulis',
+    materials: ['Botol plastik bersih dan kering', 'Selotip kain atau kertas warna'],
+    tools: ['Gunting', 'Spidol'],
+    safety_notes: ['Tepi plastik bisa tajam. Potong perlahan dan tutup tepinya dengan selotip.'],
+    steps: [
+      {
+        id: 'clean',
+        order: 1,
+        title: 'Bersihkan botol',
+        instruction: 'Lepas label, cuci botol, lalu keringkan sampai tidak ada air tersisa.',
+        expected_result: 'Botol bersih, kering, dan mudah ditandai.',
+        illustration_prompt: 'Contoh ilustrasi botol bersih tanpa label.',
+      },
+      {
+        id: 'mark',
+        order: 2,
+        title: 'Tandai tinggi wadah',
+        instruction: 'Pilih tinggi yang cukup untuk menahan pensil. Buat garis melingkar dengan spidol.',
+        expected_result: 'Garis potong terlihat mengelilingi botol.',
+        illustration_prompt: 'Contoh ilustrasi garis spidol mengelilingi botol.',
+      },
+      {
+        id: 'cut',
+        order: 3,
+        title: 'Potong mengikuti garis',
+        instruction: 'Minta bantuan orang dewasa bila perlu. Gunting perlahan dengan tangan menjauh dari mata gunting.',
+        expected_result: 'Bagian atas terpisah dan badan botol berdiri sebagai wadah.',
+        illustration_prompt: 'Contoh ilustrasi botol dipotong dengan gunting.',
+      },
+      {
+        id: 'cover-edge',
+        order: 4,
+        title: 'Rapikan bagian tepi',
+        instruction: 'Periksa tepinya. Tutup seluruh bagian tajam dengan selotip kain sebelum memasukkan alat tulis.',
+        expected_result: 'Wadah stabil dengan tepi tertutup dan aman disentuh.',
+        illustration_prompt: 'Contoh ilustrasi selotip menutup tepi wadah.',
+      },
+    ],
+  },
+  'seedling-pot': {
+    schema_version: '1.0',
+    idea_id: 'seedling-pot',
+    title: 'Pot semai mini',
+    materials: ['Botol plastik bersih', 'Media tanam', 'Bibit tanaman'],
+    tools: ['Gunting', 'Pelubang kecil'],
+    safety_notes: ['Lubang drainase dibuat dengan bantuan orang dewasa. Hindari alat panas.'],
+    steps: [
+      {
+        id: 'wash',
+        order: 1,
+        title: 'Cuci dan keringkan',
+        instruction: 'Bersihkan botol dari sisa minuman dan lepaskan labelnya.',
+        expected_result: 'Botol bersih tanpa sisa cairan.',
+        illustration_prompt: 'Contoh ilustrasi membilas botol plastik.',
+      },
+      {
+        id: 'mark-pot',
+        order: 2,
+        title: 'Tandai bentuk pot',
+        instruction: 'Tandai bagian bawah botol sebagai badan pot dengan tinggi yang cukup untuk media tanam.',
+        expected_result: 'Garis potong jelas dan rata.',
+        illustration_prompt: 'Contoh ilustrasi garis potong pada botol.',
+      },
+      {
+        id: 'cut-pot',
+        order: 3,
+        title: 'Potong dan buat drainase',
+        instruction: 'Potong botol perlahan. Minta bantuan orang dewasa untuk membuat beberapa lubang kecil di dasar.',
+        expected_result: 'Pot memiliki dasar berlubang agar air berlebih dapat keluar.',
+        illustration_prompt: 'Contoh ilustrasi dasar pot dengan lubang drainase.',
+      },
+      {
+        id: 'plant',
+        order: 4,
+        title: 'Isi media dan tanam bibit',
+        instruction: 'Masukkan media tanam, letakkan bibit, lalu siram secukupnya.',
+        expected_result: 'Bibit berdiri di pot dan air berlebih mengalir keluar.',
+        illustration_prompt: 'Contoh ilustrasi bibit kecil di pot semai.',
+      },
+    ],
+  },
+  'hanging-caddy': {
+    schema_version: '1.0',
+    idea_id: 'hanging-caddy',
+    title: 'Wadah gantung ringan',
+    materials: ['Botol plastik bersih', 'Tali kuat', 'Selotip kain'],
+    tools: ['Gunting', 'Pelubang kertas'],
+    safety_notes: ['Gunakan hanya untuk benda ringan. Jangan gantung di dekat api atau benda panas.'],
+    steps: [
+      {
+        id: 'prepare',
+        order: 1,
+        title: 'Siapkan botol',
+        instruction: 'Cuci botol, keringkan, lalu lepaskan label yang mudah dilepas.',
+        expected_result: 'Botol bersih dan siap dibentuk.',
+        illustration_prompt: 'Contoh ilustrasi botol bersih di atas meja.',
+      },
+      {
+        id: 'shape',
+        order: 2,
+        title: 'Bentuk wadah',
+        instruction: 'Tandai bagian atas lalu potong perlahan dengan bantuan orang dewasa bila diperlukan.',
+        expected_result: 'Badan botol terbuka sebagai wadah.',
+        illustration_prompt: 'Contoh ilustrasi botol yang dibentuk menjadi wadah.',
+      },
+      {
+        id: 'holes',
+        order: 3,
+        title: 'Buat lubang tali',
+        instruction: 'Gunakan pelubang kertas di dua sisi yang berseberangan, jauh dari tepi potongan.',
+        expected_result: 'Dua lubang sejajar untuk memasang tali.',
+        illustration_prompt: 'Contoh ilustrasi dua lubang pada sisi wadah.',
+      },
+      {
+        id: 'hang',
+        order: 4,
+        title: 'Pasang dan uji tali',
+        instruction: 'Masukkan tali melalui lubang, ikat kuat, lalu uji dengan benda ringan dekat permukaan.',
+        expected_result: 'Wadah menggantung stabil dan tidak mudah terlepas.',
+        illustration_prompt: 'Contoh ilustrasi wadah ringan tergantung pada tali.',
+      },
+    ],
+  },
+};
+
+export function getFixtureGuide(ideaId: string): GuideResult | null {
+  return guides[ideaId] ?? null;
+}

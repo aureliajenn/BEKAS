@@ -1,10 +1,10 @@
 # BEKAS — PRD Prototipe Hackathon
 
-**Versi:** 1.1 · **Tanggal revisi:** 14 Oktober 2026  
+**Versi:** 1.2 · **Tanggal revisi:** 14 Oktober 2026  
 **Platform:** Android, React Native + Expo  
 **Asumsi perencanaan:** 48 jam, 3–4 anggota, demo online, satu pekerjaan GPU aktif. Nama acara, sponsor, rubrik, anggaran, dan durasi sebenarnya belum diberikan. Jadwal serta anggaran di bawah adalah usulan, bukan komitmen pengguna.
 
-**Revisi 1.1:** notebook GPU memakai Google Colab Free secara interaktif dengan bantuan operator; MVP tidak membuat autentikasi pengguna, termasuk anonymous sign-in. Rencana pengerjaan tersedia di [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+**Revisi 1.2:** komputasi GPU berjalan pada instance cloud Vast.ai dengan worker Python otomatis, menggantikan Colab Free dan transfer manual operator. MVP tidak membuat autentikasi pengguna, termasuk anonymous sign-in. Rencana pengerjaan yang selaras dengan arsitektur Vast.ai tersedia di [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 ## 1. Ringkasan dan pitch
 
@@ -33,9 +33,9 @@ Katalog tutorial biasa adalah baseline yang masuk akal, tetapi pengguna tetap ha
 | AC3 | Setiap input yang diterima menghasilkan tepat 3 ide berbeda; minimal 2 dinilai masuk akal oleh dua anggota tim pada 8 dari 10 foto. |
 | AC4 | Ide terpilih menghasilkan daftar alat, bahan tambahan, 4–6 langkah lengkap, estimasi waktu, dan peringatan yang relevan. |
 | AC5 | Panduan teks dapat dibaca ketika seluruh ilustrasi masih pending; setiap langkah akhirnya memiliki ilustrasi atau status gagal yang dapat dicoba ulang. |
-| AC6 | Menutup/membuka aplikasi, mengirim request dua kali, dan memutus notebook/CLI atau runner backend tidak menggandakan hasil aktif atau menghilangkan proyek. |
+| AC6 | Menutup/membuka aplikasi, mengirim request dua kali, dan memutus worker GPU Vast.ai atau runner backend tidak menggandakan hasil aktif atau menghilangkan proyek. |
 | AC7 | Model/runtime fallback dan hasil cache ditandai dengan benar; tampilan tidak mengklaim mesh sebagai ukuran nyata. |
-| AC8 | Target warm run: ide ≤30 detik dan panduan teks ≤30 detik setelah memilih pada ≥8/10 uji tanpa antrean. Target komputasi mesh ≤120 detik sejak sel inferensi dijalankan dengan model siap pada ≥8/10 uji dalam scope; waktu tunggu operator, transfer file, dan impor dicatat terpisah beserta total upload → mesh tampil. Waktu ilustrasi diukur terpisah; teks tidak menunggunya. |
+| AC8 | Target warm run: ide ≤30 detik dan panduan teks ≤30 detik setelah memilih pada ≥8/10 uji tanpa antrean. Target komputasi mesh ≤120 detik sejak inferensi worker dimulai dengan model siap pada ≥8/10 uji dalam scope; waktu antrean, startup/loading model, transfer file, dan completion dicatat terpisah beserta total upload → mesh tampil. Waktu ilustrasi diukur terpisah; teks tidak menunggunya. |
 
 Ukur cold start, waktu upload, antrean, inferensi, dan download secara terpisah. Jika target gagal, perbaiki scope, ukuran file, atau presentasi demo; jangan menyebut target sebagai performa yang sudah terbukti.
 
@@ -47,7 +47,7 @@ Ukur cold start, waktu upload, antrean, inferensi, dan download secara terpisah.
 4. **Detail ide:** lihat kegunaan, alat, bahan tambahan, kesulitan, dan perkiraan durasi; pilih “Buat panduan”.
 5. **Panduan:** baca seluruh teks segera setelah valid; ilustrasi langkah 1 muncul dahulu, lalu langkah berikutnya. Centang kemajuan secara lokal.
 
-State wajib: upload berlangsung/gagal, foto tidak sesuai, menunggu operator notebook, GPU memproses/tidak tersedia, mesh siap/gagal, ide siap/gagal, panduan siap, ilustrasi pending/siap/gagal, dan koneksi terputus. Tampilkan nama tahap; jangan membuat persentase kemajuan palsu.
+State wajib: upload berlangsung/gagal, foto tidak sesuai, menunggu antrean GPU, worker GPU menyiapkan model/memproses/tidak tersedia, mesh siap/gagal, ide siap/gagal, panduan siap, ilustrasi pending/siap/gagal, dan koneksi terputus. Tampilkan nama tahap; jangan membuat persentase kemajuan palsu.
 
 Golden path demo tetap foto → melihat mesh → memilih ide → panduan. **Ketergantungan teknis berbeda:** ide boleh selesai lebih dahulu dan tetap bisa digunakan jika mesh gagal. Beri penjelasan singkat “Model 3D belum tersedia; ide tetap dapat digunakan”.
 
@@ -65,15 +65,15 @@ Golden path demo tetap foto → melihat mesh → memilih ide → panduan. **Kete
 | Should | Riwayat beberapa proyek dan penyimpanan lokal hasil | Setelah fitur inti selesai |
 | Cut | Fitur di luar MVP pada bagian 3 | Jangan masuk sprint hackathon |
 
-**Nyata:** upload, SF3D/TripoSR, GLB viewer, panggilan OpenAI, penyimpanan, dan status pekerjaan. **Shortcut:** tanpa akun/autentikasi pengguna; satu notebook GPU gratis dengan transfer input/output oleh operator; desain visual sederhana. Alur GPU belum otomatis end-to-end dan keterlibatan operator dijelaskan saat demo. **Fixture:** foto/GLB/JSON/ilustrasi contoh dipakai untuk pengembangan dan fallback demo, dengan label “Contoh tersimpan”. Hasil contoh tidak boleh ditampilkan seolah dihasilkan dari foto baru.
+**Nyata:** upload, worker GPU otomatis di Vast.ai, SF3D/TripoSR, GLB viewer, panggilan OpenAI, penyimpanan, dan status pekerjaan. **Shortcut:** tanpa akun/autentikasi pengguna; satu instance GPU dan satu job mesh aktif; desain visual sederhana. Tim menyiapkan dan mengelola instance, tetapi foto baru diproses tanpa transfer file atau eksekusi inferensi manual. **Fixture:** foto/GLB/JSON/ilustrasi contoh dipakai untuk pengembangan dan fallback demo, dengan label “Contoh tersimpan”. Hasil contoh tidak boleh ditampilkan seolah dihasilkan dari foto baru.
 
 ## 6. Temuan riset — 14 Oktober 2026
 
 | Temuan dari sumber primer | Dampak keputusan |
 |---|---|
-| SF3D mengekspor GLB dan memerlukan sekitar 6 GB VRAM dengan konfigurasi default; bobot memerlukan akses Hugging Face. [S1] | Verifikasi akses dan notebook pada awal sprint; jangan mengunduh model saat demo. |
+| SF3D mengekspor GLB dan memerlukan sekitar 6 GB VRAM dengan konfigurasi default; bobot memerlukan akses Hugging Face. [S1] | Verifikasi akses dan container worker pada awal sprint; jangan mengunduh model saat demo. |
 | TripoSR menyediakan ekspor GLB; default CLI adalah OBJ. Kebutuhan VRAM default juga sekitar 6 GB. [S2][S3] | Kedua adapter wajib menghasilkan kontrak GLB yang sama; fallback bukan solusi untuk GPU yang hilang. |
-| Colab memiliki free tier GPU dengan kuota dinamis dan ketersediaan tidak dijamin. Runtime gratis melarang distributed computing workers dan dapat berhenti sewaktu-waktu. [S4] | Pilih Colab Free untuk inferensi notebook interaktif. Operator menjalankan sel dan memindahkan file; tidak menjalankan daemon antrean, polling backend, atau layanan aplikasi di Colab. |
+| Vast.ai menyediakan instance GPU on-demand dan interruptible; tarif sewa, storage, serta bandwidth berbeda per mesin. Interruptible dapat dihentikan ketika kalah bid; stop instance tidak menghapus biaya storage. [S4][S22] | Pilih instance on-demand untuk demo dan jalankan worker otomatis dalam container. Mulai dengan kandidat VRAM 12–24 GB, lalu kunci pilihan berdasarkan benchmark SF3D/TripoSR. Tidak mengasumsikan free tier atau kredit gratis. |
 | Expo menyediakan ImagePicker dan WebView; model-viewer menyediakan visualisasi 3D interaktif. [S5][S6][S7] | Rekomendasi integrasi: WebView hanya untuk viewer GLB. Kompatibilitas pada HP demo harus diuji. |
 | OpenAI mendokumentasikan GPT-6 Luna, GPT-6.1 Sol, dan GPT Image 2.5 Flare; model lama tertentu sudah deprecated. [S8–S12] | Gunakan model yang diverifikasi saat riset; cek akses project API sebelum mengunci pilihan. |
 
@@ -141,7 +141,7 @@ Panduan disimpan sebelum pekerjaan ilustrasi dibuat, dalam transaksi yang sama. 
 
 ## 9. Arsitektur software dan stack
 
-**Keputusan:** satu backend FastAPI, Supabase untuk Postgres + Storage tanpa Supabase Auth, serta notebook GPU Python di Google Colab Free. Antrean berupa tabel Postgres; tidak perlu Redis atau Celery untuk satu GPU dan traffic demo. Endpoint aplikasi tidak memerlukan login atau JWT pengguna. Project ID UUID disimpan lokal untuk melanjutkan proyek, bukan sebagai bukti identitas atau kepemilikan.
+**Keputusan:** satu backend FastAPI, Supabase untuk Postgres + Storage tanpa Supabase Auth, serta worker Python dalam container pada satu instance GPU Vast.ai on-demand. Antrean berupa tabel Postgres; tidak perlu Redis atau Celery untuk satu GPU dan traffic demo. Endpoint aplikasi tidak memerlukan login atau JWT pengguna. Project ID UUID disimpan lokal untuk melanjutkan proyek, bukan sebagai bukti identitas atau kepemilikan.
 
 ```mermaid
 flowchart TD
@@ -153,13 +153,13 @@ flowchart TD
     CPU -->|Foto, schema, prompt| OAI[OpenAI API]
     CPU -->|Simpan JSON| DB
     CPU -->|Upload ilustrasi| STORE
-    OP[CLI operator di laptop] -->|Claim, heartbeat, complete| API
-    OP -->|Unduh foto dan unggah GLB| STORE
-    OP -->|Operator unggah foto manual| GPU[Notebook interaktif Colab Free]
-    GPU -->|Operator unduh GLB dan metadata| OP
+    GPU[Worker GPU Python: container Vast.ai] -->|Claim job mesh berikutnya, heartbeat, complete atau fail| API
+    GPU -->|Unduh foto dan unggah GLB melalui signed URL| STORE
 ```
 
-CLI operator di laptop menjembatani antrean dengan hasil notebook, memakai endpoint internal `/worker`. Operator memilih job, mengunggah foto ke notebook, menjalankan preprocessing/inferensi, lalu mengunduh dan mengimpor GLB serta metadata. Colab hanya melakukan komputasi interaktif, tidak mengambil pekerjaan backend atau menyediakan endpoint. Aplikasi tidak memanggil notebook secara langsung; notebook tidak perlu public tunnel atau server file. Otomatisasi worker GPU penuh ditunda sampai tersedia runtime yang mendukung pola tersebut.
+Worker Vast.ai memuat model sebelum menerima pekerjaan, lalu meminta job mesh berikutnya melalui endpoint internal `/worker`. Worker mengunduh foto, menjalankan preprocessing/inferensi, memvalidasi GLB dan metadata, mengunggah hasil, lalu melaporkan completion. Setelah selesai, worker mengambil job berikutnya otomatis; saat antrean kosong, polling diberi jeda/backoff. Worker hanya memerlukan koneksi HTTPS keluar ke backend dan storage; aplikasi tidak memanggil instance GPU langsung dan tidak perlu endpoint inference publik atau public tunnel. Vast.ai menyediakan mesin/container; antrean, lease, idempotency, dan recovery pekerjaan tetap tanggung jawab backend/worker BEKAS.
+
+**Operasi instance:** pin image Docker, CUDA/PyTorch, dependency, serta versi model yang lolos spike. Simpan bobot dalam disk/cache instance dan muat model sekali per proses. Proses worker dijalankan saat container startup dengan pengelolaan restart yang jelas. Tim memonitor log, saldo, ketersediaan worker, dan melakukan pemanasan sebelum demo. On-demand menghindari interupsi bidding, bukan jaminan bebas gangguan mesin/jaringan. Lifecycle sewa/start/stop/destroy dikelola tim pada MVP; autoscaling dan provisioning instance per-job di luar scope.
 
 | Komponen | Pilihan dan alasan |
 |---|---|
@@ -167,16 +167,16 @@ CLI operator di laptop menjembatani antrean dengan hasil notebook, memakai endpo
 | Input foto | `expo-image-picker`; normalisasi orientasi, JPEG/PNG, buang metadata lokasi, resize sekitar 1.024–1.536 px, batas upload 5 MB |
 | Viewer | `react-native-webview` + halaman `<model-viewer>`; GLB, touch rotate dan zoom, tanpa AR. Uji HP fisik pada jam pertama. [S6][S7] |
 | UI state | TanStack Query atau hook polling sederhana; satu pola saja. Project ID dan progres centang disimpan lokal |
-| API/AI | FastAPI, Pydantic, OpenAI Python SDK; satu repo backend dan dua adapter model 3D |
+| API/AI | FastAPI, Pydantic, OpenAI Python SDK; worker GPU Python dan dua adapter model 3D dalam repo yang sama |
 | Persistence | Supabase Postgres: tiga tabel inti tanpa tabel user/relasi auth; private Storage untuk file |
 | Akses MVP | Tanpa autentikasi pengguna; aplikasi mengakses FastAPI dengan UUID proyek yang disimpan lokal. Semua akses database melalui backend; tidak ada akses langsung dari mobile ke tabel Supabase |
 | Hosting API | Render service berbayar yang tetap aktif; mendukung FastAPI. Free service bisa sleep sehingga tidak cocok untuk runner kontinu. [S19][S20] |
-| GPU | Google Colab Free; satu inferensi interaktif sekaligus dengan operator; uji GPU/VRAM aktual dan muat model sebelum demo. Kuota serta sesi tidak dijamin [S4] |
+| GPU | Vast.ai instance on-demand; worker otomatis, satu inferensi aktif. Kandidat VRAM 12–24 GB; uji GPU/VRAM aktual, kompatibilitas container, dan muat model sebelum demo. Tarif serta kapasitas mengikuti penawaran mesin [S4][S22] |
 | Update UI | Poll 2–3 detik saat foreground, perlambat ketika menunggu lama, hentikan saat background, refetch saat aktif kembali |
 
 Untuk viewer, host halaman dan JS versi terkunci pada backend atau bundle aset; batasi navigasi WebView ke halaman tepercaya. Periksa CORS aset, dukungan WebGL, pemuatan tekstur, serta URL kedaluwarsa. Target awal GLB ≤10 MB; optimalkan bila gagal, tanpa menjanjikan tidak ada kehilangan detail.
 
-**Alternatif backend:** Supabase Edge Functions mengurangi pengelolaan server dan cocok untuk endpoint singkat, tetapi rangkaian ilustrasi tetap perlu pekerjaan persisten dan perhatian pada batas eksekusi. [S14] Node/TypeScript juga layak bila itu keahlian terkuat tim; pilihan FastAPI di sini menyamakan bahasa API, CLI operator, dan notebook Python. Tidak ada keharusan teknis memakai Python untuk memanggil OpenAI.
+**Alternatif backend:** Supabase Edge Functions mengurangi pengelolaan server dan cocok untuk endpoint singkat, tetapi rangkaian ilustrasi tetap perlu pekerjaan persisten dan perhatian pada batas eksekusi. [S14] Node/TypeScript juga layak bila itu keahlian terkuat tim; pilihan FastAPI di sini menyamakan bahasa API dan worker GPU Python. Tidak ada keharusan teknis memakai Python untuk memanggil OpenAI.
 
 ### Antrean minimum yang tahan putus koneksi
 
@@ -184,10 +184,10 @@ Jenis job: `mesh`, `ideas`, `guide`, `illustration`. Status masing-masing: `queu
 
 1. API menyimpan job sebelum membalas `202 Accepted`. Satu transaksi membuat proyek/job terkait; idempotency key mencegah tap ganda membuat pekerjaan baru.
 2. Consumer mengambil satu job secara atomik melalui transaksi SQL; gunakan pola `FOR UPDATE SKIP LOCKED`. Jangan pisahkan SELECT dan UPDATE tanpa perlindungan transaksi. [S17]
-3. Simpan `attempt`, `claim_token`, `lease_expires_at`, `next_run_at`, dan `error_code`. Usulan awal: heartbeat CLI 20 detik, lease 90 detik, timeout komputasi mesh 5 menit, dan batas total claim manual 20 menit; kalibrasi dari uji aktual. Waktu menunggu operator sebelum claim tidak menghabiskan attempt.
-4. CLI operator di laptop menjaga heartbeat selama satu pekerjaan manual; tidak mengambil job berikutnya otomatis. CLI berhenti/putus menyebabkan lease kedaluwarsa; backend dapat mengantrekan ulang dalam batas percobaan. CLI melaporkan kegagalan bila notebook putus; batas total claim tetap berlaku meskipun heartbeat aktif.
-5. CLI operator atau runner CPU mengunggah file ke path per-attempt, lalu completion memeriksa claim aktif dan keberadaan aset. Commit aset aktif dan status job bersama-sama. Completion dari claim lama tidak boleh menimpa percobaan baru.
-6. Jalur SF3D → TripoSR terjadi dalam satu eksekusi notebook; maksimal dua attempt job untuk kegagalan infrastruktur. Hasil notebook menyertakan `job_id`, `attempt`, checksum input, model/version, dan timing; CLI memeriksa kecocokan sebelum impor. Catat fallback agar biaya dan durasi terlihat.
+3. Simpan `attempt`, `claim_token`, `lease_expires_at`, `next_run_at`, dan `error_code`. Usulan awal: heartbeat worker 20 detik, lease 90 detik, timeout komputasi mesh 5 menit, dan batas total claim 10 menit termasuk transfer; kalibrasi dari uji aktual. Worker baru claim setelah model siap. Waktu antrean dan startup sebelum claim tidak menghabiskan attempt.
+4. Worker menjaga heartbeat melalui thread/task terpisah yang tidak terblokir inferensi GPU. Worker berhenti/putus menyebabkan lease kedaluwarsa; backend dapat mengantrekan ulang dalam batas percobaan. Worker melaporkan kegagalan terstruktur bila masih terhubung; batas total claim tetap berlaku meskipun heartbeat aktif. Setelah claim selesai atau gagal, worker mengambil job berikutnya otomatis.
+5. Worker GPU atau runner CPU mengunggah file ke path per-attempt, lalu completion memeriksa claim aktif dan keberadaan aset. Commit aset aktif dan status job bersama-sama. Completion dari claim lama tidak boleh menimpa percobaan baru.
+6. Jalur SF3D → TripoSR terjadi dalam satu eksekusi worker; maksimal dua attempt job untuk kegagalan infrastruktur. Hasil worker menyertakan `job_id`, `attempt`, checksum input/output, model/version, dan timing; backend memeriksa kecocokan sebelum mengaktifkan hasil. Catat fallback agar biaya dan durasi terlihat.
 7. Runner CPU memakai async OpenAI; maksimal 2 job teks dan 1 ilustrasi aktif, GPU maksimal 1. Jalur teks punya slot sendiri agar antrean ilustrasi tidak menahannya.
 
 Untuk MVP, API dan runner async boleh berada dalam satu container/proses, satu Uvicorn worker, dengan lifecycle start/stop yang jelas. **DB adalah sumber pekerjaan**, bukan daftar coroutine di RAM. FastAPI/Starlette BackgroundTasks sendiri bersifat in-process sehingga bukan pengganti antrean persisten. [S15][S16] Saat backend restart, lanjutkan job queued dan reclaim lease kedaluwarsa. Tidak diperlukan scheduler terpisah untuk skala ini.
@@ -201,12 +201,12 @@ Untuk MVP, API dan runner async boleh berada dalam satu container/proses, satu U
 | `GET /projects/{id}` | Hasil dan status per komponen; terbitkan signed download URL baru sesuai kebutuhan |
 | `POST /projects/{id}/guide` | Body `idea_id`; cek berasal dari proyek; buat/reuse satu job panduan; balas 202 |
 | `POST /projects/{id}/retry` | Body target job; hanya retry yang gagal dan masih di bawah batas |
-| `POST /worker/jobs/claim` | CLI operator dengan token internal; body `job_id` yang ditampilkan aplikasi; claim satu job mesh yang eligible, kembalikan claim token, URL foto dan target upload yang terbatas |
+| `POST /worker/jobs/claim` | Worker GPU dengan token internal; body `worker_id`, tanpa pemilihan `job_id` oleh operator. Claim atomik job mesh eligible berikutnya dengan batas satu claim GPU aktif global; kembalikan identitas job/attempt, checksum input, claim token, URL foto dan target upload terbatas. Balas 204 jika antrean kosong |
 | `POST /worker/jobs/{id}/heartbeat` | Perpanjang lease milik claim yang masih aktif; dapat menerbitkan ulang URL transfer yang kedaluwarsa untuk claim tersebut |
 | `POST /worker/jobs/{id}/complete` | Path aset, checksum, model/version, timing; idempoten dan memeriksa claim |
 | `POST /worker/jobs/{id}/fail` | Error terstruktur; backend menentukan retry/final failure |
 
-URL aplikasi yang kedaluwarsa diterbitkan ulang melalui endpoint proyek setelah validasi proyek/aset; tanpa pemeriksaan akun pada MVP. Untuk CLI, URL diterbitkan ulang hanya untuk token internal dan claim aktif. DB menyimpan bucket/path, bukan signed URL sebagai identitas permanen. [S18] OpenAI key dan Supabase secret/service key hanya di backend. CLI laptop memakai token worker terbatas; Colab hanya memerlukan Hugging Face read token di notebook secrets bila model memerlukannya. Jangan mencetak secrets. Token internal mengamankan operasi job, bukan sistem login pengguna, dan tidak memberikan akses bebas ke database.
+URL aplikasi yang kedaluwarsa diterbitkan ulang melalui endpoint proyek setelah validasi proyek/aset; tanpa pemeriksaan akun pada MVP. Untuk worker GPU, URL diterbitkan ulang hanya untuk token internal dan claim aktif. DB menyimpan bucket/path, bukan signed URL sebagai identitas permanen. [S18] OpenAI key dan Supabase secret/service key hanya di backend. Container Vast.ai memakai `API_BASE_URL`, `WORKER_TOKEN`, `WORKER_ID`, dan Hugging Face read token bila model memerlukannya; jangan memasukkan secrets ke image Docker atau log. Kredensial Vast.ai untuk provisioning hanya di lingkungan pengelola instance, bukan mobile atau proses inference. Token internal mengamankan operasi job, bukan sistem login pengguna, dan tidak memberikan akses bebas ke database.
 
 ## 10. Data
 
@@ -226,9 +226,9 @@ Siapkan 10 foto milik tim: botol opak, wadah bersih, beberapa variasi sudut/lata
 
 | Waktu | Hasil wajib | Pemilik |
 |---|---|---|
-| 0–4 jam | Akses model/API, Colab Free menghasilkan GLB interaktif, GLB terbuka di Android, kontrak JSON disepakati, backend tanpa auth ter-deploy | Semua |
-| 4–12 jam | Alur lengkap pertama: satu foto → GLB melalui CLI/notebook manual → ide → panduan → satu ilustrasi nyata | Mobile + backend + GPU |
-| 12–24 jam | Semua langkah bergambar, recovery antrean dan CLI claim/impor, polling/resume, fallback TripoSR | Backend + GPU |
+| 0–4 jam | Akses model/API, container Vast.ai menghasilkan GLB, GLB terbuka di Android, kontrak JSON disepakati, backend tanpa auth ter-deploy | Semua |
+| 4–12 jam | Alur lengkap pertama: satu foto → GLB melalui worker Vast.ai otomatis → ide → panduan → satu ilustrasi nyata | Mobile + backend + GPU |
+| 12–24 jam | Semua langkah bergambar, recovery antrean dan worker claim/heartbeat/completion, polling/resume, fallback TripoSR | Backend + GPU |
 | 24–36 jam | Dataset 10 foto, ukuran mesh, error UX, batas biaya, fixture cadangan | Semua |
 | 36 jam | Feature freeze; hentikan penambahan fitur | Lead |
 | 36–44 jam | Perbaikan hasil eval, APK demo, latihan, rekaman cadangan | Semua |
@@ -239,18 +239,18 @@ Jika durasi hanya 24 jam: pertahankan satu proyek aktif, hilangkan riwayat/korek
 ## 12. Pembagian tim
 
 - **Mobile:** lima layar, foto/upload, viewer, polling/resume, state gagal, APK.
-- **Backend:** schema DB tanpa auth, endpoint, antrean, storage, CLI operator, deployment.
-- **AI/GPU:** notebook Colab Free interaktif, preprocessing, adapter SF3D/TripoSR, prompt/schema, evaluasi, operasi notebook saat demo.
+- **Backend:** schema DB tanpa auth, endpoint, antrean, storage, kontrak worker otomatis, deployment.
+- **AI/GPU:** image Docker dan worker Vast.ai, preprocessing, adapter SF3D/TripoSR, prompt/schema, evaluasi, pemantauan instance dan biaya saat demo.
 - **Anggota keempat bila ada:** UI, dataset, QA di HP, demonstrasi dan pitch. Jika bertiga, tugas ini dibagi setelah integrasi awal.
 
-Kontrak yang dikunci awal: ID proyek, jenis/status job, format GLB, `IdeasResult`, `GuideResult`, error codes, relasi aset ke proyek/job, dan manifest hasil notebook. Fixture mengikuti kontrak yang sama; mobile tidak menunggu model selesai untuk mulai membangun layar.
+Kontrak yang dikunci awal: ID proyek, jenis/status job, format GLB, `IdeasResult`, `GuideResult`, error codes, relasi aset ke proyek/job, dan metadata completion worker GPU. Fixture mengikuti kontrak yang sama; mobile tidak menunggu model selesai untuk mulai membangun layar.
 
 ## 13. Risiko dan fallback
 
 | Risiko | Kemungkinan / dampak | Tindakan |
 |---|---|---|
-| Colab Free putus, kuota habis, atau GPU tidak tersedia | Tinggi / tinggi | Simpan output segera; operator ulangi notebook jika tersedia, lease/retry menjaga status job; lanjutkan ide/panduan tanpa mesh atau gunakan proyek contoh berlabel dan video. GPU dedicated menjadi opsi tahap berikutnya. |
-| Transfer manual memperlambat mesh | Tinggi / sedang | Satu operator khusus, manifest input/output, model warm, ukur waktu operator terpisah; jelaskan bantuan operator saat demo. |
+| Instance Vast.ai mati, jaringan putus, saldo habis, atau GPU tidak tersedia | Sedang / tinggi | Monitor saldo dan worker; lease/retry memulihkan job ketika worker kembali. Simpan hasil segera ke Storage; lanjutkan ide/panduan tanpa mesh atau gunakan proyek contoh berlabel dan video. |
+| Startup, loading model, atau transfer aset memperlambat mesh | Sedang / sedang | Cache bobot pada instance, model warm sebelum demo, kompres input, dan ukur startup/transfer/inferensi terpisah. |
 | Akses/instalasi SF3D gagal | Sedang / tinggi | Buktikan jam pertama; pin versi yang berhasil; jalankan TripoSR jika masalah khusus SF3D. |
 | Botol transparan menghasilkan mesh buruk | Tinggi / sedang | Dataset risiko; ulang foto atau lanjut ide; pilih wadah opak untuk demo utama. |
 | OpenAI 429/5xx atau outage | Sedang / tinggi | Retry dengan backoff terbatas; hormati Retry-After; cache proyek lama. Jangan retry tanpa batas pada quota/auth/refusal. |
@@ -262,7 +262,7 @@ Kontrak yang dikunci awal: ID proyek, jenis/status job, format GLB, `IdeasResult
 
 ## 14. Biaya dan setup
 
-**Anggaran usulan OpenAI: US$20 untuk pengujian terbatas**, dengan batas pengeluaran aplikasi dan penghentian job gambar baru ketika batas tercapai. Ini alokasi, bukan janji total tagihan. **Notebook GPU: Google Colab Free, US$0 dalam batas akses gratis yang tersedia**, tanpa kewajiban langganan atau saldo compute. Backend aktif, storage, dan pajak dihitung terpisah sesuai paket akun; pilihan notebook gratis tidak berarti seluruh stack gratis. Harga/kuota aktual harus dicek saat setup.
+**Anggaran usulan OpenAI: US$20 untuk pengujian terbatas**, dengan batas pengeluaran aplikasi dan penghentian job gambar baru ketika batas tercapai. Ini alokasi, bukan janji total tagihan. **GPU: Vast.ai instance on-demand berbayar; anggaran belum ditetapkan pengguna.** Total GPU dihitung dari tarif sewa × waktu instance aktif, ditambah storage dan bandwidth sesuai listing. Instance aktif tetap dikenai sewa ketika worker menunggu pekerjaan; instance stopped masih dapat dikenai storage. Setelah output aman di Storage, destroy instance yang tidak diperlukan untuk mengakhiri biaya penyimpanan instance. Harga, saldo, auto-billing, dan durasi sewa dicek saat setup; jangan mengasumsikan kredit gratis. Backend aktif, Supabase, dan pajak dihitung terpisah. [S4][S23]
 
 Simulasi: 100 proyek evaluasi teks ≈US$0,35 dengan asumsi bagian 7. Untuk 20 panduan bergambar ×5 gambar =100 gambar, asumsikan per gambar 1.000 token teks input, 1.000 token gambar input, dan 2.000 token gambar output. Tarif Flare Standard US$5/8/30 per juta token menghasilkan **US$0,073/gambar atau US$7,30**; total simulasi **US$7,65**, atau US$15,30 bila seluruh workload diulang sekali. [S9][S11] Token per gambar ini asumsi perencanaan, bukan usage terukur atau harga resmi per gambar; ganti dengan usage lima gambar pertama. Kualitas/resolusi/referensi/retry mengubah biaya.
 
@@ -270,7 +270,7 @@ Checklist sebelum implementasi penuh:
 
 - Aktifkan project API dan uji model teks, structured output, serta image generation; selesaikan verifikasi organisasi jika diwajibkan akun. [S12]
 - Buat Supabase project, tiga tabel tanpa relasi auth, dan private buckets; tidak mengintegrasikan Supabase Auth. Uji akses database langsung dari client ditolak dan alur API berjalan tanpa login/JWT pengguna.
-- Uji Colab Free secara interaktif, akses HF, dependency terkunci, dan kedua model bergantian; catat GPU/VRAM aktual serta batas sesi yang terlihat. Uji transfer foto dan impor GLB melalui CLI laptop.
+- Sewa instance Vast.ai on-demand, cek harga GPU/storage/bandwidth dan saldo, lalu uji container, akses HF, dependency terkunci, serta kedua model bergantian. Catat GPU/VRAM aktual; buktikan foto → claim otomatis → inferensi → upload GLB → completion tanpa sentuhan operator. Uji worker restart dan lease kedaluwarsa.
 - Siapkan env backend: `OPENAI_API_KEY`, `TEXT_MODEL`, `TEXT_FALLBACK_MODEL`, `IMAGE_MODEL`, Supabase credentials, worker token, dan batas job/biaya. Tidak ada secret dalam Expo public env.
 - Deploy API sejak awal, sediakan `/health`, catat `project_id/job_id`, latency, error, provider request ID dan usage; jangan log isi foto/base64/secrets.
 - Sponsor/credits: belum ada nama acara atau sponsor; jangan mengasumsikan kredit gratis tersedia.
@@ -279,11 +279,11 @@ Checklist sebelum implementasi penuh:
 
 **Script 3 menit:** 20 detik masalah; 90 detik foto, mesh, ide, panduan; 40 detik arsitektur dan alasan teks muncul dahulu; 30 detik keterbatasan dan langkah berikutnya. Bila proses langsung melebihi slot demo, mulai job lebih awal dan jelaskan bahwa pemrosesan sudah berjalan; gunakan proyek contoh secara terbuka bila perlu.
 
-Siapkan APK terpasang, notebook/model warm jika GPU tersedia, operator notebook, kuota API cukup, tiga proyek cache berlabel, hotspot, dan rekaman alur nyata. Latih dua kali termasuk satu skenario notebook/CLI mati. Submission memuat cara menjalankan mobile/API/notebook/CLI, variabel lingkungan tanpa nilai secret, diagram, batas mesh, penggunaan model/lisensi, bagian yang nyata versus fixture, keterlibatan operator, batas akses tanpa autentikasi pengguna, dan hasil evaluasi yang benar-benar terukur. Jangan mengklaim pengurangan emisi atau massa sampah tanpa pengukuran.
+Siapkan APK terpasang, instance Vast.ai dan worker/model warm, saldo sewa serta kuota API cukup, tiga proyek cache berlabel, hotspot, dan rekaman alur nyata. Latih dua kali termasuk satu skenario worker GPU mati. Submission memuat cara menjalankan mobile/API/container worker, variabel lingkungan tanpa nilai secret, diagram, batas mesh, penggunaan model/lisensi, bagian yang nyata versus fixture, biaya dan lifecycle instance, batas akses tanpa autentikasi pengguna, dan hasil evaluasi yang benar-benar terukur. Jangan mengklaim pengurangan emisi atau massa sampah tanpa pengukuran.
 
 ## 16. Pengembangan berikutnya
 
-Setelah MVP terbukti berguna, otomatisasi worker pada runtime GPU yang mendukung layanan/worker, ukur antrean dan biaya per proyek, lalu tambah autentikasi, kepemilikan proyek, riwayat akun, notifikasi, dan dukungan material berdasarkan data uji. Mesh kerajinan akhir memerlukan pekerjaan terpisah seperti template parametrik; keberhasilan rekonstruksi barang awal tidak otomatis memberi kemampuan menyimulasikan pemotongan atau membuat produk fisik yang presisi.
+Setelah MVP terbukti berguna, ukur antrean dan biaya per proyek pada worker Vast.ai, evaluasi autoscaling atau provisioning instance otomatis berdasarkan pola pemakaian, lalu tambah autentikasi, kepemilikan proyek, riwayat akun, notifikasi, dan dukungan material berdasarkan data uji. Mesh kerajinan akhir memerlukan pekerjaan terpisah seperti template parametrik; keberhasilan rekonstruksi barang awal tidak otomatis memberi kemampuan menyimulasikan pemotongan atau membuat produk fisik yang presisi.
 
 ---
 
@@ -294,7 +294,7 @@ Seluruh sumber diakses **14 Oktober 2026**. Dokumentasi merupakan halaman hidup 
 - **S1:** [SF3D — repository resmi](https://github.com/Stability-AI/stable-fast-3d)
 - **S2:** [TripoSR — repository resmi](https://github.com/VAST-AI-Research/TripoSR)
 - **S3:** [TripoSR — implementasi ekspor](https://github.com/VAST-AI-Research/TripoSR/blob/main/run.py)
-- **S4:** [Google Colab FAQ](https://research.google.com/colaboratory/faq.html)
+- **S4:** [Vast.ai pricing](https://vast.ai/pricing)
 - **S5:** [Expo ImagePicker](https://docs.expo.dev/versions/latest/sdk/imagepicker/)
 - **S6:** [Expo WebView](https://docs.expo.dev/versions/latest/sdk/webview/)
 - **S7:** [model-viewer](https://modelviewer.dev/)
@@ -312,3 +312,5 @@ Seluruh sumber diakses **14 Oktober 2026**. Dokumentasi merupakan halaman hidup 
 - **S19:** [Deploy FastAPI di Render](https://render.com/docs/deploy-fastapi)
 - **S20:** [Render free service limitations](https://render.com/docs/free)
 - **S21:** [SF3D paper, 2024](https://arxiv.org/html/2408.00653v1)
+- **S22:** [Vast.ai rental types](https://docs.vast.ai/guides/reference/faq/rental-types)
+- **S23:** [Vast.ai billing](https://docs.vast.ai/guides/reference/faq/billing)
