@@ -10,8 +10,7 @@ Dokumen acuan: [PRD](PRD.md) dan [rencana implementasi](IMPLEMENTATION_PLAN.md).
 apps/mobile/          Android app: Expo, React Native, TypeScript, Expo Router
 services/api/         FastAPI API dan runner backend
 database/migrations/  Schema Postgres tanpa tabel autentikasi pengguna
-gpu/                  Notebook Colab dan adapter SF3D/TripoSR
-tools/operator/       CLI laptop untuk alur notebook manual
+gpu/                  Worker Vast.ai, adapter SF3D/TripoSR, notebook eksperimen
 fixtures/             Data contoh berlabel, bukan hasil foto baru
 docs/                 Kontrak API dan panduan operasional
 ```
@@ -46,14 +45,15 @@ Health check: `http://127.0.0.1:8000/health`.
 python -m pytest
 ```
 
-Salin `services/api/.env.example` ke `.env` sebelum menghubungkan provider. Jangan commit nilai secret. API saat ini hanya menyediakan health check; endpoint proyek dan worker akan ditambahkan setelah kontraknya disepakati.
+Salin `services/api/.env.example` ke `.env` sebelum menghubungkan provider. Jangan commit nilai secret. Fondasi API mencakup health check, siklus proyek/upload, antrean job, dan endpoint worker GPU. Runner AI untuk ide, panduan, dan ilustrasi masih perlu dibuat.
 
 ## Arsitektur MVP
 
 - Mobile memanggil FastAPI; mobile tidak mengakses tabel Supabase langsung.
-- FastAPI memakai Postgres untuk proyek dan antrean persisten, serta Supabase Storage private untuk aset.
+- FastAPI memakai Postgres untuk proyek dan antrean persisten, serta bucket Supabase Storage private `bekas-assets` untuk aset.
 - Tidak ada login atau autentikasi pengguna pada MVP.
-- Per PRD, GPU memakai Colab Free interaktif. Operator menjalankan notebook dan memindahkan aset melalui CLI laptop; Colab bukan server atau worker antrean.
-- Runner backend menangani job teks dan ilustrasi. Status mesh, ide, panduan, dan setiap ilustrasi terpisah.
+- Per PRD, GPU memakai worker Python otomatis pada instance Vast.ai. Worker pull job melalui API dan transfer aset melalui signed URL Storage; tidak ada port inference publik.
+- Endpoint proyek mengelola upload, antrean mesh/ide, polling status, guide, dan retry. Worker GPU menangani job mesh.
+- Runner AI CPU untuk ide, panduan, dan ilustrasi belum dibuat; job tersebut tetap queued sampai consumer diimplementasikan.
 
-Model, akun penyedia, koneksi Supabase, notebook, dan CLI belum dikonfigurasi. Dependensi backend serta model GPU dikunci setelah spike kelayakan sesuai rencana implementasi.
+Lihat [setup Vast.ai worker](gpu/worker/README.md) untuk image, dependency model, secrets, run command, dan lifecycle instance. Akun penyedia, Supabase, dan instance GPU masih perlu dikonfigurasi dan diuji nyata.

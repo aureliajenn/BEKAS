@@ -1,11 +1,12 @@
 # Database and Storage
 
-Apply `migrations/0001_initial_schema.sql` to the BEKAS Supabase Postgres project through the SQL editor or Supabase CLI. Migration creates only `projects`, `jobs`, and `assets`; it does not create auth/user tables or user ownership fields. RLS is enabled with no client policies, and direct `anon`/`authenticated` table privileges are revoked.
+Apply `migrations/0001_initial_schema.sql`, then `migrations/0002_project_upload_idempotency.sql`, to the BEKAS Supabase Postgres project through the SQL editor or Supabase CLI. Migrations create only `projects`, `jobs`, and `assets`; they do not create auth/user tables or user ownership fields. RLS is enabled with no client policies, and direct `anon`/`authenticated` table privileges are revoked.
 
-Create private Storage buckets before using upload endpoints:
+Create one private Storage bucket before using upload endpoints:
 
-- `bekas-input` for normalized source photos.
-- `bekas-output` for GLBs and step illustrations.
+- `bekas-assets` for normalized photos, GLBs, and step illustrations.
+- Use paths under `projects/<project_id>/input/`, `mesh/`, and `illustrations/` to keep assets grouped.
+- Set the bucket's maximum file size to 10 MiB and allow `image/jpeg`, `image/png`, and `model/gltf-binary`. API enforces a stricter 5 MiB limit for input photos.
 
 The backend owns database access and creates short-lived signed upload/download URLs. The mobile app must never receive the Supabase service-role key. Keep bucket paths and metadata in `assets`; do not store signed URLs as durable identifiers.
 
