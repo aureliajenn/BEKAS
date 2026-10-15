@@ -4,7 +4,8 @@
     "slug": "bekas",
     "version": "1.0.0",
     "platforms": [
-      "android"
+      "android",
+      "web"
     ],
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -42,7 +43,8 @@
         {
           "backgroundColor": "#F6F7F2"
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true,
