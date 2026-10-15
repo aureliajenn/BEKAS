@@ -37,6 +37,16 @@ export const colors = {
   pillCachedBg: '#FFF6D6',
   pillCachedFg: '#8A6400',
 
+  // Pastel aksen: sumber warna utama selain hijau (tile ikon, kartu info). Lihat DESIGN.md bagian 2b.
+  tileGreen: '#D6F5E1',
+  tileBlue: '#EAF2FE',
+  tileYellow: '#FFF6D6',
+  tilePink: '#FFE9F0',
+  noteYellowBg: '#FFF4E5',
+  noteYellowBorder: '#FFD9A8',
+  accentYellow: '#FFC531',
+  accentPink: '#FF5C93',
+
   brandLime: '#B5E43B', // khusus logo dan splash
 } as const;
 

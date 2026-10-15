@@ -52,5 +52,5 @@ export const icon3d = {
 export const ideaTiles = [
   { bg: '#D6F5E1', icon: icon3d.tanamanListrik },
   { bg: '#EAF2FE', icon: icon3d.tasDaur },
-  { bg: '#FFF6D6', icon: icon3d.tongBio },
+  { bg: '#FFE9F0', icon: icon3d.tongBio },
 ] as const;

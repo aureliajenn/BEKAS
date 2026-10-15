@@ -42,6 +42,37 @@ Sumber kebenaran: `starter/theme/tokens.ts`. Ringkasan:
 | line | #E2EBE5 | Border kartu, track |
 | brandLime | #B5E43B | **Khusus** logo dan splash, bukan untuk tombol atau teks |
 
+Pastel aksen (tokens.ts): tileGreen #D6F5E1, tileBlue #EAF2FE, tileYellow #FFF6D6, tilePink #FFE9F0, noteYellow #FFF4E5 (border #FFD9A8), accentYellow #FFC531, accentPink #FF5C93.
+
+## 2b. Distribusi warna (supaya tidak hijau semua)
+
+Lihat `design/references/` (UI kit Pidu, buka gambarnya dengan Read). Yang bikin Pidu hidup bukan hijaunya, tapi **hijau dipakai hemat**. Sisanya diisi putih, oranye, dan tile pastel warna-warni.
+
+Aturan 60-30-10: 60% latar terang (bg + kartu putih), 30% hijau (header dan satu tombol utama), 10% aksen (oranye, kuning, biru, pink).
+
+| Elemen | Warna |
+|---|---|
+| Tombol utama | `primary` hijau, **maksimal satu per layar** |
+| Tombol kedua dan seterusnya | `secondary`. Jangan dua tombol hijau berdampingan |
+| CTA spesial | `cta` oranye: "Foto barang" (Beranda), "Buat panduan" (Detail ide), "Tukar" yang sudah dikonfirmasi. Kalau ada CTA oranye, tombol lain di layar itu secondary |
+| Tile ikon (IdeaCard, kartu Beranda, hadiah, bank sampah) | Bergiliran tileGreen, tileBlue, tilePink, tileYellow. Ini sumber warna terbesar selain hijau |
+| Kartu ringkas Beranda (Dompet, Leaderboard) | Latar kartu pastel penuh (tileYellow untuk Dompet + `Coin`, tileBlue untuk Leaderboard), bukan putih |
+| Pill | Kesulitan: hijau/oranye/merah. Durasi: tileBlue + blue600. "Contoh tersimpan": tileYellow |
+| Kartu info | Tips/maskot: blue50. Peringatan: warnBg. Highlight/rangkuman: noteYellow |
+| Header | Hijau hanya di Beranda, Detail ide, Dompet, Leaderboard. Pratinjau, Hasil barang, Panduan, Pilih RW, Bank sampah pakai PlainHeader putih |
+| Dekor | `Coin`, `Star`, `Sparkle`, `Confetti` dari `shapes.tsx` di momen hadiah/sukses |
+
+| Layar | Hijau | Oranye | Pastel |
+|---|---|---|---|
+| Beranda | Header | "Foto barang" | Kartu Dompet tileYellow, Leaderboard tileBlue, Bank sampah ikon di tilePink, tips blue50 |
+| Pratinjau foto | "Kirim foto" | (tidak ada) | Bubble blue50, checklist dengan ikon di tile pastel |
+| Hasil barang | Status sukses saja | (tidak ada) | 3 IdeaCard tile hijau/biru/pink, profil barang di noteYellow |
+| Detail ide | Header | "Buat panduan" | Alat di tileBlue, bahan di tileYellow, SafetyNote warnBg |
+| Panduan | "Sudah" per langkah | (tidak ada) | Hasil yang diharapkan di noteYellow, tips blue50, kartu selesai dengan Confetti |
+| Dompet Poin | Header | Tukar (konfirmasi) | Saldo dengan `Coin`, hadiah di tile pastel bergiliran, entri + hijau / − oranye |
+| Leaderboard RW | Header | (tidak ada) | Peringkat 1/2/3 lingkaran kuning/biru/pink, RW sendiri tilePink, tantangan noteYellow |
+| Pilih RW / Bank sampah | (tidak ada) | (tidak ada) | Ikon 3D di tile pastel bergiliran, pill jenis sampah warna-warni |
+
 Radius: pill 999, sheet 32, header bawah 32, kartu 24, tile 20, tombol 18, tombol ikon 14.
 Spasi: kelipatan 4 (4, 8, 12, 16, 20, 24, 32). Padding samping layar 20.
 Touch target minimal 44; tombol utama tinggi 56.
@@ -223,7 +254,8 @@ starter/
 └── components/
     ├── ChunkyButton.tsx
     ├── StageStatus.tsx
-    └── MascotBubble.tsx
+    ├── MascotBubble.tsx
+    └── shapes.tsx       Coin, Flame, Star, Sparkle, DecorCircle, DashedLine, TagLabel, Confetti
 ```
 
 Salin `starter/theme` ke `apps/mobile/src/theme` dan `starter/components` ke `apps/mobile/src/components`. Folder `logo/`, `maskot/`, `ikon/` berada di `apps/mobile/assets/` (Metro tidak bisa `require` file di luar project; path di `assets.ts` mengasumsikan susunan ini).
