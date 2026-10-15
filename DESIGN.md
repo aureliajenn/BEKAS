@@ -16,7 +16,7 @@ Gaya visual: **playful edu-app**, terinspirasi UI kit "Pidu". Ciri utamanya:
 - Maskot kucing biru 3D dan ikon 3D eco.
 - Tetap jujur: tidak ada persentase kemajuan palsu, tidak ada klaim ukuran, jenis resin, atau dampak lingkungan yang tidak diukur (PRD bagian 3, 4, 15).
 
-Canvas Design (prototype di Claude) hanya acuan **gaya visual**. Alurnya sudah diganti oleh bagian 6 di bawah. Elemen poin, streak, jalur level, dan statistik "plastik terselamatkan" di canvas **tidak dibangun** pada MVP.
+Canvas Design (prototype di Claude) hanya acuan **gaya visual**. Alurnya sudah diganti oleh bagian 6 di bawah. Sejak PRD 1.3, **poin dan leaderboard RW dibangun** (bagian 6b). Streak, jalur level, poin per ide, misi harian, dan statistik "plastik terselamatkan" di canvas tetap **tidak dibangun**.
 
 ## 2. Design tokens
 
@@ -162,6 +162,24 @@ app/
 - 4 sampai 6 StepCard. Ilustrasi muncul bertahap (langkah 1 dulu).
 - Checkbox per langkah disimpan lokal. Indikator progres = "2 dari 5 langkah dicentang" (ini data nyata, boleh).
 - Semua dicentang: kartu selesai dengan maskot `senang` dan "Kerajinanmu jadi!". Tanpa klaim gram plastik atau emisi.
+- Di kartu selesai: tombol "Foto hasil karyamu" untuk verifikasi poin (bagian 6b).
+
+## 6b. Layar reward (PRD bagian 17)
+
+```
+app/
+├── wallet.tsx         Dompet Poin
+├── leaderboard.tsx    Leaderboard RW
+├── rw.tsx             Pilih RW
+└── bank-sampah.tsx    Bank sampah mitra
+```
+
+- **Beranda:** di bawah kartu utama, dua kartu sejajar (saldo poin, peringkat RW) dan satu kartu Bank sampah. Kartu ringkas, angka pakai Fredoka.
+- **Verifikasi:** di kartu selesai Panduan. StageStatus kind `verification`. Disetujui: pill hijau "+500 poin" + tombol ke Dompet. Ditolak: alasan dari backend + "Foto ulang". Maskot tetap satu (`senang`).
+- **Dompet Poin:** GreenHeader berisi saldo (display) dan pill "1 poin = Rp1". Kartu hadiah target dengan ProgressBar (data nyata saldo ÷ harga). Daftar hadiah: Card + harga + stok + tombol Tukar (secondary; disabled bila saldo kurang/stok 0). Konfirmasi tukar lewat sheet. Riwayat: daftar entri +/−, sumber, tanggal.
+- **Leaderboard RW:** GreenHeader bulan berjalan + maskot `senang`. Kartu tantangan bulanan + ProgressBar RW pengguna. Daftar RW: nomor peringkat dalam lingkaran, nama RW, kelurahan, kapten, jumlah barang. RW pengguna memakai Card `selected`. Belum pilih RW: kartu ajakan "Pilih RW kamu".
+- **Pilih RW / Bank sampah:** PlainHeader + daftar Card. Bank sampah: jam buka, pill jenis diterima, harga per kg, tombol secondary "Buka di peta".
+- ProgressBar: track `line`, isi `green500`, tinggi 12, radius pill. Hanya untuk data nyata (saldo, jumlah barang), **bukan** untuk proses backend.
 
 ## 7. State wajib (PRD bagian 4)
 
@@ -179,6 +197,9 @@ Semua state di bawah harus punya tampilan. Teks ada di `statusCopy.ts`.
 | Panduan siap | Langsung tampil |
 | Ilustrasi pending / siap / gagal | Skeleton / gambar / tombol coba lagi per langkah |
 | Koneksi terputus | Banner atas warna warn: "Koneksi terputus. Kami lanjutkan saat online." |
+| Verifikasi menunggu / diperiksa / disetujui / ditolak / gagal | StageStatus verification / pill "+500 poin" / alasan + Foto ulang / Coba lagi |
+| Batas harian, foto ganda | Danger box dengan pesan dari backend |
+| Saldo kurang / stok habis | Tombol Tukar disabled + caption alasan |
 
 Aturan: tampilkan **nama tahap**, jangan pernah persentase atau progress bar palsu untuk proses backend.
 

@@ -81,3 +81,21 @@ Successful response:
 ```
 
 Heartbeat body contains `worker_id`, `claim_token`, and optional `refresh_upload_url`. Completion body contains `claim_token`, output bucket/path, `mime_type`, `byte_size`, `checksum_sha256`, model/version, `fallback_used`, and timing fields. A worker may process one global mesh job at a time; claim uses a Postgres advisory lock plus `FOR UPDATE SKIP LOCKED`.
+
+## Reward endpoints (PRD 1.3, belum diimplementasi backend)
+
+Spesifikasi lengkap ada di [PRD bagian 17.3](../PRD.md#173-endpoint-tambahan). Ringkasan:
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/rws` | Daftar RW dan nama kapten |
+| `PUT` | `/participants/{participant_id}` | Upsert peserta anonim (UUID dari HP) + `rw_id` |
+| `POST` | `/projects/{id}/verification` | Signed upload target untuk foto sesudah |
+| `POST` | `/projects/{id}/verification/start` | Validasi foto, antrekan job `verification`; 202 |
+| `GET` | `/participants/{id}/wallet` | Saldo, ledger, pengajuan tukar |
+| `GET` | `/rewards` | Katalog hadiah dan stok |
+| `POST` | `/participants/{id}/redemptions` | Ajukan tukar hadiah (Idempotency-Key) |
+| `GET` | `/leaderboard?month=YYYY-MM` | Peringkat RW + tantangan bulanan |
+| `GET` | `/bank-sampah` | Daftar bank sampah mitra |
+
+`GET /projects/{id}` menambah `components.verification` dan `verification: {approved, reason, points} | null`. Mobile sudah memakai bentuk ini di mode fixture (`apps/mobile/src/lib/rewards.ts`).
