@@ -1,3 +1,4 @@
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router, useFocusEffect } from 'expo-router';
 import { Camera, ChevronRight, Images } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
@@ -9,6 +10,7 @@ import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
 import { StageStatus } from '@/components/StageStatus';
 import { pickPhoto } from '@/lib/photo';
+import { fetchLeaderboard, fetchWallet, getParticipant } from '@/lib/rewards';
 import { getActiveProject } from '@/lib/storage';
 import { useProject } from '@/lib/useProject';
 import { icon3d } from '@/theme/assets';
@@ -19,11 +21,16 @@ export default function HomeScreen() {
   const [busy, setBusy] = useState(false);
   const [denied, setDenied] = useState<'camera' | 'library' | null>(null);
   const { bottom } = useSafeAreaInsets();
+  const qc = useQueryClient();
 
   useFocusEffect(
     useCallback(() => {
       getActiveProject().then(setActiveId);
-    }, []),
+      // Saldo dan peringkat bisa berubah setelah verifikasi/tukar di layar lain.
+      qc.invalidateQueries({ queryKey: ['wallet'] });
+      qc.invalidateQueries({ queryKey: ['leaderboard'] });
+      qc.invalidateQueries({ queryKey: ['participant'] });
+    }, [qc]),
   );
 
   const start = async (source: 'camera' | 'library') => {
@@ -71,12 +78,65 @@ export default function HomeScreen() {
 
         {activeId ? <ResumeCard id={activeId} /> : null}
 
+        <RewardCards />
+
         <Card style={styles.tip}>
           <Image source={icon3d.botol} style={styles.tipIcon} resizeMode="contain" accessible={false} />
           <Text style={[type.body, { flex: 1 }]}>Cocok untuk botol dan wadah plastik kaku.</Text>
         </Card>
       </ScrollView>
     </View>
+  );
+}
+
+function RewardCards() {
+  const wallet = useQuery({ queryKey: ['wallet'], queryFn: fetchWallet });
+  const board = useQuery({ queryKey: ['leaderboard'], queryFn: fetchLeaderboard });
+  const participant = useQuery({ queryKey: ['participant'], queryFn: getParticipant });
+  const mine = board.data?.rows.find((r) => r.rw_id === participant.data?.rwId);
+
+  return (
+    <>
+      <View style={styles.tiles}>
+        <Tile
+          label="Dompet poin"
+          value={wallet.data ? `${wallet.data.balance.toLocaleString('id-ID')}` : '–'}
+          caption={wallet.data?.is_fixture ? 'Contoh tersimpan' : 'poin · 1 poin = Rp1'}
+          icon={icon3d.labelEco}
+          onPress={() => router.push('/wallet')}
+        />
+        <Tile
+          label="Leaderboard RW"
+          value={mine ? `#${mine.rank}` : 'Pilih'}
+          caption={board.data?.is_fixture ? 'Contoh tersimpan' : mine ? `${mine.name} ${mine.kelurahan}` : 'RW kamu'}
+          icon={icon3d.tanganBumi}
+          onPress={() => router.push('/leaderboard')}
+        />
+      </View>
+      <Pressable accessibilityRole="button" accessibilityLabel="Bank sampah mitra" onPress={() => router.push('/bank-sampah')} style={({ pressed }) => pressed && { opacity: 0.85 }}>
+        <Card style={styles.tip}>
+          <Image source={icon3d.tongSampah} style={styles.tipIcon} resizeMode="contain" accessible={false} />
+          <View style={{ flex: 1 }}>
+            <Text style={type.bodyL}>Bank sampah mitra</Text>
+            <Text style={type.caption}>Setor sisa yang tidak bisa diolah.</Text>
+          </View>
+          <ChevronRight size={22} color={colors.iconIdle} strokeWidth={2.5} />
+        </Card>
+      </Pressable>
+    </>
+  );
+}
+
+function Tile({ label, value, caption, icon, onPress }: { label: string; value: string; caption: string; icon: number; onPress: () => void }) {
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={`${label}: ${value} ${caption}`} onPress={onPress} style={({ pressed }) => [{ flex: 1 }, pressed && { opacity: 0.85 }]}>
+      <Card style={{ gap: space.xs }}>
+        <Image source={icon} style={styles.tileIcon} resizeMode="contain" accessible={false} />
+        <Text style={type.overline}>{label}</Text>
+        <Text style={[type.h2, { color: colors.green700 }]}>{value}</Text>
+        <Text style={type.caption} numberOfLines={1}>{caption}</Text>
+      </Card>
+    </Pressable>
   );
 }
 
@@ -116,4 +176,6 @@ const styles = StyleSheet.create({
   thumb: { width: 56, height: 56, borderRadius: radius.iconButton, backgroundColor: colors.green50 },
   tip: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   tipIcon: { width: 48, height: 48 },
+  tiles: { flexDirection: 'row', gap: space.md },
+  tileIcon: { width: 40, height: 40 },
 });

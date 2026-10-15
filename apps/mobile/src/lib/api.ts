@@ -135,6 +135,8 @@ export type FixtureState = {
   verifyAt?: number;
   afterUri?: string;
   verifyAttempts?: number;
+  /** RW saat verifikasi, dibekukan untuk leaderboard (PRD §17.4). */
+  rwId?: string | null;
 };
 
 /** URI aset lokal, dipakai sebagai foto contoh dan ilustrasi contoh. */

@@ -60,7 +60,7 @@ export async function startVerification(projectId: string, photoUri: string): Pr
     if ((await fixtureWallet()).verified_today >= DAILY_VERIFY_CAP) {
       throw new ApiFailure({ code: 'daily_cap_reached', message: `Batas ${DAILY_VERIFY_CAP} proyek terverifikasi per hari sudah tercapai. Lanjut besok ya.`, retryable: false });
     }
-    await setFixtureState(projectId, { ...s, verifyAt: Date.now(), afterUri: photoUri, verifyAttempts: (s.verifyAttempts ?? 0) + 1 });
+    await setFixtureState(projectId, { ...s, verifyAt: Date.now(), afterUri: photoUri, verifyAttempts: (s.verifyAttempts ?? 0) + 1, rwId: participant.rwId });
     return;
   }
 
@@ -129,11 +129,16 @@ export async function fetchLeaderboard(): Promise<Leaderboard> {
   const month = currentMonth();
   if (!USE_FIXTURES) return call<Leaderboard>(`/leaderboard?month=${month}`);
 
-  // Proyek terverifikasi di HP ini bulan ini ikut menambah angka RW pengguna.
-  const [{ rwId }, wallet] = await Promise.all([getParticipant(), fixtureWallet()]);
-  const mine = wallet.ledger.filter((e) => e.source === 'upcycle' && e.created_at.startsWith(month) && !e.entry_id.startsWith('seed')).length;
+  // Proyek terverifikasi di HP ini bulan ini menambah angka RW yang tercatat SAAT verifikasi,
+  // jadi ganti RW tidak memindahkan barang lama (AC13).
+  const counted: Record<string, number> = {};
+  for (const { s } of await listFixtureProjects()) {
+    if (s.rwId && fixtureVerification(s)?.result?.approved && new Date(s.verifyAt!).toISOString().startsWith(month)) {
+      counted[s.rwId] = (counted[s.rwId] ?? 0) + 1;
+    }
+  }
   const rows = sampleRws
-    .map((rw) => ({ ...rw, items: sampleItems[rw.rw_id] + (rw.rw_id === rwId ? mine : 0) }))
+    .map((rw) => ({ ...rw, items: sampleItems[rw.rw_id] + (counted[rw.rw_id] ?? 0) }))
     .sort((a, b) => b.items - a.items)
     .map((rw, i) => ({ rank: i + 1, ...rw }));
   return {
