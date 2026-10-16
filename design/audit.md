@@ -1,4 +1,4 @@
-# Audit tampilan BEKAS (Fase 0)
+# Audit tampilan BEKAS (Fase 0 dan sesudah Fase 2)
 
 Tanggal: 16 Oktober 2026. Acuan: `design/references/` (UI kit Pidu), DESIGN.md bagian 2b.
 
@@ -8,18 +8,37 @@ Rubrik 1–5: **(a)** daya tarik visual, **(b)** kekayaan ilustrasi, **(c)** var
 
 ## Skor
 
-| Halaman | a | b | c | d | e | Rata-rata |
-|---|---|---|---|---|---|---|
-| Beranda | 4 | 3 | 4 | 4 | 4 | 3,8 |
-| Jalur | 4 | 3 | 3 | 4 | 4 | 3,6 |
-| Dompet | 3 | 2 | 3 | 3 | 2 | 2,6 |
-| Peringkat (Leaderboard) | 3 | 2 | 3 | 3 | 3 | 2,8 |
-| Pratinjau foto | 3 | 2 | 2 | 4 | 2 | 2,6 |
-| Hasil barang | 3 | 2 | 3 | 3 | 3 | 2,8 |
-| Detail ide | 3 | 1 | 2 | 3 | 3 | 2,4 |
-| Panduan | 3 | 2 | 2 | 3 | 3 | 2,6 |
-| Bank sampah | 2 | 1 | 3 | 3 | 2 | 2,2 |
-| Pilih RW | 2 | 1 | 1 | 3 | 2 | 1,8 |
+Sebelum = Fase 0. Sesudah = setelah Fase 2 (dinilai dari screenshot web 390×844 setiap halaman, putaran terakhir).
+
+| Halaman | Sebelum (a/b/c/d/e) | Rata-rata | Sesudah (a/b/c/d/e) | Rata-rata |
+|---|---|---|---|---|
+| Beranda | 4/3/4/4/4 | 3,8 | 4/4/4/4/4 | 4,0 |
+| Jalur | 4/3/3/4/4 | 3,6 | 4/4/4/4/5 | 4,2 |
+| Dompet | 3/2/3/3/2 | 2,6 | 4/4/4/4/4 | 4,0 |
+| Peringkat (Leaderboard) | 3/2/3/3/3 | 2,8 | 4/4/4/4/5 | 4,2 |
+| Pratinjau foto | 3/2/2/4/2 | 2,6 | 4/4/4/4/4 | 4,0 |
+| Hasil barang | 3/2/3/3/3 | 2,8 | 4/4/4/4/4 | 4,0 |
+| Detail ide | 3/1/2/3/3 | 2,4 | 4/5/4/4/4 | 4,2 |
+| Panduan | 3/2/2/3/3 | 2,6 | 4/4/4/4/4 | 4,0 |
+| Bank sampah | 2/1/3/3/2 | 2,2 | 4/4/4/4/4 | 4,0 |
+| Pilih RW | 2/1/1/3/2 | 1,8 | 4/4/4/4/4 | 4,0 |
+
+Semua halaman mencapai target minimal 4 di semua aspek. Skor dinilai sendiri oleh Claude dari screenshot web, belum dari HP fisik.
+
+## Apa yang diubah per halaman (Fase 2)
+
+| Halaman | Perubahan utama |
+|---|---|
+| Beranda | CameraBubble besar miring di kartu utama, GalleryBubble di tombol galeri, CoinStack (Dompet) dan TrophyCup (Peringkat), MapPin di tile pink, PlantPot di tips, angka langkah Fredoka |
+| Hasil barang | Sudut bingkai scan di viewer 3D, tile botol di Profil barang, bagian barang sebagai pill, IdeaBulb di judul ide, pill durasi dengan Clock |
+| Detail ide | Tile statistik (Clock/PlantPot/CoinStack), Kegunaan dengan IdeaBulb, ItemGrid alat dan bahan, SafetyNote dengan ShieldWarning |
+| Panduan | ItemGrid alat dan bahan, lingkaran nomor pastel bergiliran, CheckBadge saat dicentang, hasil yang diharapkan di noteYellow, placeholder ilustrasi PaintBrush |
+| Dompet | Hero saldo dengan CoinStack + Sparkle, target dengan GiftBox, streak dengan FlameBig, hadiah GiftBox di tile bergiliran, alasan tukar sebagai pill kecil, riwayat dengan ikon +/− |
+| Peringkat | Podium 3 besar dengan Medal, tantangan dengan TrophyCup di noteYellow, Medal di daftar, RW sendiri tilePink, ajakan Pilih RW dengan HouseGroup |
+| Jalur | Dekor penuh kiri/kanan (ikon 3D + PlantPot/HouseGroup/Rope), bunga kecil, garis putus-putus, gembok krem, label berekor |
+| Bank sampah | Banner pink dengan MapPin besar, MapPin di tile bergiliran, pill jenis sampah warna-warni, harga dengan Coin |
+| Pilih RW | Banner biru dengan HouseGroup, HouseGroup di tile bergiliran, CheckBadge untuk terpilih, kartu info dengan TrophyCup |
+| Pratinjau foto | Sudut bingkai scan hijau, panduan foto sebagai 3 tile ilustrasi pastel |
 
 ## Tiga masalah terbesar per halaman
 
@@ -74,6 +93,8 @@ Rubrik 1–5: **(a)** daya tarik visual, **(b)** kekayaan ilustrasi, **(c)** var
 3. Hanya satu warna aksen (hijau); tidak ada pastel.
 
 ## Catatan yang bertentangan atau perlu keputusan
+
+- Selesai diputuskan: README referensi diperbarui (jalur dan streak dipakai), dan header Panduan tetap hijau (DESIGN.md 2b sudah disesuaikan).
 
 - `design/references/README.md` menulis bahwa jalur level dan streak tidak ditiru, tetapi PRD 1.4 (atas permintaan) membangun layar Jalur dan streak mingguan. Tidak dihapus; README sebaiknya diperbarui.
 - DESIGN.md 2b menulis Panduan memakai PlainHeader putih, sementara layar Panduan saat ini memakai GreenHeader. Tidak diubah di audit; perlu keputusan apakah mengikuti 2b.
