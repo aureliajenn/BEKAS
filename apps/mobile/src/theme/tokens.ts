@@ -50,6 +50,23 @@ export const colors = {
   brandLime: '#B5E43B', // khusus logo dan splash
 } as const;
 
+/**
+ * Palet ilustrasi SVG (src/components/illustrations). Tiap warna punya 3 tone:
+ * base (muka), shade (sisi bayangan ±15–20% lebih gelap), line (outline gelap sekeluarga, bukan hitam).
+ */
+export const illu = {
+  green: { base: '#3CC873', shade: '#1E9E54', line: '#137A3E' },
+  orange: { base: '#FF9A3D', shade: '#E8740C', line: '#B85A05' },
+  yellow: { base: '#FFC531', shade: '#E8A400', line: '#A87600' },
+  blue: { base: '#5AA1FF', shade: '#2F7FE8', line: '#2563C9' },
+  pink: { base: '#FF8DB4', shade: '#FF5C93', line: '#C7346A' },
+  cream: { base: '#FFF1CF', shade: '#F2D79E', line: '#C49A55' },
+  silver: { base: '#E3E9EF', shade: '#B4C0CC', line: '#7C8894' },
+  bronze: { base: '#EDA766', shade: '#C97B3A', line: '#8E5426' },
+  highlight: '#FFFFFF',
+  ground: 'rgba(29,43,34,0.12)',
+} as const;
+
 export const radius = {
   pill: 999,
   sheet: 32,
