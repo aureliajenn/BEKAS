@@ -6,6 +6,7 @@ import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { goBack } from '@/lib/nav';
+import { IlluTile } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { PlainHeader } from '@/components/GreenHeader';
 import { MascotBubble } from '@/components/MascotBubble';
@@ -50,7 +51,7 @@ export default function PreviewScreen() {
         <View style={styles.checkRow}>
           {checklist.map((c, i) => (
             <View key={c.text} style={styles.checkItem}>
-              <View style={[styles.checkTile, { backgroundColor: c.bg, transform: [{ rotate: `${(i - 1) * 4}deg` }] }]}>{c.art}</View>
+              <IlluTile bg={c.bg} size={64} tilt={(i - 1) * 4}>{c.art}</IlluTile>
               <Text style={[type.caption, styles.checkText]}>{c.text}</Text>
             </View>
           ))}
@@ -80,7 +81,6 @@ const styles = StyleSheet.create({
   photo: { width: '100%', aspectRatio: 3 / 4, maxHeight: 420 },
   checkRow: { flexDirection: 'row', gap: space.sm },
   checkItem: { flex: 1, alignItems: 'center', gap: space.xs },
-  checkTile: { width: 64, height: 64, borderRadius: radius.tile, alignItems: 'center', justifyContent: 'center' },
   checkText: { color: colors.ink, textAlign: 'center' },
   actions: { flexDirection: 'row', gap: space.md, paddingHorizontal: space.screen, paddingTop: space.sm, backgroundColor: colors.bg },
 });
