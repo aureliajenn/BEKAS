@@ -65,11 +65,14 @@ export const illu = {
   bronze: { base: '#EDA766', shade: '#C97B3A', line: '#8E5426' },
   highlight: '#FFFFFF',
   ground: 'rgba(29,43,34,0.12)',
+  coinRing: '#E0A100', // cincin Coin di shapes.tsx
+  flameOuter: '#FF8A1F', // lapis luar Flame di shapes.tsx
 } as const;
 
 export const radius = {
   pill: 999,
   sheet: 32,
+  frame: 28, // bingkai foto/viewer, navbar
   header: 32,
   card: 24,
   tile: 20,

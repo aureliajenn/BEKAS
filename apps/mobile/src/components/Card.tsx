@@ -59,6 +59,25 @@ export function SafetyNote({ text }: { text: string }) {
   );
 }
 
+/** Tile pastel berisi ilustrasi. tilt dalam derajat (DESIGN: -4 sampai 4). */
+export function IlluTile({ bg, size = 64, tilt = 0, rounded = radius.tile, children }: { bg: string; size?: number; tilt?: number; rounded?: number; children: ReactNode }) {
+  return (
+    <View style={[styles.tile, { width: size, height: size, borderRadius: rounded, backgroundColor: bg }, tilt ? { transform: [{ rotate: `${tilt}deg` }] } : null]}>
+      {children}
+    </View>
+  );
+}
+
+/** Kotak merah: teks saja (merah), atau judul merah + isi. */
+export function DangerBox({ title, text }: { title?: string; text: string }) {
+  return (
+    <View style={styles.danger} accessibilityRole="alert">
+      {title ? <Text style={[type.bodyL, { color: colors.dangerFg }]}>{title}</Text> : null}
+      <Text style={[type.body, !title && { color: colors.dangerFg }]}>{text}</Text>
+    </View>
+  );
+}
+
 export function OfflineBanner() {
   return (
     <View style={[styles.banner, { borderRadius: radius.iconButton }]} accessibilityLiveRegion="polite">
@@ -76,6 +95,8 @@ const styles = StyleSheet.create({
   points: { flexDirection: 'row', alignItems: 'center', gap: space.xs, backgroundColor: colors.tileYellow },
   banner: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.warnBg, padding: space.md },
   flex: { flex: 1 },
+  tile: { alignItems: 'center', justifyContent: 'center' },
+  danger: { backgroundColor: colors.dangerBg, borderRadius: radius.iconButton, padding: space.md, gap: space.xs },
 });
 
 /** Progres data nyata (saldo, jumlah barang). Jangan dipakai untuk proses backend. */

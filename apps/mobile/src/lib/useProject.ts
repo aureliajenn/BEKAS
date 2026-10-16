@@ -1,8 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import type { JobState, ProjectView } from '@/types/contracts';
 
-import { getProject } from './api';
+import { getProject, retryJob } from './api';
 
 const settled = (j?: JobState) => !j || j.status === 'succeeded' || j.status === 'failed';
 
@@ -29,5 +29,14 @@ export function useProject(id: string) {
     refetchInterval: (q) => (allSettled(q.state.data) ? 300_000 : q.state.dataUpdateCount > 24 ? 6000 : 2500),
     refetchOnWindowFocus: true,
     enabled: !!id,
+  });
+}
+
+/** Retry job gagal lalu segarkan proyek (dipakai Hasil barang, Panduan, Verifikasi). */
+export function useRetryJob(projectId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (jobId: string) => retryJob(projectId, jobId),
+    onSettled: () => qc.invalidateQueries({ queryKey: ['project', projectId] }),
   });
 }
