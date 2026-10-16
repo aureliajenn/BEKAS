@@ -54,7 +54,7 @@ export function VerifyPanel({ project }: { project: ProjectView }) {
             <Coin size={36} />
           </View>
           <Text style={[type.caption, { textAlign: 'center' }]}>Poin masuk ke dompetmu. {extraCopy.pointValue}</Text>
-          <ChunkyButton label="Lihat dompet" icon={<Wallet size={22} color={colors.white} strokeWidth={2.5} />} onPress={() => router.push('/wallet')} />
+          <ChunkyButton label="Lihat dompet" icon={<Wallet size={22} color={colors.white} strokeWidth={2.5} />} onPress={() => router.navigate('/wallet')} />
         </>
       ) : (
         <View style={{ gap: space.xs }}>

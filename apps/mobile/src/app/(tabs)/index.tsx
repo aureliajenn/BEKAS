@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Camera, ChevronRight, Images, Play } from 'lucide-react-native';
-import { useCallback, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -23,7 +23,12 @@ const OVERLAP = 40;
 export default function HomeScreen() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [denied, setDenied] = useState<'camera' | 'library' | null>(null);
+  // Tombol Scan di navbar mengirim ?denied=camera bila izin kamera ditolak.
+  const params = useLocalSearchParams<{ denied?: 'camera' }>();
+  const [denied, setDenied] = useState<'camera' | 'library' | null>(params.denied ?? null);
+  useEffect(() => {
+    if (params.denied) setDenied(params.denied);
+  }, [params.denied]);
   const { bottom } = useSafeAreaInsets();
   const qc = useQueryClient();
 
@@ -132,7 +137,7 @@ function RewardCards() {
           caption={wallet.data?.is_fixture ? 'Contoh tersimpan' : '1 poin = Rp1'}
           bg={colors.tileYellow}
           art={<Coin size={48} />}
-          onPress={() => router.push('/wallet')}
+          onPress={() => router.navigate('/wallet')}
         />
         <Tile
           label="Peringkat RW"
@@ -141,7 +146,7 @@ function RewardCards() {
           bg={colors.tileBlue}
           valueColor={colors.blue600}
           art={<Image source={icon3d.tanganBumi} style={styles.tileArt} resizeMode="contain" accessible={false} />}
-          onPress={() => router.push('/leaderboard')}
+          onPress={() => router.navigate('/leaderboard')}
         />
       </View>
 

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { ActivityIndicator, Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { goBack } from '@/lib/nav';
 import { Card, OfflineBanner, Pill, ProgressBar } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
@@ -43,7 +42,7 @@ export default function WalletScreen() {
 
   return (
     <View style={styles.screen}>
-      <GreenHeader title="Dompet Poin" onBack={goBack}>
+      <GreenHeader title="Dompet Poin">
         {w ? (
           <View style={{ gap: space.sm, marginTop: space.sm }}>
             <Text style={[type.display, { color: colors.white }]} accessibilityLabel={`Saldo ${fmt(w.balance)} poin`}>

@@ -4,7 +4,6 @@ import { Users } from 'lucide-react-native';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { goBack } from '@/lib/nav';
 import { Card, OfflineBanner, Pill, ProgressBar } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
@@ -25,7 +24,7 @@ export default function LeaderboardScreen() {
 
   return (
     <View style={styles.screen}>
-      <GreenHeader title="Leaderboard RW" eyebrow={b ? monthName(b.month) : undefined} onBack={goBack} pose="senang">
+      <GreenHeader title="Leaderboard RW" eyebrow={b ? monthName(b.month) : undefined} pose="senang">
         {b?.is_fixture ? (
           <View style={{ marginTop: space.sm }}>
             <Pill label={extraCopy.cachedSample} tone="cached" />
