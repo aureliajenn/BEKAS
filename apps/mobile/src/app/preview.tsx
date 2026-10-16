@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Check, Send } from 'lucide-react-native';
+import { Send } from 'lucide-react-native';
+import type { ReactNode } from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -9,11 +10,18 @@ import { ChunkyButton } from '@/components/ChunkyButton';
 import { PlainHeader } from '@/components/GreenHeader';
 import { MascotBubble } from '@/components/MascotBubble';
 import { StageStatus } from '@/components/StageStatus';
+import { GalleryBubble, IdeaBulb } from '@/components/illustrations';
+import { icon3d } from '@/theme/assets';
 import { createProject, type Scenario } from '@/lib/api';
 import { setActiveProject } from '@/lib/storage';
-import { colors, space, type } from '@/theme/tokens';
+import { colors, radius, space, type } from '@/theme/tokens';
 
-const checklist = ['Satu barang terlihat utuh', 'Latar sederhana', 'Pencahayaan merata'];
+// Panduan foto (bukan validasi), masing-masing dengan ilustrasi di tile pastel.
+const checklist: { text: string; bg: string; art: ReactNode }[] = [
+  { text: 'Satu barang terlihat utuh', bg: colors.tileGreen, art: <Image source={icon3d.botol} style={{ width: 40, height: 40 }} resizeMode="contain" accessible={false} /> },
+  { text: 'Latar sederhana', bg: colors.tileBlue, art: <GalleryBubble size={40} /> },
+  { text: 'Pencahayaan merata', bg: colors.tileYellow, art: <IdeaBulb size={40} /> },
+];
 
 export default function PreviewScreen() {
   const { uri, scenario } = useLocalSearchParams<{ uri: string; scenario?: Scenario }>();
@@ -33,15 +41,18 @@ export default function PreviewScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.photoCard}>
           <Image source={{ uri }} style={styles.photo} resizeMode="cover" accessibilityLabel="Foto barang yang akan dikirim" />
+          {(['tl', 'tr', 'bl', 'br'] as const).map((c) => (
+            <View key={c} pointerEvents="none" style={[styles.corner, styles[c]]} />
+          ))}
         </View>
 
         <MascotBubble pose="tunjukHp" text="Pastikan barangnya utuh, latarnya polos, dan cahayanya rata." />
 
-        <View style={{ gap: space.sm }}>
-          {checklist.map((c) => (
-            <View key={c} style={styles.check}>
-              <Check size={18} color={colors.green500} strokeWidth={2.5} />
-              <Text style={type.body}>{c}</Text>
+        <View style={styles.checkRow}>
+          {checklist.map((c, i) => (
+            <View key={c.text} style={styles.checkItem}>
+              <View style={[styles.checkTile, { backgroundColor: c.bg, transform: [{ rotate: `${(i - 1) * 4}deg` }] }]}>{c.art}</View>
+              <Text style={[type.caption, styles.checkText]}>{c.text}</Text>
             </View>
           ))}
         </View>
@@ -66,8 +77,16 @@ export default function PreviewScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   scroll: { padding: space.screen, gap: space.lg },
-  photoCard: { borderRadius: 28, overflow: 'hidden', borderWidth: 2, borderColor: colors.line, backgroundColor: colors.white },
+  photoCard: { borderRadius: 28, overflow: 'hidden', borderWidth: 2, borderColor: colors.line, backgroundColor: colors.tileGreen },
   photo: { width: '100%', aspectRatio: 3 / 4, maxHeight: 420 },
-  check: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  checkRow: { flexDirection: 'row', gap: space.sm },
+  checkItem: { flex: 1, alignItems: 'center', gap: space.xs },
+  checkTile: { width: 64, height: 64, borderRadius: radius.tile, alignItems: 'center', justifyContent: 'center' },
+  checkText: { color: colors.ink, textAlign: 'center' },
+  corner: { position: 'absolute', width: 30, height: 30, borderColor: colors.green400 },
+  tl: { top: 16, left: 16, borderTopWidth: 4, borderLeftWidth: 4, borderTopLeftRadius: 12 },
+  tr: { top: 16, right: 16, borderTopWidth: 4, borderRightWidth: 4, borderTopRightRadius: 12 },
+  bl: { bottom: 16, left: 16, borderBottomWidth: 4, borderLeftWidth: 4, borderBottomLeftRadius: 12 },
+  br: { bottom: 16, right: 16, borderBottomWidth: 4, borderRightWidth: 4, borderBottomRightRadius: 12 },
   actions: { flexDirection: 'row', gap: space.md, paddingHorizontal: space.screen, paddingTop: space.sm, backgroundColor: colors.bg },
 });
