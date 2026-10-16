@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "BEKAS",
+    "slug": "bekas",
+    "version": "1.0.0",
+    "platforms": [
+      "android",
+      "ios",
+      "web"
+    ],
+    "orientation": "portrait",
+    "icon": "./assets/logo/logo-bekas-1024.png",
+    "scheme": "bekas",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "icon": "./assets/logo/logo-bekas-1024.png",
+      "bundleIdentifier": "com.bekas.app"
+    },
+    "android": {
+      "package": "com.bekas.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#B5E43B",
+        "foregroundImage": "./assets/logo/logo-bekas-1024.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/logo/logo-bekas.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "BEKAS memerlukan akses galeri untuk memilih foto barang bekas.",
+          "cameraPermission": "BEKAS memerlukan akses kamera untuk memotret barang bekas.",
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F3FAF5",
+          "image": "./assets/logo/logo-bekas-1024.png",
+          "imageWidth": 320
+        }
+      ],
+      "expo-asset"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "5375f797-1d3d-434d-8250-5245c254d22d"
+      }
+    }
+  }
+}
