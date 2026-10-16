@@ -1,21 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
 import { router, useFocusEffect } from 'expo-router';
 import { Check, Flag, Gift, Lock, Plus } from 'lucide-react-native';
-import { useCallback, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import { Fragment, useCallback, useState, type ComponentType } from 'react';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View, type ImageSourcePropType } from 'react-native';
+import Svg, { Circle, Path } from 'react-native-svg';
 
 import { Pill } from '@/components/Card';
 import { GreenHeader } from '@/components/GreenHeader';
 import { HeaderBadges } from '@/components/HeaderBadges';
 import { TagLabel } from '@/components/shapes';
+import { HouseGroup, PlantPot, Rope, type IlluProps } from '@/components/illustrations';
 import { UPCYCLE_POINTS } from '@/lib/api';
 import { fetchRewards, fetchWallet } from '@/lib/rewards';
 import { getActiveProject, getDoneSteps } from '@/lib/storage';
 import { useProject } from '@/lib/useProject';
 import { icon3d, mascot } from '@/theme/assets';
 import { extraCopy } from '@/theme/statusCopy';
-import { chunkyDepth, colors, radius, space, type } from '@/theme/tokens';
+import { chunkyDepth, colors, illu, radius, space, type } from '@/theme/tokens';
 
 type Node =
   | { kind: 'done'; key: string; label: string }
@@ -25,7 +26,8 @@ type Node =
 
 const ROW = 112;
 const SWING = [0, 64, 0, -64]; // zig-zag seperti jalur referensi
-const DECOR = [icon3d.tanamanListrik, icon3d.rumah, icon3d.tongBio];
+// Campuran ikon 3D (PNG) dan ilustrasi kit (SVG) supaya peta tidak sepi.
+const DECOR: (ImageSourcePropType | ComponentType<IlluProps>)[] = [icon3d.tanamanListrik, PlantPot, icon3d.rumah, HouseGroup, icon3d.tongBio, Rope];
 const MAX_DONE = 3;
 const MAX_LOCKED = 4;
 
@@ -108,20 +110,40 @@ export default function JalurScreen() {
               <Svg width={width} height={height} style={StyleSheet.absoluteFill}>
                 <Path d={road(points)} stroke={colors.noteYellowBorder} strokeWidth={34} fill="none" strokeLinecap="round" />
                 <Path d={road(points)} stroke={colors.tileYellow} strokeWidth={24} fill="none" strokeLinecap="round" />
+                {/* garis putus-putus di tengah jalan, seperti jalur Pidu */}
+                <Path d={road(points)} stroke={colors.noteYellowBorder} strokeWidth={3} strokeDasharray="2 9" fill="none" strokeLinecap="round" />
+                {/* bunga kecil tersebar di kiri-kanan (posisi tetap per baris) */}
+                {points.map((pt, i) => {
+                  const fx = i % 2 ? width - 40 : 32;
+                  const fy = pt.y + (i % 3) * 14 - 30;
+                  return (
+                    <Fragment key={i}>
+                      {[0, 72, 144, 216, 288].map((deg) => (
+                        <Circle key={deg} cx={fx + 5 * Math.cos((deg * Math.PI) / 180)} cy={fy + 5 * Math.sin((deg * Math.PI) / 180)} r={3.4} fill={colors.white} />
+                      ))}
+                      <Circle cx={fx} cy={fy} r={3} fill={colors.accentYellow} />
+                      <Circle cx={width - fx + (i % 2 ? 40 : -40)} cy={fy + 52} r={3} fill={colors.green400} opacity={0.5} />
+                    </Fragment>
+                  );
+                })}
               </Svg>
 
               {nodes.map((n, i) => {
                 const { x, y } = points[i];
-                const side = SWING[i % SWING.length] >= 0 ? -1 : 1; // dekor di sisi berlawanan dari ayunan
+                // Dekor di sisi berlawanan dari ayunan; titik tengah bergantian kiri/kanan.
+                const swing = SWING[i % SWING.length];
+                const left = swing === 0 ? i % 4 === 0 : swing < 0 ? false : true;
+                const Decor = DECOR[i % DECOR.length];
                 return (
                   <View key={n.key}>
-                    {i % 2 === 1 && n.kind !== 'current' ? (
-                      <Image
-                        source={DECOR[i % DECOR.length]}
-                        style={[styles.decor, { top: y - 34, left: side < 0 ? space.lg : width - 68 - space.lg }]}
-                        resizeMode="contain"
-                        accessible={false}
-                      />
+                    {n.kind !== 'current' ? (
+                      <View style={[styles.decor, { top: y - 36, left: left ? space.lg : width - 72 - space.lg, transform: [{ rotate: `${left ? -6 : 6}deg` }] }]}>
+                        {typeof Decor === 'function' ? (
+                          <Decor size={68} />
+                        ) : (
+                          <Image source={Decor as ImageSourcePropType} style={styles.decorImg} resizeMode="contain" accessible={false} />
+                        )}
+                      </View>
                     ) : null}
                     <NodeView node={n} x={x} y={y} width={width} />
                   </View>
@@ -156,8 +178,11 @@ function NodeView({ node, x, y, width }: { node: Node; x: number; y: number; wid
           </View>
         </Pressable>
         {/* Label di tengah atas titik, dijaga tetap di dalam layar. */}
-        <View style={[styles.tagWrap, { top: y - 76, left: Math.min(Math.max(space.sm, x - 150), width - 300 - space.sm) }]} pointerEvents="none">
-          <TagLabel text={node.label} bg={colors.white} fg={colors.ink} />
+        <View style={[styles.tagWrap, { top: y - 82, left: Math.min(Math.max(space.sm, x - 150), width - 300 - space.sm) }]} pointerEvents="none">
+          <View style={styles.tagBox}>
+            <TagLabel text={node.label} bg={colors.white} fg={colors.ink} />
+          </View>
+          <View style={[styles.tagTail, { left: x - Math.min(Math.max(space.sm, x - 150), width - 300 - space.sm) - 6 }]} />
         </View>
         <Image source={mascot.tunjukHp} style={[styles.mascot, { top: y - 50, left: Math.min(width - 96, x + 46) }]} resizeMode="contain" accessible={false} />
       </>
@@ -167,7 +192,8 @@ function NodeView({ node, x, y, width }: { node: Node; x: number; y: number; wid
   const size = 64;
   const look = {
     done: { face: colors.green500, depth: colors.green700, icon: <Check size={28} color={colors.white} strokeWidth={3} /> },
-    locked: { face: colors.line, depth: colors.cardShadow, icon: <Lock size={24} color={colors.iconIdle} strokeWidth={2.5} /> },
+    // Krem seperti tunggul kayu di referensi, bukan abu datar.
+    locked: { face: illu.cream.base, depth: illu.cream.shade, icon: <Lock size={24} color={illu.cream.line} strokeWidth={2.5} /> },
     gift: { face: colors.accentYellow, depth: colors.orange500, icon: <Gift size={28} color={colors.orange700} strokeWidth={2.5} /> },
   }[node.kind];
   const label = node.kind === 'done' ? node.label : node.kind === 'gift' ? `Hadiah target: ${node.label}, ${node.caption}` : 'Proyek berikutnya';
@@ -217,7 +243,10 @@ const styles = StyleSheet.create({
   nodeFace: { alignItems: 'center', justifyContent: 'center' },
   halo: { position: 'absolute', width: 96, height: 96, borderRadius: 48, backgroundColor: colors.green100 },
   tagWrap: { position: 'absolute', width: 300, alignItems: 'center' },
+  tagBox: { borderRadius: radius.iconButton, borderWidth: 2, borderColor: colors.line, backgroundColor: colors.white },
+  tagTail: { position: 'absolute', bottom: -6, width: 12, height: 12, backgroundColor: colors.white, borderRightWidth: 2, borderBottomWidth: 2, borderColor: colors.line, transform: [{ rotate: '45deg' }] },
+  decorImg: { width: 68, height: 68 },
   mascot: { position: 'absolute', width: 84, height: 100 },
-  decor: { position: 'absolute', width: 68, height: 68 },
+  decor: { position: 'absolute', width: 72, height: 72, alignItems: 'center', justifyContent: 'center' },
   giftCaption: { position: 'absolute', width: 180 },
 });
