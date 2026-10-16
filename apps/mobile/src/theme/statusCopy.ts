@@ -54,6 +54,8 @@ export const statusCopy: Record<JobKind, Copy> = {
 export const extraCopy = {
   meshWorkerPreparing: 'Menyiapkan model 3D',
   meshWorkerUnavailable: 'Pembuat 3D sedang tidak tersedia',
+  meshViewerLoading: 'Memuat tampilan 3D',
+  meshViewerFailed: 'Model 3D belum bisa ditampilkan. Periksa koneksi lalu coba lagi.',
   needsNewPhoto: 'Fotonya kurang jelas buat kami. Coba foto ulang ya.',
   offline: 'Koneksi terputus. Kami lanjutkan saat online.',
   meshDisclaimer: 'Model 3D ini hanya gambaran bentuk, bukan ukuran asli.',

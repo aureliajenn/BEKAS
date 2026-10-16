@@ -4,6 +4,7 @@ import { mascot } from '../theme/assets';
 import { extraCopy, type JobStatus } from '../theme/statusCopy';
 import { colors, radius, space, type } from '../theme/tokens';
 import { MeshViewer } from './MeshViewer';
+import { LocalMeshViewer } from './LocalMeshViewer';
 import { StageStatus } from './StageStatus';
 
 const HEIGHT = 300;
@@ -12,6 +13,8 @@ type Props = {
   status: JobStatus;
   /** GLB siap tampil. */
   meshUrl?: string;
+  /** Aset GLB lokal untuk proyek contoh. */
+  meshAsset?: number;
   /** Foto asli, ditampilkan redup selama mesh belum siap. */
   photoUrl?: string;
   /** Misalnya extraCopy.meshWorkerUnavailable. */
@@ -19,15 +22,15 @@ type Props = {
   onRetry?: () => void;
 };
 
-export function MeshViewerFrame({ status, meshUrl, photoUrl, labelOverride, onRetry }: Props) {
-  const ready = status === 'succeeded' && !!meshUrl;
-  const failed = status === 'failed' || (status === 'succeeded' && !meshUrl);
+export function MeshViewerFrame({ status, meshUrl, meshAsset, photoUrl, labelOverride, onRetry }: Props) {
+  const ready = status === 'succeeded' && !!(meshAsset || meshUrl);
+  const failed = status === 'failed' || (status === 'succeeded' && !meshAsset && !meshUrl);
 
   return (
     <View style={{ gap: space.sm }}>
       <View style={styles.frame}>
         {ready ? (
-          <MeshViewer url={meshUrl} height={HEIGHT} />
+          meshAsset ? <LocalMeshViewer asset={meshAsset} height={HEIGHT} /> : <MeshViewer url={meshUrl!} height={HEIGHT} />
         ) : failed ? (
           <View style={styles.center}>
             <Image source={mascot.bingung} style={styles.mascot} resizeMode="contain" accessible={false} />

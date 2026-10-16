@@ -1,38 +1,28 @@
 import type { GuideResult, IdeasResult } from '@/types/contracts';
+import pencilDemo from '../../assets/demo/tempat-pensil/content.json';
+
+export const pencilIdeaId = pencilDemo.idea.id;
+export const pencilMeshStates = pencilDemo.mesh_states;
 
 // Contoh tersimpan untuk pengembangan UI. Selalu tampil berlabel "Contoh tersimpan".
 export const SAMPLE_GLB =
   'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/WaterBottle/glTF-Binary/WaterBottle.glb';
 
 export const sampleIdeas: IdeasResult = {
-  schema_version: '1',
+  schema_version: '1.0',
   input_status: 'accepted',
-  object_profile: {
-    label: 'Botol plastik 1,5 L',
-    visible_parts: ['badan botol', 'tutup ulir', 'leher botol'],
-    material_guess: 'Plastik bening, kemungkinan PET',
-    uncertainties: ['Ketebalan dinding belum pasti', 'Ukuran asli tidak diukur dari foto'],
-  },
+  object_profile: pencilDemo.object_profile,
   ideas: [
+    pencilDemo.idea,
     {
       id: 'idea-pot',
       title: 'Pot gantung tanaman kecil',
       purpose: 'Wadah sukulen atau sirih gading yang digantung di teras.',
-      difficulty: 'Mudah',
+      difficulty: 'Sedang',
       estimated_minutes: 30,
       extra_materials: ['Tali rami', 'Tanah dan bibit tanaman'],
       tools: ['Gunting', 'Spidol', 'Bor tangan kecil'],
       safety_notes: ['Tepi potongan tajam, ampelas atau tutup dengan selotip.'],
-    },
-    {
-      id: 'idea-alat-tulis',
-      title: 'Tempat alat tulis bersekat',
-      purpose: 'Merapikan pensil, gunting, dan penggaris di meja belajar.',
-      difficulty: 'Mudah',
-      estimated_minutes: 20,
-      extra_materials: ['Kertas kado atau kain perca', 'Lem tembak'],
-      tools: ['Cutter', 'Penggaris', 'Spidol'],
-      safety_notes: ['Gunakan alas potong saat memakai cutter.'],
     },
     {
       id: 'idea-celengan',
@@ -55,6 +45,7 @@ export const needsNewPhoto: IdeasResult = {
 };
 
 export function sampleGuide(ideaId: string): GuideResult {
+  if (ideaId === pencilIdeaId) return pencilDemo.guide;
   const idea = sampleIdeas.ideas.find((i) => i.id === ideaId) ?? sampleIdeas.ideas[0];
   return {
     schema_version: '1',

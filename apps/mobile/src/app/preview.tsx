@@ -5,12 +5,15 @@ import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { goBack } from '@/lib/nav';
+import { Pill } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { PlainHeader } from '@/components/GreenHeader';
 import { MascotBubble } from '@/components/MascotBubble';
 import { StageStatus } from '@/components/StageStatus';
-import { createProject, type Scenario } from '@/lib/api';
+import { assetUri, createProject, USE_FIXTURES, type Scenario } from '@/lib/api';
 import { setActiveProject } from '@/lib/storage';
+import { pencilProcessAssets } from '@/theme/assets';
+import { extraCopy } from '@/theme/statusCopy';
 import { colors, space, type } from '@/theme/tokens';
 
 const checklist = ['Satu barang terlihat utuh', 'Latar sederhana', 'Pencahayaan merata'];
@@ -18,9 +21,11 @@ const checklist = ['Satu barang terlihat utuh', 'Latar sederhana', 'Pencahayaan 
 export default function PreviewScreen() {
   const { uri, scenario } = useLocalSearchParams<{ uri: string; scenario?: Scenario }>();
   const { bottom } = useSafeAreaInsets();
+  const dummyPhoto = pencilProcessAssets['mesh-01'].illustration;
+  const photoUri = USE_FIXTURES && dummyPhoto ? assetUri(dummyPhoto) : uri;
 
   const send = useMutation({
-    mutationFn: () => createProject(uri, scenario),
+    mutationFn: () => createProject(photoUri, scenario),
     onSuccess: async (id) => {
       await setActiveProject(id);
       router.replace({ pathname: '/project/[id]', params: { id } });
@@ -31,8 +36,11 @@ export default function PreviewScreen() {
     <View style={styles.screen}>
       <PlainHeader title="Pratinjau foto" onBack={goBack} />
       <ScrollView contentContainerStyle={styles.scroll}>
+        {USE_FIXTURES ? <Pill label={extraCopy.cachedSample} tone="cached" /> : null}
         <View style={styles.photoCard}>
-          <Image source={{ uri }} style={styles.photo} resizeMode="cover" accessibilityLabel="Foto barang yang akan dikirim" />
+          <Image source={USE_FIXTURES && dummyPhoto ? dummyPhoto : { uri: photoUri }} style={styles.photo}
+            resizeMode={USE_FIXTURES ? 'contain' : 'cover'}
+            accessibilityLabel={USE_FIXTURES ? 'Gambar contoh botol plastik utuh' : 'Foto barang yang akan dikirim'} />
         </View>
 
         <MascotBubble pose="tunjukHp" text="Pastikan barangnya utuh, latarnya polos, dan cahayanya rata." />

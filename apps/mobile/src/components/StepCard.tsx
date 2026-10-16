@@ -7,17 +7,20 @@ import { colors, radius, space, type } from '../theme/tokens';
 import { Card } from './Card';
 import { ChunkyButton } from './ChunkyButton';
 import { StageStatus } from './StageStatus';
+import { ProcessVisual } from './ProcessVisual';
 
 type Props = {
   step: GuideStep;
   illustrationStatus: JobStatus;
   illustrationUrl?: string;
+  illustrationPlaceholder?: string;
   onRetryIllustration?: () => void;
   checked: boolean;
   onToggle: () => void;
+  processVisual?: { illustration?: number; model?: number };
 };
 
-export function StepCard({ step, illustrationStatus, illustrationUrl, onRetryIllustration, checked, onToggle }: Props) {
+export function StepCard({ step, illustrationStatus, illustrationUrl, illustrationPlaceholder, onRetryIllustration, checked, onToggle, processVisual }: Props) {
   return (
     <Card selected={checked} style={{ gap: space.md }}>
       <View style={styles.head}>
@@ -27,9 +30,16 @@ export function StepCard({ step, illustrationStatus, illustrationUrl, onRetryIll
         <Text style={[type.h3, { flex: 1 }]}>{step.title}</Text>
       </View>
 
-      <View style={styles.ill}>
+      {processVisual ? <ProcessVisual title={step.title} illustrationAsset={processVisual.illustration}
+        modelAsset={processVisual.model} illustrationUrl={illustrationUrl} illustrationStatus={illustrationStatus}
+        illustrationPlaceholder={illustrationPlaceholder} onRetry={onRetryIllustration} /> : <View style={styles.ill}>
         {illustrationUrl ? (
           <Image source={{ uri: illustrationUrl }} style={StyleSheet.absoluteFill} resizeMode="cover" accessibilityLabel={`Ilustrasi langkah ${step.order}`} />
+        ) : illustrationPlaceholder ? (
+          <View style={styles.skeleton}>
+            <ImageIcon size={32} color={colors.iconIdle} strokeWidth={2.5} />
+            <Text style={type.caption}>{illustrationPlaceholder}</Text>
+          </View>
         ) : illustrationStatus === 'failed' ? (
           <StageStatus items={[{ kind: 'illustration', status: 'failed', onRetry: onRetryIllustration }]} />
         ) : (
@@ -39,7 +49,7 @@ export function StepCard({ step, illustrationStatus, illustrationUrl, onRetryIll
             <Text style={type.caption}>{statusCopy.illustration[illustrationStatus === 'succeeded' ? 'running' : illustrationStatus]}</Text>
           </View>
         )}
-      </View>
+      </View>}
 
       <Text style={type.body}>{step.instruction}</Text>
 

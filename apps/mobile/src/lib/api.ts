@@ -1,9 +1,9 @@
 import { Asset } from 'expo-asset';
 
-import { icon3d } from '@/theme/assets';
+import { icon3d, pencilProcessAssets } from '@/theme/assets';
 import type { ApiError, JobState, ProjectView, VerificationResult } from '@/types/contracts';
 
-import { SAMPLE_GLB, needsNewPhoto, sampleGuide, sampleIdeas } from './fixtures';
+import { needsNewPhoto, pencilIdeaId, pencilMeshStates, sampleGuide, sampleIdeas } from './fixtures';
 import { getJSON, listKeys, setJSON } from './storage';
 import { fromApi, type ProjectResponse } from './wire';
 
@@ -215,8 +215,8 @@ async function fixtureProject(id: string): Promise<ProjectView> {
     input_url: s.inputUri,
     mesh: {
       job: mesh,
-      url: meshReady ? SAMPLE_GLB : undefined,
-      model: 'SF3D',
+      url: meshReady && pencilProcessAssets['mesh-01'].model ? assetUri(pencilProcessAssets['mesh-01'].model) : undefined,
+      model: 'Contoh tersimpan',
       worker_state: sc === 'gpu_unavailable' ? 'unavailable' : mesh.status === 'running' && t < 7000 && !s.retries?.[mesh.id] ? 'preparing' : undefined,
     },
     ideas: { job: ideas, result: ideas.status === 'succeeded' ? (sc === 'needs_new_photo' ? needsNewPhoto : sampleIdeas) : undefined },
@@ -230,6 +230,19 @@ async function fixtureProject(id: string): Promise<ProjectView> {
     const result = guide.status === 'succeeded' ? sampleGuide(s.ideaId) : undefined;
     view.selected_idea_id = s.ideaId;
     view.guide = { job: guide, result };
+    if (s.ideaId === pencilIdeaId) {
+      result?.steps.forEach((step) => {
+        const state = pencilMeshStates.find((mesh) => mesh.after_step_id === step.id);
+        const illustration = state ? pencilProcessAssets[state.id]?.illustration : undefined;
+        if (illustration) {
+          view.illustrations[step.id] = {
+            job: { id: `job-ill-${step.id}`, status: 'succeeded' },
+            url: assetUri(illustration),
+          };
+        }
+      });
+      return view;
+    }
     // Ilustrasi dihitung sejak panduan siap; langkah 1 digambar dulu.
     const since = s.retries?.['job-guide'] ? Date.now() - s.retries['job-guide'] - 2000 : g - 2500;
     result?.steps.forEach((step, i) => {
