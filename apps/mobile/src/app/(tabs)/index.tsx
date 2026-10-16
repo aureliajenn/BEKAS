@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { Camera, ChevronRight, Images, Play } from 'lucide-react-native';
+import { Camera, ChevronRight, Play } from 'lucide-react-native';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,7 +9,8 @@ import { Card, ProgressBar } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
 import { HeaderBadges } from '@/components/HeaderBadges';
-import { Coin } from '@/components/shapes';
+import { CameraBubble, CoinStack, GalleryBubble, MapPin, PlantPot, TrophyCup } from '@/components/illustrations';
+import { Sparkle, Star } from '@/components/shapes';
 import { StageStatus } from '@/components/StageStatus';
 import { pickPhoto } from '@/lib/photo';
 import { fetchLeaderboard, fetchWallet, getParticipant } from '@/lib/rewards';
@@ -70,11 +71,13 @@ export default function HomeScreen() {
         <View style={[styles.body, { marginTop: -OVERLAP }]}>
           <Card style={{ gap: space.md }}>
             <View style={styles.row}>
-              <View style={[styles.tile, { backgroundColor: colors.tileGreen }]}>
-                <Image source={icon3d.botol} style={styles.tileImg} resizeMode="contain" accessible={false} />
+              <View style={styles.heroArt}>
+                <CameraBubble size={84} />
+                <Sparkle size={14} color={colors.accentYellow} style={styles.sparkleTR} />
+                <Star size={11} color={colors.accentPink} style={styles.sparkleBL} />
               </View>
               <View style={{ flex: 1, gap: space.xs }}>
-                <Text style={type.h3}>Foto satu barang bekasmu</Text>
+                <Text style={type.h3}>Foto barang bekasmu</Text>
                 <Text style={type.caption}>Lihat bentuk 3D-nya, 3 ide kerajinan, dan panduan langkah demi langkah.</Text>
               </View>
             </View>
@@ -89,7 +92,7 @@ export default function HomeScreen() {
               label="Pilih dari galeri"
               variant="secondary"
               disabled={busy}
-              icon={<Images color={colors.green700} size={22} strokeWidth={2.5} />}
+              icon={<GalleryBubble size={30} />}
               onPress={() => start('library')}
             />
             {denied ? (
@@ -108,7 +111,9 @@ export default function HomeScreen() {
           <RewardCards />
 
           <View style={[styles.row, styles.tip]}>
-            <Image source={icon3d.botol} style={styles.tipImg} resizeMode="contain" accessible={false} />
+            <View style={[styles.tileSm, styles.tilt, { backgroundColor: colors.white }]}>
+              <PlantPot size={44} />
+            </View>
             <Text style={[type.body, { flex: 1, color: colors.blue600 }]}>Cocok untuk botol dan wadah plastik kaku. Olah dulu, setor sisanya.</Text>
           </View>
         </View>
@@ -136,7 +141,12 @@ function RewardCards() {
           value={wallet.data ? wallet.data.balance.toLocaleString('id-ID') : '–'}
           caption={wallet.data?.is_fixture ? 'Contoh tersimpan' : '1 poin = Rp1'}
           bg={colors.tileYellow}
-          art={<Coin size={48} />}
+          art={
+            <View>
+              <CoinStack size={60} />
+              <Sparkle size={13} color={colors.accentYellow} style={styles.artSparkle} />
+            </View>
+          }
           onPress={() => router.navigate('/wallet')}
         />
         <Tile
@@ -145,7 +155,12 @@ function RewardCards() {
           caption={board.data?.is_fixture ? 'Contoh tersimpan' : mine ? `${mine.name} ${mine.kelurahan}` : 'Ikut peringkat'}
           bg={colors.tileBlue}
           valueColor={colors.blue600}
-          art={<Image source={icon3d.tanganBumi} style={styles.tileArt} resizeMode="contain" accessible={false} />}
+          art={
+            <View>
+              <TrophyCup size={60} />
+              <Star size={12} color={colors.white} style={styles.artSparkle} />
+            </View>
+          }
           onPress={() => router.navigate('/leaderboard')}
         />
       </View>
@@ -157,8 +172,8 @@ function RewardCards() {
         style={({ pressed }) => pressed && { opacity: 0.85 }}
       >
         <Card style={styles.row}>
-          <View style={[styles.tileSm, { backgroundColor: colors.tilePink }]}>
-            <Image source={icon3d.tongSampah} style={styles.tileSmImg} resizeMode="contain" accessible={false} />
+          <View style={[styles.tileSm, styles.tiltR, { backgroundColor: colors.tilePink }]}>
+            <MapPin size={46} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={type.h3}>Bank sampah mitra</Text>
@@ -210,7 +225,7 @@ function ResumeCard({ id }: { id: string }) {
       <Pressable accessibilityRole="button" accessibilityLabel={`Lanjutkan ${title}`} onPress={open} style={({ pressed }) => pressed && { opacity: 0.85 }}>
         <Card style={{ gap: space.md }}>
           <View style={styles.row}>
-            <View style={[styles.tileSm, { backgroundColor: colors.tileGreen }]}>
+            <View style={[styles.tileSm, styles.tilt, { backgroundColor: colors.tileGreen }]}>
               <Image source={icon3d.tanamanListrik} style={styles.tileSmImg} resizeMode="contain" accessible={false} />
             </View>
             <View style={{ flex: 1, gap: space.xs }}>
@@ -220,7 +235,7 @@ function ResumeCard({ id }: { id: string }) {
               {steps.length ? (
                 <>
                   <Text style={type.caption}>
-                    {checked} dari {steps.length} langkah dicentang
+                    <Text style={styles.stepNum}>{checked}</Text>/{steps.length} langkah dicentang
                   </Text>
                   <ProgressBar value={checked} max={steps.length} label={`${checked} dari ${steps.length} langkah`} />
                 </>
@@ -245,16 +260,19 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   body: { paddingHorizontal: space.screen, gap: space.xl },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  tile: { width: 72, height: 72, borderRadius: radius.tile, alignItems: 'center', justifyContent: 'center' },
-  tileImg: { width: 56, height: 56 },
   tileSm: { width: 56, height: 56, borderRadius: radius.iconButton + 2, alignItems: 'center', justifyContent: 'center' },
   tileSmImg: { width: 44, height: 44 },
-  tileArt: { width: 48, height: 48 },
   denied: { backgroundColor: colors.dangerBg, borderRadius: radius.iconButton, padding: space.md },
   tiles: { flexDirection: 'row', gap: space.md },
   pastel: { gap: space.xs, minHeight: 150 },
   playDepth: { width: 52, height: 52, borderRadius: radius.iconButton, backgroundColor: colors.green700 },
   play: { width: 52, height: 47, borderRadius: radius.iconButton, backgroundColor: colors.green500, alignItems: 'center', justifyContent: 'center' },
   tip: { backgroundColor: colors.blue50, borderRadius: radius.card, padding: space.lg },
-  tipImg: { width: 44, height: 44 },
+  heroArt: { width: 88, height: 88, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '-4deg' }] },
+  sparkleTR: { position: 'absolute', top: 0, right: 2 },
+  sparkleBL: { position: 'absolute', bottom: 4, left: 0 },
+  artSparkle: { position: 'absolute', top: 2, right: -6 },
+  tilt: { transform: [{ rotate: '-4deg' }] },
+  tiltR: { transform: [{ rotate: '4deg' }] },
+  stepNum: { ...type.h3, color: colors.green700 },
 });
