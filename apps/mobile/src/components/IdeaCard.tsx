@@ -6,6 +6,7 @@ import type { CraftIdea } from '../types/contracts';
 import { ideaTiles } from '../theme/assets';
 import { colors, radius, space, type } from '../theme/tokens';
 import { Card, difficultyTone, Pill, PointsPill } from './Card';
+import { Clock } from './illustrations';
 
 type Props = { idea: CraftIdea; index: number; selected?: boolean; onPress: () => void };
 
@@ -24,12 +25,12 @@ export function IdeaCard({ idea, index, selected, onPress }: Props) {
         </View>
         <View style={styles.body}>
           <Text style={type.h3}>{idea.title}</Text>
-          <Text style={type.caption} numberOfLines={1}>
+          <Text style={type.caption} numberOfLines={2}>
             {idea.purpose}
           </Text>
           <View style={styles.pills}>
             <Pill label={idea.difficulty} tone={difficultyTone(idea.difficulty)} />
-            <Pill label={`±${idea.estimated_minutes} menit`} tone="info" />
+            <Pill label={`±${idea.estimated_minutes} menit`} tone="info" icon={<Clock size={16} />} />
             {/* Poin upcycle diberikan setelah hasil diverifikasi (PRD 17.2), sama untuk setiap ide. */}
             <PointsPill points={UPCYCLE_POINTS} />
           </View>

@@ -26,10 +26,11 @@ const pillTones = {
 
 export type PillTone = keyof typeof pillTones;
 
-export function Pill({ label, tone = 'neutral' }: { label: string; tone?: PillTone }) {
+export function Pill({ label, tone = 'neutral', icon }: { label: string; tone?: PillTone; icon?: ReactNode }) {
   const [bg, fg] = pillTones[tone];
   return (
-    <View style={[styles.pill, { backgroundColor: bg }]}>
+    <View style={[styles.pill, icon ? styles.pillIcon : null, { backgroundColor: bg }]}>
+      {icon}
       <Text style={[type.pill, { color: fg }]}>{label}</Text>
     </View>
   );
@@ -70,6 +71,7 @@ const styles = StyleSheet.create({
   cardDepth: { backgroundColor: colors.cardShadow, borderRadius: radius.card, paddingBottom: chunkyDepth },
   card: { backgroundColor: colors.white, borderRadius: radius.card, borderWidth: 2, borderColor: colors.line, padding: space.lg },
   pill: { borderRadius: radius.pill, paddingVertical: space.xs, paddingHorizontal: 10, alignSelf: 'flex-start' },
+  pillIcon: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   points: { flexDirection: 'row', alignItems: 'center', gap: space.xs, backgroundColor: colors.tileYellow },
   banner: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.warnBg, padding: space.md },
   flex: { flex: 1 },

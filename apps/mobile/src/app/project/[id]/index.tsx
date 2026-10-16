@@ -13,7 +13,8 @@ import { StageStatus } from '@/components/StageStatus';
 import { retryJob } from '@/lib/api';
 import { clearActiveProject } from '@/lib/storage';
 import { useProject } from '@/lib/useProject';
-import { mascot } from '@/theme/assets';
+import { icon3d, mascot } from '@/theme/assets';
+import { IdeaBulb } from '@/components/illustrations';
 import { extraCopy } from '@/theme/statusCopy';
 import { colors, radius, space, type } from '@/theme/tokens';
 
@@ -81,10 +82,21 @@ export default function ResultScreen() {
                 {profile ? (
                   <View style={{ gap: space.md }}>
                     <Text style={type.h3}>Profil barang</Text>
-                    <Card style={{ gap: space.sm, backgroundColor: colors.noteYellowBg, borderColor: colors.noteYellowBorder }}>
-                      <Text style={type.bodyL}>{profile.label}</Text>
-                      <Text style={type.body}>Terlihat: {profile.visible_parts.join(', ')}</Text>
-                      <Text style={type.body}>Material: {profile.material_guess}</Text>
+                    <Card style={{ gap: space.md, backgroundColor: colors.noteYellowBg, borderColor: colors.noteYellowBorder }}>
+                      <View style={styles.profileHead}>
+                        <View style={styles.profileTile}>
+                          <Image source={icon3d.botol} style={styles.profileImg} resizeMode="contain" accessible={false} />
+                        </View>
+                        <View style={{ flex: 1, gap: 2 }}>
+                          <Text style={type.h2}>{profile.label}</Text>
+                          <Text style={type.caption}>{profile.material_guess}</Text>
+                        </View>
+                      </View>
+                      <View style={styles.parts}>
+                        {profile.visible_parts.map((part, i) => (
+                          <Pill key={part} label={part} tone={i % 2 ? 'easy' : 'info'} />
+                        ))}
+                      </View>
                       {profile.uncertainties.length ? (
                         <View style={styles.info}>
                           {profile.uncertainties.map((u) => (
@@ -99,7 +111,10 @@ export default function ResultScreen() {
                 ) : null}
 
                 <View style={{ gap: space.md }}>
-                  <Text style={type.h3}>3 ide untukmu</Text>
+                  <View style={styles.ideasHead}>
+                    <IdeaBulb size={40} />
+                    <Text style={[type.h2, { flex: 1 }]}>3 ide untukmu</Text>
+                  </View>
                   {result ? (
                     result.ideas.map((idea, i) => (
                       <IdeaCard
@@ -162,6 +177,11 @@ const styles = StyleSheet.create({
   scroll: { padding: space.screen, gap: space.xl },
   bad: { alignItems: 'center', gap: space.md },
   badMascot: { width: 120, height: 150 },
+  profileHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  profileTile: { width: 64, height: 64, borderRadius: radius.tile, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '-4deg' }] },
+  profileImg: { width: 50, height: 50 },
+  parts: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  ideasHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   info: { backgroundColor: colors.blue50, borderRadius: radius.iconButton, padding: space.md, gap: space.xs },
   skel: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   skelTile: { width: 72, height: 72, borderRadius: radius.tile, backgroundColor: colors.green50 },
