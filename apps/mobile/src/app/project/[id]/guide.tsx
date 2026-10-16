@@ -1,4 +1,3 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Camera, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
@@ -16,9 +15,8 @@ import { VerifyPanel } from '@/components/VerifyPanel';
 import { ItemGrid } from '@/components/ItemGrid';
 import { Scissors } from '@/components/illustrations';
 import { Confetti, DecorCircle } from '@/components/shapes';
-import { retryJob } from '@/lib/api';
 import { clearActiveProject, getDoneSteps, setDoneSteps } from '@/lib/storage';
-import { useProject } from '@/lib/useProject';
+import { useProject, useRetryJob } from '@/lib/useProject';
 import { mascot } from '@/theme/assets';
 import { extraCopy } from '@/theme/statusCopy';
 import { colors, radius, space, type } from '@/theme/tokens';
@@ -26,12 +24,8 @@ import { colors, radius, space, type } from '@/theme/tokens';
 export default function GuideScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const q = useProject(id);
-  const qc = useQueryClient();
   const { bottom } = useSafeAreaInsets();
-  const retry = useMutation({
-    mutationFn: (jobId: string) => retryJob(id, jobId),
-    onSettled: () => qc.invalidateQueries({ queryKey: ['project', id] }),
-  });
+  const retry = useRetryJob(id);
   const [done, setDone] = useState<string[]>([]);
   const [openKit, setOpenKit] = useState(true);
 
