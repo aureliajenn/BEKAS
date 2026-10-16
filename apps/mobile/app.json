@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "platforms": [
       "android",
+      "ios",
       "web"
     ],
     "orientation": "portrait",
@@ -12,7 +13,8 @@
     "scheme": "bekas",
     "userInterfaceStyle": "light",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/logo/logo-bekas-1024.png",
+      "bundleIdentifier": "com.bekas.app"
     },
     "android": {
       "package": "com.bekas.app",
@@ -49,6 +51,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "5375f797-1d3d-434d-8250-5245c254d22d"
+      }
     }
   }
 }

@@ -12,7 +12,7 @@ import { MascotBubble } from '@/components/MascotBubble';
 import { StageStatus } from '@/components/StageStatus';
 import { assetUri, createProject, USE_FIXTURES, type Scenario } from '@/lib/api';
 import { setActiveProject } from '@/lib/storage';
-import { pencilInitialAssets } from '@/theme/assets';
+import { pencilDemoPhoto } from '@/theme/assets';
 import { extraCopy } from '@/theme/statusCopy';
 import { colors, space, type } from '@/theme/tokens';
 
@@ -21,7 +21,7 @@ const checklist = ['Satu barang terlihat utuh', 'Latar sederhana', 'Pencahayaan 
 export default function PreviewScreen() {
   const { uri, scenario } = useLocalSearchParams<{ uri: string; scenario?: Scenario }>();
   const { bottom } = useSafeAreaInsets();
-  const dummyPhoto = pencilInitialAssets.illustration;
+  const dummyPhoto = pencilDemoPhoto;
   const photoUri = USE_FIXTURES ? assetUri(dummyPhoto) : uri;
 
   const send = useMutation({

@@ -44,6 +44,8 @@ export const pencilProcessAssets: Record<string, { illustration: number; model: 
 
 export const pencilInitialAssets = pencilProcessAssets['mesh-01'];
 
+export const pencilDemoPhoto = require('../../assets/demo/tempat-pensil/references/obj_photo.jpg');
+
 /** Pose maskot per layar/state, sesuai DESIGN.md bagian 5. */
 export const mascotFor = {
   home: 'menyapa',
