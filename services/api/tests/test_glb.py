@@ -3,8 +3,9 @@ from __future__ import annotations
 import json
 import struct
 
-from app.config import Settings
-from app.routes.worker import _valid_glb
+import pytest
+
+from app.services.glb import validate_glb
 
 
 def make_glb(document: dict[str, object]) -> bytes:
@@ -16,19 +17,6 @@ def make_glb(document: dict[str, object]) -> bytes:
     ) + json_chunk
 
 
-def test_worker_lease_is_read_from_environment_and_positive(monkeypatch) -> None:
-    monkeypatch.setenv("WORKER_LEASE_SECONDS", "45")
-    assert Settings(_env_file=None).worker_lease_seconds == 45
-
-    monkeypatch.setenv("WORKER_LEASE_SECONDS", "0")
-    try:
-        Settings(_env_file=None)
-    except ValueError:
-        pass
-    else:
-        raise AssertionError("non-positive worker lease must fail Settings validation")
-
-
 def test_glb_requires_valid_container_and_renderable_mesh() -> None:
     mesh = make_glb(
         {
@@ -37,6 +25,9 @@ def test_glb_requires_valid_container_and_renderable_mesh() -> None:
         }
     )
     header_only = make_glb({"asset": {"version": "2.0"}})
-    assert _valid_glb(mesh)
-    assert not _valid_glb(header_only)
-    assert not _valid_glb(mesh[:-1])
+    validate_glb(mesh, 1024)
+    for invalid in (header_only, mesh[:-1], mesh + b"extra"):
+        with pytest.raises(ValueError):
+            validate_glb(invalid, 1024)
+    with pytest.raises(ValueError):
+        validate_glb(mesh, 10)

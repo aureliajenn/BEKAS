@@ -1,12 +1,14 @@
 # BEKAS — PRD Prototipe Hackathon
 
-**Versi:** 1.3 · **Tanggal revisi:** 16 Oktober 2026  
+**Versi:** 1.4 · **Tanggal revisi:** 16 Oktober 2026
 **Platform:** Android, React Native + Expo  
 **Asumsi perencanaan:** 48 jam, 3–4 anggota, demo online, satu pekerjaan GPU aktif. Nama acara, sponsor, rubrik, anggaran, dan durasi sebenarnya belum diberikan. Jadwal serta anggaran di bawah adalah usulan, bukan komitmen pengguna.
 
 **Revisi 1.2:** komputasi GPU berjalan pada instance cloud Vast.ai dengan worker Python otomatis, menggantikan Colab Free dan transfer manual operator. MVP tidak membuat autentikasi pengguna, termasuk anonymous sign-in. Rencana pengerjaan yang selaras dengan arsitektur Vast.ai tersedia di [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 **Revisi 1.3:** menambah sistem reward "olah dulu, setor sisanya" dari brief *Sistem Reward Poin BEKAS*: verifikasi proyek upcycle, Dompet Poin, Leaderboard RW, dan daftar bank sampah mitra. Detail, kontrak API, acceptance criteria AC9–AC14, dan batas scope ada di [bagian 17](#17-sistem-reward-poin-revisi-13). Tidak menambah teknologi baru; tetap tanpa login.
+
+**Revisi 1.4 — keputusan runtime terbaru:** backend memanggil API Space resmi `stabilityai/stable-fast-3d`, menggantikan worker Vast.ai dan fallback TripoSR. Tidak ada deployment GPU, CUDA lokal, endpoint `/worker`, token worker, atau heartbeat remote. Satu consumer mesh internal menggunakan antrean Postgres, deadline tetap, dan retry terbatas; hasil GLB disimpan di Supabase sebelum ditampilkan. Kontrak mobile tidak berubah. Rujukan Vast.ai/TripoSR pada riset, estimasi lama, dan checklist pra-migrasi di bawah adalah konteks historis, bukan pekerjaan yang harus dijalankan. Rencana aktif: [SF3D migration](docs/SF3D_MIGRATION_PLAN.md). Sistem reward tetap scope tersendiri.
 
 ## 1. Ringkasan dan pitch
 
@@ -37,9 +39,9 @@ Katalog tutorial biasa adalah baseline yang masuk akal, tetapi pengguna tetap ha
 | AC3 | Setiap input yang diterima menghasilkan tepat 3 ide berbeda; minimal 2 dinilai masuk akal oleh dua anggota tim pada 8 dari 10 foto. |
 | AC4 | Ide terpilih menghasilkan daftar alat, bahan tambahan, 4–6 langkah lengkap, estimasi waktu, dan peringatan yang relevan. |
 | AC5 | Panduan teks dapat dibaca ketika seluruh ilustrasi masih pending; setiap langkah akhirnya memiliki ilustrasi atau status gagal yang dapat dicoba ulang. |
-| AC6 | Menutup/membuka aplikasi, mengirim request dua kali, dan memutus worker GPU Vast.ai atau runner backend tidak menggandakan hasil aktif atau menghilangkan proyek. |
+| AC6 | Menutup/membuka aplikasi, request ganda, backend restart, atau kegagalan Space SF3D tidak menggandakan hasil aktif atau menghilangkan proyek. Claim stale tidak boleh mengaktifkan hasil. |
 | AC7 | Model/runtime fallback dan hasil cache ditandai dengan benar; tampilan tidak mengklaim mesh sebagai ukuran nyata. |
-| AC8 | Target warm run: ide ≤30 detik dan panduan teks ≤30 detik setelah memilih pada ≥8/10 uji tanpa antrean. Target komputasi mesh ≤120 detik sejak inferensi worker dimulai dengan model siap pada ≥8/10 uji dalam scope; waktu antrean, startup/loading model, transfer file, dan completion dicatat terpisah beserta total upload → mesh tampil. Waktu ilustrasi diukur terpisah; teks tidak menunggunya. |
+| AC8 | Target ide ≤30 detik dan panduan teks ≤30 detik setelah memilih pada ≥8/10 uji tanpa antrean. Ukur mesh sejak dispatch Space sampai GLB tampil, termasuk antrean provider dan transfer. Target komputasi worker lama tidak berlaku sebagai benchmark hosted API; tetapkan target demo setelah eval foto tim. Waktu ilustrasi diukur terpisah; teks tidak menunggunya. |
 | AC9 | **Verifikasi proyek:** setelah semua langkah dicentang, pengguna dapat mengunggah satu foto sesudah. Status tampil sebagai nama tahap (menunggu, diperiksa, disetujui, ditolak + alasan) tanpa persentase. Poin masuk hanya setelah disetujui; satu proyek maksimal satu kredit poin walau request dikirim ganda; foto sesudah yang identik (checksum) dengan foto sebelum ditolak; melewati batas harian ditolak dengan pesan jelas tanpa crash. |
 | AC10 | **Dompet Poin:** saldo sama dengan jumlah seluruh entri ledger; setiap entri menampilkan sumber, nilai, dan tanggal; teks "1 poin = Rp1" terlihat. Progres ke hadiah target dihitung dari saldo ÷ harga hadiah (data nyata). Tukar hadiah ditolak bila saldo kurang atau stok habis; tap ganda tidak memotong saldo dua kali; saldo berubah hanya setelah backend mengonfirmasi. |
 | AC11 | **Leaderboard RW:** peringkat per RW berdasarkan jumlah proyek terverifikasi bulan berjalan, bukan peringkat individu. RW pengguna ditandai; tantangan bulanan menampilkan target, hadiah bersama, dan progres nyata RW; nama kapten tim ditampilkan dari data RW. |
@@ -155,7 +157,7 @@ Panduan disimpan sebelum pekerjaan ilustrasi dibuat, dalam transaksi yang sama. 
 
 ## 9. Arsitektur software dan stack
 
-**Keputusan:** satu backend FastAPI, Supabase untuk Postgres + Storage tanpa Supabase Auth, serta worker Python dalam container pada satu instance GPU Vast.ai on-demand. Antrean berupa tabel Postgres; tidak perlu Redis atau Celery untuk satu GPU dan traffic demo. Endpoint aplikasi tidak memerlukan login atau JWT pengguna. Project ID UUID disimpan lokal untuk melanjutkan proyek, bukan sebagai bukti identitas atau kepemilikan.
+**Keputusan:** satu backend FastAPI, Supabase untuk Postgres + Storage tanpa Supabase Auth, dan API Space resmi SF3D untuk mesh. Antrean tetap tabel Postgres; satu proses Uvicorn dan consumer mesh internal. Tidak perlu Redis/Celery atau deployment GPU. UUID proyek disimpan lokal untuk melanjutkan proyek, bukan bukti identitas.
 
 ```mermaid
 flowchart TD
@@ -167,13 +169,14 @@ flowchart TD
     CPU -->|Foto, schema, prompt| OAI[OpenAI API]
     CPU -->|Simpan JSON| DB
     CPU -->|Upload ilustrasi| STORE
-    GPU[Worker GPU Python: container Vast.ai] -->|Claim job mesh berikutnya, heartbeat, complete atau fail| API
-    GPU -->|Unduh foto dan unggah GLB melalui signed URL| STORE
+    CPU -->|Foto dan sesi Gradio terisolasi| SF3D[Hugging Face SF3D Space]
+    SF3D -->|GLB sementara| CPU
+    CPU -->|Validasi dan simpan GLB| STORE
 ```
 
-Worker Vast.ai memuat model sebelum menerima pekerjaan, lalu meminta job mesh berikutnya melalui endpoint internal `/worker`. Worker mengunduh foto, menjalankan preprocessing/inferensi, memvalidasi GLB dan metadata, mengunggah hasil, lalu melaporkan completion. Setelah selesai, worker mengambil job berikutnya otomatis; saat antrean kosong, polling diberi jeda/backoff. Worker hanya memerlukan koneksi HTTPS keluar ke backend dan storage; aplikasi tidak memanggil instance GPU langsung dan tidak perlu endpoint inference publik atau public tunnel. Vast.ai menyediakan mesin/container; antrean, lease, idempotency, dan recovery pekerjaan tetap tanggung jawab backend/worker BEKAS.
+Consumer mesh mengambil job secara atomik, membaca foto dari Storage, memanggil preprocessing dan generation Space dalam satu sesi Gradio per job, mengunduh GLB terbatas, memvalidasi, mengunggah ke path per-attempt, dan mengaktifkan aset + job dalam satu transaksi. Mobile hanya polling endpoint proyek dan mengunduh signed URL dari Storage kita. Pemanggilan SDK blocking tidak boleh memblokir event loop FastAPI.
 
-**Operasi instance:** pin image Docker, CUDA/PyTorch, dependency, serta versi model yang lolos spike. Simpan bobot dalam disk/cache instance dan muat model sekali per proses. Proses worker dijalankan saat container startup dengan pengelolaan restart yang jelas. Tim memonitor log, saldo, ketersediaan worker, dan melakukan pemanasan sebelum demo. On-demand menghindari interupsi bidding, bukan jaminan bebas gangguan mesin/jaringan. Lifecycle sewa/start/stop/destroy dikelola tim pada MVP; autoscaling dan provisioning instance per-job di luar scope.
+**Operasi hosted inference:** pin versi Gradio client yang diuji. Backend menyimpan `HF_TOKEN` bila diperlukan; tidak ada kredensial HF di mobile. Antrean/kuota/availability Space berada di pihak provider. Catat total latency termasuk antrean; jangan menjanjikan target komputasi GPU lama sebagai performa API. Jalankan smoke test sebelum demo dan sediakan proyek contoh berlabel.
 
 | Komponen | Pilihan dan alasan |
 |---|---|
@@ -181,11 +184,11 @@ Worker Vast.ai memuat model sebelum menerima pekerjaan, lalu meminta job mesh be
 | Input foto | `expo-image-picker`; normalisasi orientasi, JPEG/PNG, buang metadata lokasi, resize sekitar 1.024–1.536 px, batas upload 5 MB |
 | Viewer | `react-native-webview` + halaman `<model-viewer>`; GLB, touch rotate dan zoom, tanpa AR. Uji HP fisik pada jam pertama. [S6][S7] |
 | UI state | TanStack Query atau hook polling sederhana; satu pola saja. Project ID dan progres centang disimpan lokal |
-| API/AI | FastAPI, Pydantic, OpenAI Python SDK; worker GPU Python dan dua adapter model 3D dalam repo yang sama |
+| API/AI | FastAPI, Pydantic, OpenAI Python SDK, Gradio client untuk Space SF3D |
 | Persistence | Supabase Postgres: tiga tabel inti tanpa tabel user/relasi auth; private Storage untuk file |
 | Akses MVP | Tanpa autentikasi pengguna; aplikasi mengakses FastAPI dengan UUID proyek yang disimpan lokal. Semua akses database melalui backend; tidak ada akses langsung dari mobile ke tabel Supabase |
 | Hosting API | Render service berbayar yang tetap aktif; mendukung FastAPI. Free service bisa sleep sehingga tidak cocok untuk runner kontinu. [S19][S20] |
-| GPU | Vast.ai instance on-demand; worker otomatis, satu inferensi aktif. Kandidat VRAM 12–24 GB; uji GPU/VRAM aktual, kompatibilitas container, dan muat model sebelum demo. Tarif serta kapasitas mengikuti penawaran mesin [S4][S22] |
+| Mesh | API Space resmi SF3D; satu job aktif; background removal dan generation satu sesi; kuota/provider timeout ditangani backend |
 | Update UI | Poll 2–3 detik saat foreground, perlambat ketika menunggu lama, hentikan saat background, refetch saat aktif kembali |
 
 Untuk viewer, host halaman dan JS versi terkunci pada backend atau bundle aset; batasi navigasi WebView ke halaman tepercaya. Periksa CORS aset, dukungan WebGL, pemuatan tekstur, serta URL kedaluwarsa. Target awal GLB ≤10 MB; optimalkan bila gagal, tanpa menjanjikan tidak ada kehilangan detail.
@@ -198,10 +201,10 @@ Jenis job: `mesh`, `ideas`, `guide`, `illustration`. Status masing-masing: `queu
 
 1. API menyimpan job sebelum membalas `202 Accepted`. Satu transaksi membuat proyek/job terkait; idempotency key mencegah tap ganda membuat pekerjaan baru.
 2. Consumer mengambil satu job secara atomik melalui transaksi SQL; gunakan pola `FOR UPDATE SKIP LOCKED`. Jangan pisahkan SELECT dan UPDATE tanpa perlindungan transaksi. [S17]
-3. Simpan `attempt`, `claim_token`, `lease_expires_at`, `next_run_at`, dan `error_code`. Usulan awal: heartbeat worker 20 detik, lease 90 detik, timeout komputasi mesh 5 menit, dan batas total claim 10 menit termasuk transfer; kalibrasi dari uji aktual. Worker baru claim setelah model siap. Waktu antrean dan startup sebelum claim tidak menghabiskan attempt.
-4. Worker menjaga heartbeat melalui thread/task terpisah yang tidak terblokir inferensi GPU. Worker berhenti/putus menyebabkan lease kedaluwarsa; backend dapat mengantrekan ulang dalam batas percobaan. Worker melaporkan kegagalan terstruktur bila masih terhubung; batas total claim tetap berlaku meskipun heartbeat aktif. Setelah claim selesai atau gagal, worker mengambil job berikutnya otomatis.
-5. Worker GPU atau runner CPU mengunggah file ke path per-attempt, lalu completion memeriksa claim aktif dan keberadaan aset. Commit aset aktif dan status job bersama-sama. Completion dari claim lama tidak boleh menimpa percobaan baru.
-6. Jalur SF3D → TripoSR terjadi dalam satu eksekusi worker; maksimal dua attempt job untuk kegagalan infrastruktur. Hasil worker menyertakan `job_id`, `attempt`, checksum input/output, model/version, dan timing; backend memeriksa kecocokan sebelum mengaktifkan hasil. Catat fallback agar biaya dan durasi terlihat.
+3. Simpan attempt, token claim, claim start, deadline tetap, next run, dan error terstruktur. Default awal provider mesh 600 detik ditambah buffer 120 detik untuk transfer/cleanup claim; kalibrasi dari smoke test. Tidak ada heartbeat mesh remote.
+4. Job mesh interrupted dipulihkan setelah deadline, dengan maksimal dua attempt. Auth/quota/invalid output tidak di-retry otomatis tanpa batas. Pada shutdown, hentikan/cancel pekerjaan lokal sebelum melepas slot.
+5. Backend mengunggah ke path per-attempt lalu commit aset aktif dan status job bersama-sama. Token stale atau deadline lewat tidak boleh mengaktifkan hasil.
+6. Tidak ada fallback TripoSR. Jika SF3D gagal, mesh gagal dengan pesan jelas; ide dan panduan tetap independen.
 7. Runner CPU memakai async OpenAI; maksimal 2 job teks dan 1 ilustrasi aktif, GPU maksimal 1. Jalur teks punya slot sendiri agar antrean ilustrasi tidak menahannya.
 
 Untuk MVP, API dan runner async boleh berada dalam satu container/proses, satu Uvicorn worker, dengan lifecycle start/stop yang jelas. **DB adalah sumber pekerjaan**, bukan daftar coroutine di RAM. FastAPI/Starlette BackgroundTasks sendiri bersifat in-process sehingga bukan pengganti antrean persisten. [S15][S16] Saat backend restart, lanjutkan job queued dan reclaim lease kedaluwarsa. Tidak diperlukan scheduler terpisah untuk skala ini.
@@ -215,12 +218,8 @@ Untuk MVP, API dan runner async boleh berada dalam satu container/proses, satu U
 | `GET /projects/{id}` | Hasil dan status per komponen; terbitkan signed download URL baru sesuai kebutuhan |
 | `POST /projects/{id}/guide` | Body `idea_id`; cek berasal dari proyek; buat/reuse satu job panduan; balas 202 |
 | `POST /projects/{id}/retry` | Body target job; hanya retry yang gagal dan masih di bawah batas |
-| `POST /worker/jobs/claim` | Worker GPU dengan token internal; body `worker_id`, tanpa pemilihan `job_id` oleh operator. Claim atomik job mesh eligible berikutnya dengan batas satu claim GPU aktif global; kembalikan identitas job/attempt, checksum input, claim token, URL foto dan target upload terbatas. Balas 204 jika antrean kosong |
-| `POST /worker/jobs/{id}/heartbeat` | Perpanjang lease milik claim yang masih aktif; dapat menerbitkan ulang URL transfer yang kedaluwarsa untuk claim tersebut |
-| `POST /worker/jobs/{id}/complete` | Path aset, checksum, model/version, timing; idempoten dan memeriksa claim |
-| `POST /worker/jobs/{id}/fail` | Error terstruktur; backend menentukan retry/final failure |
 
-URL aplikasi yang kedaluwarsa diterbitkan ulang melalui endpoint proyek setelah validasi proyek/aset; tanpa pemeriksaan akun pada MVP. Untuk worker GPU, URL diterbitkan ulang hanya untuk token internal dan claim aktif. DB menyimpan bucket/path, bukan signed URL sebagai identitas permanen. [S18] OpenAI key dan Supabase secret/service key hanya di backend. Container Vast.ai memakai `API_BASE_URL`, `WORKER_TOKEN`, `WORKER_ID`, dan Hugging Face read token bila model memerlukannya; jangan memasukkan secrets ke image Docker atau log. Kredensial Vast.ai untuk provisioning hanya di lingkungan pengelola instance, bukan mobile atau proses inference. Token internal mengamankan operasi job, bukan sistem login pengguna, dan tidak memberikan akses bebas ke database.
+URL aplikasi yang kedaluwarsa diterbitkan ulang melalui endpoint proyek. DB menyimpan bucket/path, bukan signed URL permanen. OpenAI, Supabase, dan HF secrets hanya di backend. Endpoint `/worker/jobs/*` sudah dipensiunkan; tidak ada worker token atau callback eksternal.
 
 ## 10. Data
 

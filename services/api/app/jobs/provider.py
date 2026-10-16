@@ -112,7 +112,7 @@ class OpenAITextProvider:
                     fallback_eligible=True,
                     request_id=_request_id(response),
                 )
-            if guide.estimated_minutes != idea.estimated_minutes:
+            if guide.estimated_minutes is not None and guide.estimated_minutes != idea.estimated_minutes:
                 raise StructuredOutputError(
                     "guide_estimate_mismatch",
                     "Model returned an estimate inconsistent with the selected idea.",

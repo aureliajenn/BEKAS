@@ -21,10 +21,6 @@ Contract source: [PRD](../PRD.md), sections 8–10. JSON keys use `snake_case` o
 | `GET` | `/projects/{id}` | Return component status, results, and fresh asset URLs |
 | `POST` | `/projects/{id}/guide` | Create/reuse a guide job after ideas exist |
 | `POST` | `/projects/{id}/retry` | Requeue an eligible failed job within its attempt budget |
-| `POST` | `/worker/jobs/claim` | Vast.ai worker claims next eligible mesh job; `204` if queue empty |
-| `POST` | `/worker/jobs/{id}/heartbeat` | Renew GPU lease and optionally refresh upload URL |
-| `POST` | `/worker/jobs/{id}/complete` | Verify uploaded GLB, then activate asset idempotently |
-| `POST` | `/worker/jobs/{id}/fail` | Report structured failure; backend decides retry |
 | `GET` | `/health` | API process health check |
 | `GET` | `/ready` | Database and Storage readiness check |
 
@@ -51,36 +47,15 @@ The client uploads raw JPEG bytes to the signed URL with the returned method and
 
 `GET /projects/{id}` returns typed `IdeasResult` and `GuideResult` objects when available, `components.mesh`, `components.ideas`, and `components.guide`, plus a per-step `illustrations` map and fresh signed URLs for active assets. Guide creation requires an accepted `IdeasResult` to be stored; until the AI runner is implemented, the endpoint returns `409 ideas_not_ready`.
 
-Migration order: apply `database/migrations/0001_initial_schema.sql`, then `0002_project_upload_idempotency.sql`. Create the private `bekas-assets` bucket as described in [`database/README.md`](../database/README.md).
+Migration order: `0001_initial_schema.sql`, `0002_project_upload_idempotency.sql`, `0003_job_claim_limits.sql`. Create private `bekas-assets` bucket as described in [`database/README.md`](../database/README.md).
 
-No endpoint authenticates an end user in the MVP. Worker endpoints require `Authorization: Bearer <WORKER_TOKEN>`; job mutation also requires an active `claim_token`. Mobile calls the API, never Supabase tables directly.
+No endpoint authenticates an end user in the MVP. Mobile project endpoints and response shapes are unchanged by hosted SF3D. Mobile calls FastAPI and uses backend-issued signed Storage URLs; it never calls the Space directly. Retired `/worker/jobs/*` endpoints return 404.
 
-## Vast.ai worker wire format
+## Hosted SF3D processing (backend only)
 
-`POST /worker/jobs/claim` request:
+One internal mesh consumer claims persisted jobs with an attempt token and fixed deadline. It invokes `stabilityai/stable-fast-3d` in an isolated Gradio session, validates/downloads the GLB, stores it in Supabase, then commits result and job together. No HTTP heartbeat/callback or GPU worker credential exists. Space temporary URLs are never exposed as durable assets.
 
-```json
-{"worker_id":"vast-gpu-01","supported_kinds":["mesh"]}
-```
-
-Successful response:
-
-```json
-{
-  "job_id":"<uuid>",
-  "project_id":"<uuid>",
-  "attempt":1,
-  "claim_token":"<uuid>",
-  "input_url":"<temporary signed download URL>",
-  "input_sha256":"<64 hex characters>",
-  "output_bucket":"bekas-assets",
-  "output_path":"projects/<project-id>/mesh/attempt-1/model.glb",
-  "output_upload_url":"<temporary signed upload URL>",
-  "lease_expires_at":"<RFC 3339 timestamp>"
-}
-```
-
-Heartbeat body contains `worker_id`, `claim_token`, and optional `refresh_upload_url`. Completion body contains `claim_token`, output bucket/path, `mime_type`, `byte_size`, `checksum_sha256`, model/version, `fallback_used`, and timing fields. A worker may process one global mesh job at a time; claim uses a Postgres advisory lock plus `FOR UPDATE SKIP LOCKED`.
+`components.mesh` still uses `queued`, `running`, `retry_wait`, `succeeded`, `failed`. Mesh asset still uses `kind=mesh`, `step_id=null`, `mime_type=model/gltf-binary`, and a fresh signed `url`. Provider quota/access/timeout errors retain `{code,message,retryable}`. Ideas/guide status is independent.
 
 ## Reward endpoints (PRD 1.3, belum diimplementasi backend)
 

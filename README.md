@@ -10,7 +10,6 @@ Dokumen acuan: [PRD](PRD.md) dan [rencana implementasi](IMPLEMENTATION_PLAN.md).
 apps/mobile/          Android app: Expo, React Native, TypeScript, Expo Router
 services/api/         FastAPI API dan runner backend
 database/migrations/  Schema Postgres tanpa tabel autentikasi pengguna
-gpu/                  Worker Vast.ai, adapter SF3D/TripoSR, notebook eksperimen
 fixtures/             Data contoh berlabel, bukan hasil foto baru
 docs/                 Kontrak API dan panduan operasional
 ```
@@ -45,15 +44,15 @@ Health check: `http://127.0.0.1:8000/health`.
 python -m pytest
 ```
 
-Salin `services/api/.env.example` ke `.env` sebelum menghubungkan provider. Jangan commit nilai secret. Fondasi API mencakup health check, siklus proyek/upload, antrean job, dan endpoint worker GPU. Runner AI untuk ide, panduan, dan ilustrasi masih perlu dibuat.
+Salin `services/api/.env.example` ke `.env` sebelum menghubungkan provider. Jangan commit nilai secret. API mencakup health check, proyek/upload, antrean persisten, dan consumer mesh hosted SF3D. Integrasi consumer teks/ilustrasi masih perlu diselesaikan.
 
 ## Arsitektur MVP
 
 - Mobile memanggil FastAPI; mobile tidak mengakses tabel Supabase langsung.
 - FastAPI memakai Postgres untuk proyek dan antrean persisten, serta bucket Supabase Storage private `bekas-assets` untuk aset.
 - Tidak ada login atau autentikasi pengguna pada MVP.
-- Per PRD, GPU memakai worker Python otomatis pada instance Vast.ai. Worker pull job melalui API dan transfer aset melalui signed URL Storage; tidak ada port inference publik.
-- Endpoint proyek mengelola upload, antrean mesh/ide, polling status, guide, dan retry. Worker GPU menangani job mesh.
-- Runner AI CPU untuk ide, panduan, dan ilustrasi belum dibuat; job tersebut tetap queued sampai consumer diimplementasikan.
+- Backend memanggil API Space resmi `stabilityai/stable-fast-3d`, menyimpan GLB di Storage, dan menerbitkan signed URL lewat endpoint proyek. Tidak perlu worker GPU terpisah atau CUDA.
+- Endpoint proyek/upload, polling status, guide, dan retry tetap kompatibel dengan frontend.
+- Source runner teks tersedia tetapi integrasinya belum lengkap; job ide/panduan/ilustrasi tetap queued sampai consumer selesai diintegrasikan.
 
-Lihat [setup Vast.ai worker](gpu/worker/README.md) untuk image, dependency model, secrets, run command, dan lifecycle instance. Akun penyedia, Supabase, dan instance GPU masih perlu dikonfigurasi dan diuji nyata.
+Lihat [setup API dan hosted SF3D](services/api/README.md), [rencana migrasi](docs/SF3D_MIGRATION_PLAN.md), dan [handoff](docs/AGENT_HANDOFF.md). Tidak ada `WORKER_TOKEN`; `HF_TOKEN` opsional disimpan di backend. Terapkan migration 0001–0003 sebelum menjalankan consumer mesh. Gunakan satu proses Uvicorn.

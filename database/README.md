@@ -1,6 +1,6 @@
 # Database and Storage
 
-Apply `migrations/0001_initial_schema.sql`, then `migrations/0002_project_upload_idempotency.sql`, to the BEKAS Supabase Postgres project through the SQL editor or Supabase CLI. Migrations create only `projects`, `jobs`, and `assets`; they do not create auth/user tables or user ownership fields. RLS is enabled with no client policies, and direct `anon`/`authenticated` table privileges are revoked.
+Apply `0001_initial_schema.sql`, `0002_project_upload_idempotency.sql`, then `0003_job_claim_limits.sql` from `migrations/` to Supabase Postgres. Migration 0003 is required by the internal hosted-SF3D consumer: it records claim start and derives project processing status from non-terminal jobs. Keep existing migration history; no table/column removal is required for replacing the remote worker. Migrations create only `projects`, `jobs`, and `assets`; RLS denies direct client table access.
 
 Create one private Storage bucket before using upload endpoints:
 

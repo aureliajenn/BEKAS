@@ -108,3 +108,20 @@ def test_storage_creates_signed_urls_from_supabase_client() -> None:
 
     assert "upload/input.jpg" in upload_url
     assert "download/input.jpg" in download_url
+
+
+def test_storage_reads_real_async_stream_and_checks_input_identity(monkeypatch):
+    import hashlib
+
+    data = jpeg_bytes()
+
+    class Stream(httpx.AsyncByteStream):
+        async def __aiter__(self):
+            yield data[:20]
+            yield data[20:]
+
+    response = httpx.Response(200, headers={"content-type": "image/jpeg"}, stream=Stream())
+    service = make_storage_service(monkeypatch, response)
+    result, mime = asyncio.run(service.read_uploaded_image("bekas-assets", "input.jpg", hashlib.sha256(data).hexdigest()))
+    assert result == data
+    assert mime == "image/jpeg"

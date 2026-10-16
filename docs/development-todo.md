@@ -1,5 +1,7 @@
 # BEKAS — To-do Development untuk AI
 
+> **Runtime update 2026-10-16:** GPU group F and Vast.ai setup/lifecycle tasks in G below are superseded by [SF3D_MIGRATION_PLAN.md](SF3D_MIGRATION_PLAN.md). The separate worker and its HTTP endpoints have been removed. FastAPI now runs an internal hosted-SF3D mesh consumer. Old group F, worker-token/heartbeat/CUDA tasks and their checkboxes are historical; do not rebuild them. Text/illustration integration, deployed Supabase and device acceptance remain separate unfinished work. See [current handoff](AGENT_HANDOFF.md) for verified evidence.
+
 **Tanggal:** 15 Oktober 2026  
 **Acuan:** [PRD v1.2](../PRD.md), [rencana implementasi](../IMPLEMENTATION_PLAN.md), dan audit source terbaru.  
 **Tujuan:** satu foto baru dari Android menghasilkan mesh melalui Vast.ai, tiga ide, panduan, dan ilustrasi tanpa operasi manual per foto.

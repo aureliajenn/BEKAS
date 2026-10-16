@@ -89,7 +89,7 @@ class SupabaseStorageService:
             )
         return str(signed_url)
 
-    async def inspect_uploaded_image(self, bucket: str, path: str) -> StoredImage:
+    async def _read_image(self, bucket: str, path: str) -> tuple[bytes, StoredImage]:
         encoded_bucket = quote(bucket, safe="")
         encoded_path = quote(path, safe="/")
         url = f"{self.supabase_url}/storage/v1/object/{encoded_bucket}/{encoded_path}"
@@ -114,7 +114,7 @@ class SupabaseStorageService:
                         raise ApiError(413, "image_too_large", "Foto melebihi batas 5 MB")
 
                     content_type = response.headers.get("content-type", "").split(";", maxsplit=1)[0].lower()
-                    for chunk in response.iter_bytes():
+                    async for chunk in response.aiter_bytes():
                         chunks.extend(chunk)
                         if len(chunks) > self.max_upload_bytes:
                             raise ApiError(413, "image_too_large", "Foto melebihi batas 5 MB")
@@ -141,10 +141,33 @@ class SupabaseStorageService:
             raise ApiError(422, "invalid_image_dimensions", "Ukuran foto harus maksimal 1.536 px per sisi")
 
         data = bytes(chunks)
-        return StoredImage(
+        return data, StoredImage(
             mime_type=content_type,
             byte_size=len(data),
             checksum_sha256=hashlib.sha256(data).hexdigest(),
             width=width,
             height=height,
         )
+
+    async def inspect_uploaded_image(self, bucket: str, path: str) -> StoredImage:
+        _, image = await self._read_image(bucket, path)
+        return image
+
+    async def read_uploaded_image(self, bucket: str, path: str, checksum: str) -> tuple[bytes, str]:
+        data, image = await self._read_image(bucket, path)
+        if image.checksum_sha256 != checksum:
+            raise ApiError(409, "input_checksum_mismatch", "Foto sumber telah berubah.", retryable=False)
+        return data, image.mime_type
+
+    async def upload_glb(self, bucket: str, path: str, data: bytes) -> None:
+        url = f"{self.supabase_url}/storage/v1/object/{quote(bucket, safe='')}/{quote(path, safe='/')}"
+        try:
+            async with httpx.AsyncClient(timeout=30) as client:
+                response = await client.post(url, content=data, headers={
+                    "apikey": self.service_role_key,
+                    "Authorization": f"Bearer {self.service_role_key}",
+                    "Content-Type": "model/gltf-binary", "x-upsert": "true",
+                })
+                response.raise_for_status()
+        except httpx.HTTPError as exc:
+            raise ApiError(502, "mesh_upload_failed", "Model 3D belum dapat disimpan.", retryable=True) from exc

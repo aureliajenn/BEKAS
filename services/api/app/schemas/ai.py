@@ -60,6 +60,7 @@ class GuideResult(BaseModel):
     schema_version: str = Field(min_length=1, max_length=40)
     idea_id: str = Field(min_length=1, max_length=100)
     title: str = Field(min_length=1, max_length=160)
+    estimated_minutes: int | None = Field(default=None, gt=0, le=600)
     materials: list[str] = Field(max_length=40)
     tools: list[str] = Field(max_length=40)
     safety_notes: list[str] = Field(max_length=40)

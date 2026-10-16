@@ -1,5 +1,3 @@
 # Legacy notebook operator
 
-This folder describes the earlier manual Colab workflow. It is not part of the current Vast.ai automatic worker path. Use [`gpu/worker`](../../gpu/worker/README.md) for the MVP cloud worker.
-
-Do not use manual operator claims alongside a Vast.ai worker; the backend allows only one global active mesh claim.
+Manual Colab/operator and Vast.ai worker workflows are retired. FastAPI calls the official hosted SF3D Space and stores the resulting GLB. See [API setup](../../services/api/README.md).

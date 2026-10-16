@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -23,8 +24,16 @@ class Settings(BaseSettings):
     max_mesh_attempts: int = 2
     max_job_attempts: int = 3
 
-    worker_token: str | None = None
+    sf3d_space_id: str = "stabilityai/stable-fast-3d"
+    hf_token: SecretStr | None = None
+    mesh_job_timeout_seconds: int = Field(default=600, ge=30, le=1800)
+    mesh_poll_seconds: float = Field(default=3, gt=0)
+    mesh_retry_seconds: int = Field(default=15, ge=1)
+    mesh_enabled: bool = True
     openai_api_key: str | None = None
     text_model: str = "gpt-6-luna"
     text_fallback_model: str = "gpt-6.1-sol"
     image_model: str = "gpt-image-2.5-flare"
+    openai_request_timeout_seconds: int = Field(default=60, gt=0)
+    text_retry_base_seconds: int = Field(default=5, gt=0)
+    text_retry_max_delay_seconds: int = Field(default=300, gt=0)
