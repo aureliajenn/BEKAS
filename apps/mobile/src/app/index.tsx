@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Card, ProgressBar } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
+import { HeaderBadges } from '@/components/HeaderBadges';
 import { Coin } from '@/components/shapes';
 import { StageStatus } from '@/components/StageStatus';
 import { pickPhoto } from '@/lib/photo';
@@ -15,7 +16,7 @@ import { fetchLeaderboard, fetchWallet, getParticipant } from '@/lib/rewards';
 import { getActiveProject, getDoneSteps } from '@/lib/storage';
 import { useProject } from '@/lib/useProject';
 import { icon3d } from '@/theme/assets';
-import { colors, radius, space, touch, type } from '@/theme/tokens';
+import { colors, radius, space, type } from '@/theme/tokens';
 
 const OVERLAP = 40;
 
@@ -58,7 +59,7 @@ export default function HomeScreen() {
           pose="menyapa"
           mascotSize={170}
           overlap={OVERLAP}
-          topRight={<CoinBadge />}
+          topRight={<HeaderBadges />}
         />
 
         <View style={[styles.body, { marginTop: -OVERLAP }]}>
@@ -114,22 +115,6 @@ export default function HomeScreen() {
 function greeting() {
   const h = new Date().getHours();
   return h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat siang' : h < 18 ? 'Selamat sore' : 'Selamat malam';
-}
-
-/** Saldo poin di pojok header (data dompet nyata). */
-function CoinBadge() {
-  const wallet = useQuery({ queryKey: ['wallet'], queryFn: fetchWallet });
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={`Saldo ${wallet.data?.balance ?? 0} poin`}
-      onPress={() => router.push('/wallet')}
-      style={styles.coinBadge}
-    >
-      <Coin size={22} />
-      <Text style={[type.bodyL, { color: colors.ink }]}>{wallet.data ? wallet.data.balance.toLocaleString('id-ID') : '–'}</Text>
-    </Pressable>
-  );
 }
 
 function RewardCards() {
@@ -263,15 +248,6 @@ const styles = StyleSheet.create({
   denied: { backgroundColor: colors.dangerBg, borderRadius: radius.iconButton, padding: space.md },
   tiles: { flexDirection: 'row', gap: space.md },
   pastel: { gap: space.xs, minHeight: 150 },
-  coinBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-    backgroundColor: colors.white,
-    borderRadius: radius.pill,
-    paddingHorizontal: space.md,
-    minHeight: touch.min - 8,
-  },
   playDepth: { width: 52, height: 52, borderRadius: radius.iconButton, backgroundColor: colors.green700 },
   play: { width: 52, height: 47, borderRadius: radius.iconButton, backgroundColor: colors.green500, alignItems: 'center', justifyContent: 'center' },
   tip: { backgroundColor: colors.blue50, borderRadius: radius.card, padding: space.lg },

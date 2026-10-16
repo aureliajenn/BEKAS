@@ -8,6 +8,7 @@ import { goBack } from '@/lib/nav';
 import { Card, OfflineBanner, Pill, ProgressBar } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
+import { Flame } from '@/components/shapes';
 import { ApiFailure } from '@/lib/api';
 import { fetchRewards, fetchWallet, newRedeemKey, redeem } from '@/lib/rewards';
 import { extraCopy } from '@/theme/statusCopy';
@@ -70,6 +71,20 @@ export default function WalletScreen() {
                 ? 'Poinmu sudah cukup untuk hadiah ini.'
                 : `${fmt(w.balance)} dari ${fmt(target.price_points)} poin. Kurang ${fmt(target.price_points - w.balance)} poin.`}
             </Text>
+          </Card>
+        ) : null}
+
+        {w ? (
+          <Card style={[styles.streak, { backgroundColor: colors.noteYellowBg, borderColor: colors.noteYellowBorder }]}>
+            <Flame size={44} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={type.h3}>{w.weekly_streak ?? 0} minggu berturut-turut</Text>
+              <Text style={type.caption}>
+                {w.verified_this_week
+                  ? 'Minggu ini sudah ada proyek terverifikasi. Lanjutkan minggu depan.'
+                  : 'Olah 1 barang minggu ini supaya streak tidak putus.'}
+              </Text>
+            </View>
           </Card>
         ) : null}
 
@@ -180,6 +195,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   scroll: { padding: space.screen, gap: space.lg },
+  streak: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   rewardRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   rewardIcon: { width: 48, height: 48, borderRadius: radius.iconButton, backgroundColor: colors.green100, alignItems: 'center', justifyContent: 'center' },
   entry: { flexDirection: 'row', alignItems: 'center', gap: space.md },

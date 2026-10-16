@@ -14,6 +14,7 @@ import {
   type CreateProjectResponse,
 } from './api';
 import { getJSON, setJSON } from './storage';
+import { weeklyStreak } from './streak';
 
 // ---------- Peserta: ID acak perangkat + RW. Bukan autentikasi (PRD §17.1). ----------
 
@@ -199,11 +200,14 @@ async function fixtureWallet(): Promise<Wallet> {
   }));
   const ledger = [...earned, ...spent, ...seedLedger()].sort((a, b) => b.created_at.localeCompare(a.created_at));
   const today = new Date().toISOString().slice(0, 10);
+  const streak = weeklyStreak(ledger.filter((e) => e.source === 'upcycle').map((e) => e.created_at), Date.now());
   return {
     balance: ledger.reduce((sum, e) => sum + e.amount, 0),
     point_value_idr: 1,
     daily_cap: DAILY_VERIFY_CAP,
     verified_today: earned.filter((e) => e.created_at.startsWith(today)).length,
+    weekly_streak: streak.streak,
+    verified_this_week: streak.thisWeek,
     ledger,
     redemptions: store.redemptions.map<Redemption>((r) => ({
       redemption_id: r.key,

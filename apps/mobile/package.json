@@ -45,7 +45,7 @@
     "start": "expo start",
     "android": "expo start --android",
     "typecheck": "tsc --noEmit",
-    "check": "node --experimental-strip-types --no-warnings src/lib/wire.check.ts"
+    "check": "node --experimental-strip-types --no-warnings src/lib/wire.check.ts && node --experimental-strip-types --no-warnings src/lib/streak.check.ts"
   },
   "private": true
 }

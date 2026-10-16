@@ -120,6 +120,9 @@ export interface Wallet {
   point_value_idr: number;
   daily_cap: number;
   verified_today: number;
+  /** PRD 1.4: minggu berturut-turut dengan proyek terverifikasi; opsional untuk backend lama. */
+  weekly_streak?: number;
+  verified_this_week?: boolean;
   ledger: LedgerEntry[];
   redemptions: Redemption[];
   is_fixture?: boolean;
