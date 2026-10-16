@@ -81,32 +81,32 @@
         "id": "pensil-bentuk-wadah",
         "order": 1,
         "title": "Siapkan wadah botol",
-        "instruction": "Lepas label biru, cuci botol dengan sabun dan air, lalu keringkan dengan kain lap. Tentukan tinggi wadah sesuai alat tulis yang akan disimpan. Gunakan penggaris, selotip kertas, dan spidol untuk membuat garis potong melingkar di bawah bahu botol. Minta orang dewasa memotong bagian atas dengan cutter dan gunting di atas alas potong. Sisihkan bagian leher dan tutup; lepas selotip, lalu haluskan seluruh tepi dengan ampelas halus hingga tidak ada bagian tajam. Bersihkan sisa ampelas sebelum lanjut.",
-        "expected_result": "Wadah silinder terbuka tanpa label, leher, atau tutup. Tepi potongan halus dan bagian bawah transparan beralur tetap utuh, sesuai Mesh 2.",
+        "instruction": "• Lepas label, cuci botol, lalu keringkan.\n• Tandai garis potong melingkar di bawah bahu botol, sesuai tinggi alat tulis.\n• Minta orang dewasa memotong di atas alas potong, dengan mata pisau menjauh dari tangan dan tubuh.\n• Sisihkan bagian atas dan lepas selotip. Ampelas tepi hingga halus, lalu bersihkan sisanya.",
+        "expected_result": "Wadah terbuka dengan tepi halus dan dasar botol tetap utuh.",
         "illustration_prompt": "Ilustrasi tutorial 2D satu panel: wadah bawah botol transparan tanpa label, leher, atau tutup, dengan bibir rata dan halus. Tangan mengampelas tepi wadah secara aman. Pertahankan dasar beralur. Belum ada kertas, lis, atau pita hias. Tanpa tulisan atau ukuran."
       },
       {
         "id": "pensil-kertas-polkadot",
         "order": 2,
         "title": "Tempel kertas polkadot pink",
-        "instruction": "Ukur keliling wadah dengan pita ukur lentur. Tentukan tinggi lapisan pada bagian atas wadah agar bagian bawah yang beralur tetap terlihat. Tandai kertas dengan penggaris dan spidol, sisakan sedikit bagian untuk sambungan, lalu potong berbentuk persegi panjang dengan gunting. Oleskan lem tipis sesuai petunjuk kemasan dan tempel kertas mengelilingi bagian atas wadah. Rapikan sambungan di belakang dan tunggu sampai menempel kuat.",
-        "expected_result": "Bagian atas wadah terlapisi kertas pink muda bermotif polkadot, sementara bagian bawah plastik transparan beralur masih terlihat, sesuai Mesh 3.",
+        "instruction": "• Ukur keliling dan tinggi bagian atas wadah; biarkan dasar beralur terlihat.\n• Potong kertas sesuai ukuran, lebihkan sedikit untuk sambungan.\n• Oleskan lem tipis sesuai petunjuk, lalu tempel kertas mengelilingi wadah.\n• Rapikan sambungan di belakang dan tunggu hingga merekat.",
+        "expected_result": "Bagian atas berlapis kertas polkadot pink; bagian bawah tetap transparan.",
         "illustration_prompt": "Ilustrasi tutorial 2D satu panel: tangan menempelkan kertas pink muda bermotif polkadot mengelilingi bagian atas wadah botol terbuka. Bagian bawah transparan beralur tetap terlihat. Sambungan kertas berada di belakang. Belum ada lis pink atau simpul merah. Tanpa tulisan atau ukuran."
       },
       {
         "id": "pensil-lis-pink",
         "order": 3,
         "title": "Pasang dua lis pita pink",
-        "instruction": "Ukur dua potong pita pink mengikuti keliling wadah, sisakan sedikit bagian untuk sambungan, lalu potong dengan gunting. Tempel lis pertama mengelilingi tepi atas wadah yang sudah halus. Tempel lis kedua pada batas bawah kertas dekoratif. Letakkan sambungan kedua lis di belakang, tekan perlahan agar rapi, lalu tunggu lem menempel kuat.",
-        "expected_result": "Dua lis pink terpasang rapi: satu di tepi atas wadah dan satu di batas bawah kertas polkadot. Bagian bawah transparan tetap terbuka pandang, sesuai Mesh 4.",
+        "instruction": "• Potong dua pita pink sepanjang keliling wadah, lebihkan sedikit untuk sambungan.\n• Tempel satu pita di tepi atas yang sudah halus, satu lagi di batas bawah kertas.\n• Rapikan sambungan di belakang, tekan perlahan, lalu tunggu hingga merekat.",
+        "expected_result": "Dua lis pink membingkai bagian atas dan bawah kertas polkadot.",
         "illustration_prompt": "Ilustrasi tutorial 2D satu panel: wadah botol terbuka dengan kertas polkadot pink muda pada bagian atas dan dasar transparan beralur. Lis pink atas sudah terpasang; tangan menekan lis pink kedua pada batas bawah kertas. Belum ada simpul merah. Tanpa tulisan atau ukuran."
       },
       {
         "id": "pensil-pita-merah",
         "order": 4,
         "title": "Tambahkan simpul pita merah",
-        "instruction": "Bentuk pita kain merah menjadi simpul dekoratif dan rapikan ujungnya dengan gunting. Tempel simpul di bagian depan pada lapisan kertas, di antara kedua lis pink. Biarkan lem mengering sepenuhnya sesuai petunjuk kemasan. Pastikan hiasan melekat, tepi wadah tidak tajam, dan wadah berdiri stabil sebelum memasukkan pensil, pulpen, serta penggaris secukupnya.",
-        "expected_result": "Tempat pensil selesai dengan kertas polkadot pink muda, dua lis pink, dan simpul pita merah di depan. Bagian bawah transparan beralur tetap terlihat, sesuai Mesh 5.",
+        "instruction": "• Bentuk simpul pita merah dan rapikan ujungnya.\n• Tempel di depan wadah, di antara dua lis pink.\n• Tunggu lem kering sepenuhnya sesuai petunjuk kemasan.\n• Pastikan hiasan kuat, tepi halus, dan wadah stabil sebelum diisi alat tulis.",
+        "expected_result": "Tempat pensil polkadot pink dengan dua lis dan simpul merah, siap digunakan.",
         "illustration_prompt": "Ilustrasi tutorial 2D satu panel: tangan menempelkan simpul pita kain merah pada bagian depan wadah berhias kertas polkadot pink muda, di antara dua lis pink. Pertahankan bagian bawah botol transparan beralur. Wadah masih kosong selama penempelan. Tanpa tulisan atau ukuran."
       }
     ]

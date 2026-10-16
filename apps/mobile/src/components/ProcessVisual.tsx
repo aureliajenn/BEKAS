@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { JobStatus } from '@/types/contracts';
-import { extraCopy } from '@/theme/statusCopy';
 import { colors, radius, space, touch, type } from '@/theme/tokens';
 import { LocalMeshViewer } from './LocalMeshViewer';
 import { StageStatus } from './StageStatus';
@@ -60,7 +59,6 @@ export function ProcessVisual(props: Props) {
           </View>
         )}
       </View>
-      {view === '3d' ? <Text style={styles.caption}>{extraCopy.meshDisclaimer}</Text> : null}
     </View>
   );
 }

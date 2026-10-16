@@ -1,8 +1,8 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 
 import { mascot } from '../theme/assets';
-import { extraCopy, type JobStatus } from '../theme/statusCopy';
-import { colors, radius, space, type } from '../theme/tokens';
+import { type JobStatus } from '../theme/statusCopy';
+import { colors, radius, space } from '../theme/tokens';
 import { MeshViewer } from './MeshViewer';
 import { LocalMeshViewer } from './LocalMeshViewer';
 import { StageStatus } from './StageStatus';
@@ -47,7 +47,6 @@ export function MeshViewerFrame({ status, meshUrl, meshAsset, photoUrl, labelOve
           </>
         )}
       </View>
-      <Text style={[type.caption, { textAlign: 'center' }]}>{extraCopy.meshDisclaimer}</Text>
     </View>
   );
 }

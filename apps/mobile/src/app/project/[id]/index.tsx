@@ -83,18 +83,19 @@ export default function ResultScreen() {
                   <View style={{ gap: space.md }}>
                     <Text style={type.h3}>Profil barang</Text>
                     <Card style={{ gap: space.sm }}>
-                      <Text style={type.bodyL}>{profile.label}</Text>
-                      <Text style={type.body}>Terlihat: {profile.visible_parts.join(', ')}</Text>
-                      <Text style={type.body}>Material: {profile.material_guess}</Text>
-                      {profile.uncertainties.length ? (
-                        <View style={styles.info}>
-                          {profile.uncertainties.map((u) => (
-                            <Text key={u} style={[type.body, { color: colors.blue600 }]}>
-                              • {u}
-                            </Text>
-                          ))}
-                        </View>
-                      ) : null}
+                      <Text style={type.bodyL}>{p.is_fixture ? 'Botol plastik' : profile.label}</Text>
+                      <Text style={type.body}>
+                        {p.is_fixture
+                          ? 'Botol berbentuk silinder dengan badan transparan, tutup dan label biru, serta bagian bawah beralur.'
+                          : `Material: ${profile.material_guess}`}
+                      </Text>
+                      {/* {p.is_fixture || profile.uncertainties.length ? (
+                        // <Text style={[type.body, styles.note]}>
+                        //   {p.is_fixture
+                        //     ? 'Ukuran dan jenis plastik belum dipastikan.'
+                        //     : profile.uncertainties.join('. ')}
+                        // </Text>
+                      ) : null} */}
                     </Card>
                   </View>
                 ) : null}
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
   scroll: { padding: space.screen, gap: space.xl },
   bad: { alignItems: 'center', gap: space.md },
   badMascot: { width: 120, height: 150 },
-  info: { backgroundColor: colors.blue50, borderRadius: radius.iconButton, padding: space.md, gap: space.xs },
+  note: { color: colors.muted },
   skel: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   skelTile: { width: 72, height: 72, borderRadius: radius.tile, backgroundColor: colors.green50 },
   skelLine: { height: 14, borderRadius: radius.pill, backgroundColor: colors.line },
