@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { goBack } from '@/lib/nav';
 import { ItemGrid } from '@/components/ItemGrid';
 import { Clock, CoinStack, IdeaBulb, PlantPot } from '@/components/illustrations';
-import { Card, OfflineBanner, SafetyNote } from '@/components/Card';
+import { Card, IlluTile, OfflineBanner, SafetyNote } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
 import { StageStatus } from '@/components/StageStatus';
@@ -54,9 +54,9 @@ export default function IdeaDetailScreen() {
         </View>
 
         <Card style={styles.purpose}>
-          <View style={styles.purposeArt}>
+          <IlluTile bg={colors.tileYellow} size={64} tilt={-4}>
             <IdeaBulb size={52} />
-          </View>
+          </IlluTile>
           <View style={{ flex: 1, gap: space.xs }}>
             <Text style={type.h3}>Kegunaan</Text>
             <Text style={type.body}>{idea.purpose}</Text>
@@ -126,6 +126,5 @@ const styles = StyleSheet.create({
   stats: { flexDirection: 'row', gap: space.sm },
   stat: { flex: 1, borderRadius: radius.card, padding: space.md, alignItems: 'center', gap: 2 },
   purpose: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  purposeArt: { width: 64, height: 64, borderRadius: radius.tile, backgroundColor: colors.tileYellow, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '-4deg' }] },
   footer: { paddingHorizontal: space.screen, paddingTop: space.sm, gap: space.sm, backgroundColor: colors.bg },
 });
