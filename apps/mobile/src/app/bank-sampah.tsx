@@ -4,7 +4,7 @@ import { ActivityIndicator, Linking, ScrollView, StyleSheet, Text, View } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { goBack } from '@/lib/nav';
-import { Card, OfflineBanner, Pill } from '@/components/Card';
+import { Card, IlluTile, OfflineBanner, Pill } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { PlainHeader } from '@/components/GreenHeader';
 import { USE_FIXTURES } from '@/lib/api';
@@ -46,9 +46,9 @@ export default function BankSampahScreen() {
         {q.data?.map((b, i) => (
           <Card key={b.id} style={{ gap: space.sm }}>
             <View style={styles.head}>
-              <View style={[styles.tile, { backgroundColor: tiles[i % tiles.length], transform: [{ rotate: `${i % 2 ? 4 : -4}deg` }] }]}>
+              <IlluTile bg={tiles[i % tiles.length]} size={56} tilt={i % 2 ? 4 : -4}>
                 <MapPinArt size={44} />
-              </View>
+              </IlluTile>
               <Text style={[type.h3, { flex: 1 }]}>{b.name}</Text>
             </View>
             <View style={styles.line}>
@@ -97,5 +97,4 @@ const styles = StyleSheet.create({
   bannerArt: { width: 92, height: 92, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '6deg' }] },
   spark: { position: 'absolute', top: 2, left: 0 },
   head: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  tile: { width: 56, height: 56, borderRadius: radius.tile, alignItems: 'center', justifyContent: 'center' },
 });
