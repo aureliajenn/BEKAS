@@ -1,0 +1,1 @@
+"""BEKAS API application package."""

@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0",
+  "id": "tempat-pensil",
+  "display_label": "Contoh tersimpan",
+  "content_source": "curated_from_team_description",
+  "ready_for_integration": true,
+  "object_profile": {
+    "label": "Botol plastik transparan bertutup biru",
+    "visible_parts": [
+      "Badan botol silinder transparan",
+      "Leher dan tutup biru",
+      "Label biru",
+      "Bagian bawah beralur"
+    ],
+    "material_guess": "Plastik transparan; jenis resin belum dipastikan",
+    "uncertainties": [
+      "Ukuran dan ketebalan botol belum diukur",
+      "Deskripsi mengikuti model contoh tim, bukan analisis foto pengguna"
+    ]
+  },
+  "idea": {
+    "id": "idea-alat-tulis",
+    "title": "Tempat pensil polkadot pink",
+    "purpose": "Merapikan pensil, pulpen, dan penggaris dalam wadah berhias kertas polkadot pink, dua lis pink, dan simpul pita merah.",
+    "difficulty": "Mudah",
+    "estimated_minutes": 45,
+    "extra_materials": [
+      "Kertas dekoratif pink muda bermotif polkadot",
+      "Pita pink untuk dua lis melingkar",
+      "Pita kain merah untuk satu simpul hias",
+      "Lem kerajinan tanpa pemanasan yang cocok untuk plastik, kertas, dan kain",
+      "Ampelas halus",
+      "Selotip kertas untuk membantu menandai garis potong",
+      "Sabun cuci dan air bersih"
+    ],
+    "tools": [
+      "Gunting",
+      "Cutter, hanya digunakan orang dewasa",
+      "Alas potong",
+      "Spidol",
+      "Penggaris",
+      "Pita ukur lentur",
+      "Kain lap"
+    ],
+    "safety_notes": [
+      "Minta orang dewasa melakukan pemotongan awal dengan cutter di atas alas potong; arahkan mata pisau menjauh dari tubuh dan tangan.",
+      "Haluskan seluruh tepi potongan sebelum menghias. Jangan gunakan wadah bila tepinya masih tajam atau plastiknya retak.",
+      "Gunakan lem sesuai petunjuk kemasan, di tempat berventilasi, dan tunggu sampai benar-benar kering sebelum dipakai."
+    ]
+  },
+  "guide": {
+    "schema_version": "1.0",
+    "idea_id": "idea-alat-tulis",
+    "title": "Tempat pensil polkadot pink",
+    "materials": [
+      "Satu botol air mineral plastik bekas transparan",
+      "Kertas dekoratif pink muda bermotif polkadot",
+      "Pita pink untuk dua lis melingkar",
+      "Pita kain merah untuk satu simpul hias",
+      "Lem kerajinan tanpa pemanasan yang cocok untuk plastik, kertas, dan kain",
+      "Ampelas halus",
+      "Selotip kertas untuk membantu menandai garis potong",
+      "Sabun cuci dan air bersih"
+    ],
+    "tools": [
+      "Gunting",
+      "Cutter, hanya digunakan orang dewasa",
+      "Alas potong",
+      "Spidol",
+      "Penggaris",
+      "Pita ukur lentur",
+      "Kain lap"
+    ],
+    "safety_notes": [
+      "Minta orang dewasa melakukan pemotongan awal dengan cutter di atas alas potong; arahkan mata pisau menjauh dari tubuh dan tangan.",
+      "Haluskan seluruh tepi potongan sebelum menghias. Jangan gunakan wadah bila tepinya masih tajam atau plastiknya retak.",
+      "Gunakan lem sesuai petunjuk kemasan, di tempat berventilasi, dan tunggu sampai benar-benar kering sebelum dipakai."
+    ],
+    "steps": [
+      {
+        "id": "pensil-bentuk-wadah",
+        "order": 1,
+        "title": "Siapkan wadah botol",
+        "instruction": "• Lepas label, cuci botol, lalu keringkan.\n• Tandai garis potong melingkar di bawah bahu botol, sesuai tinggi alat tulis.\n• Minta orang dewasa memotong di atas alas potong, dengan mata pisau menjauh dari tangan dan tubuh.\n• Sisihkan bagian atas dan lepas selotip. Ampelas tepi hingga halus, lalu bersihkan sisanya.",
+        "expected_result": "Wadah terbuka dengan tepi halus dan dasar botol tetap utuh.",
+        "illustration_prompt": "Ilustrasi tutorial 2D satu panel: wadah bawah botol transparan tanpa label, leher, atau tutup, dengan bibir rata dan halus. Tangan mengampelas tepi wadah secara aman. Pertahankan dasar beralur. Belum ada kertas, lis, atau pita hias. Tanpa tulisan atau ukuran."
+      },
+      {
+        "id": "pensil-kertas-polkadot",
+        "order": 2,
+        "title": "Tempel kertas polkadot pink",
+        "instruction": "• Ukur keliling dan tinggi bagian atas wadah; biarkan dasar beralur terlihat.\n• Potong kertas sesuai ukuran, lebihkan sedikit untuk sambungan.\n• Oleskan lem tipis sesuai petunjuk, lalu tempel kertas mengelilingi wadah.\n• Rapikan sambungan di belakang dan tunggu hingga merekat.",
+        "expected_result": "Bagian atas berlapis kertas polkadot pink; bagian bawah tetap transparan.",
+        "illustration_prompt": "Ilustrasi tutorial 2D satu panel: tangan menempelkan kertas pink muda bermotif polkadot mengelilingi bagian atas wadah botol terbuka. Bagian bawah transparan beralur tetap terlihat. Sambungan kertas berada di belakang. Belum ada lis pink atau simpul merah. Tanpa tulisan atau ukuran."
+      },
+      {
+        "id": "pensil-lis-pink",
+        "order": 3,
+        "title": "Pasang dua lis pita pink",
+        "instruction": "• Potong dua pita pink sepanjang keliling wadah, lebihkan sedikit untuk sambungan.\n• Tempel satu pita di tepi atas yang sudah halus, satu lagi di batas bawah kertas.\n• Rapikan sambungan di belakang, tekan perlahan, lalu tunggu hingga merekat.",
+        "expected_result": "Dua lis pink membingkai bagian atas dan bawah kertas polkadot.",
+        "illustration_prompt": "Ilustrasi tutorial 2D satu panel: wadah botol terbuka dengan kertas polkadot pink muda pada bagian atas dan dasar transparan beralur. Lis pink atas sudah terpasang; tangan menekan lis pink kedua pada batas bawah kertas. Belum ada simpul merah. Tanpa tulisan atau ukuran."
+      },
+      {
+        "id": "pensil-pita-merah",
+        "order": 4,
+        "title": "Tambahkan simpul pita merah",
+        "instruction": "• Bentuk simpul pita merah dan rapikan ujungnya.\n• Tempel di depan wadah, di antara dua lis pink.\n• Tunggu lem kering sepenuhnya sesuai petunjuk kemasan.\n• Pastikan hiasan kuat, tepi halus, dan wadah stabil sebelum diisi alat tulis.",
+        "expected_result": "Tempat pensil polkadot pink dengan dua lis dan simpul merah, siap digunakan.",
+        "illustration_prompt": "Ilustrasi tutorial 2D satu panel: tangan menempelkan simpul pita kain merah pada bagian depan wadah berhias kertas polkadot pink muda, di antara dua lis pink. Pertahankan bagian bawah botol transparan beralur. Wadah masih kosong selama penempelan. Tanpa tulisan atau ukuran."
+      }
+    ]
+  },
+  "mesh_states": [
+    {
+      "id": "mesh-01",
+      "title": "Botol plastik utuh",
+      "model_path": "models/bottle-1.glb",
+      "illustration_path": "illustrations/p1.png",
+      "reference_path": "references/mesh-01.png",
+      "after_step_id": null,
+      "description": "Botol silinder transparan utuh dengan tutup biru, label biru, dan bagian bawah beralur."
+    },
+    {
+      "id": "mesh-02",
+      "title": "Wadah botol setelah dipotong",
+      "model_path": "models/bottle-2.glb",
+      "illustration_path": "illustrations/p2.png",
+      "reference_path": "references/mesh-02.png",
+      "after_step_id": "pensil-bentuk-wadah",
+      "description": "Wadah bawah botol terbuka, label dilepas, leher dan tutup disisihkan, tepi dihaluskan, dasar transparan beralur dipertahankan."
+    },
+    {
+      "id": "mesh-03",
+      "title": "Wadah berlapis kertas polkadot",
+      "model_path": "models/bottle-3.glb",
+      "illustration_path": "illustrations/p3.png",
+      "reference_path": "references/mesh-03.png",
+      "after_step_id": "pensil-kertas-polkadot",
+      "description": "Kertas dekoratif pink muda bermotif polkadot melapisi bagian atas wadah; bagian bawah tetap transparan."
+    },
+    {
+      "id": "mesh-04",
+      "title": "Wadah dengan dua lis pink",
+      "model_path": "models/bottle-4.glb",
+      "illustration_path": "illustrations/p4.png",
+      "reference_path": "references/mesh-04.png",
+      "after_step_id": "pensil-lis-pink",
+      "description": "Lapisan polkadot dipertahankan, ditambah lis pink pada tepi atas wadah dan batas bawah kertas."
+    },
+    {
+      "id": "mesh-05",
+      "title": "Tempat pensil hias selesai",
+      "model_path": "models/bottle-5.glb",
+      "illustration_path": "illustrations/p5.png",
+      "reference_path": "references/mesh-05.png",
+      "after_step_id": "pensil-pita-merah",
+      "description": "Seluruh komponen sebelumnya dipertahankan, ditambah simpul pita kain merah di bagian depan."
+    }
+  ]
+}
