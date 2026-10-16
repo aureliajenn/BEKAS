@@ -1,18 +1,16 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { BookOpen, Camera } from 'lucide-react-native';
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Card, OfflineBanner, Pill } from '@/components/Card';
+import { Card, IlluTile, OfflineBanner, Pill } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { PlainHeader } from '@/components/GreenHeader';
 import { IdeaCard } from '@/components/IdeaCard';
 import { MeshViewerFrame } from '@/components/MeshViewerFrame';
 import { StageStatus } from '@/components/StageStatus';
-import { retryJob } from '@/lib/api';
 import { clearActiveProject } from '@/lib/storage';
-import { useProject } from '@/lib/useProject';
+import { useProject, useRetryJob } from '@/lib/useProject';
 import { icon3d, mascot } from '@/theme/assets';
 import { IdeaBulb } from '@/components/illustrations';
 import { extraCopy } from '@/theme/statusCopy';
@@ -21,12 +19,8 @@ import { colors, radius, space, type } from '@/theme/tokens';
 export default function ResultScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const q = useProject(id);
-  const qc = useQueryClient();
   const { bottom } = useSafeAreaInsets();
-  const retry = useMutation({
-    mutationFn: (jobId: string) => retryJob(id, jobId),
-    onSettled: () => qc.invalidateQueries({ queryKey: ['project', id] }),
-  });
+  const retry = useRetryJob(id);
   const p = q.data;
   const result = p?.ideas.result;
   const profile = result?.object_profile;
@@ -84,9 +78,9 @@ export default function ResultScreen() {
                     <Text style={type.h3}>Profil barang</Text>
                     <Card style={{ gap: space.md, backgroundColor: colors.noteYellowBg, borderColor: colors.noteYellowBorder }}>
                       <View style={styles.profileHead}>
-                        <View style={styles.profileTile}>
+                        <IlluTile bg={colors.white} size={64} tilt={-4}>
                           <Image source={icon3d.botol} style={styles.profileImg} resizeMode="contain" accessible={false} />
-                        </View>
+                        </IlluTile>
                         <View style={{ flex: 1, gap: 2 }}>
                           <Text style={type.h2}>{profile.label}</Text>
                           <Text style={type.caption}>{profile.material_guess}</Text>
@@ -178,7 +172,6 @@ const styles = StyleSheet.create({
   bad: { alignItems: 'center', gap: space.md },
   badMascot: { width: 120, height: 150 },
   profileHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  profileTile: { width: 64, height: 64, borderRadius: radius.tile, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '-4deg' }] },
   profileImg: { width: 50, height: 50 },
   parts: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   ideasHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
