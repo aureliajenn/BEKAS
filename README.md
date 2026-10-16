@@ -58,6 +58,3 @@ Kredensial server hanya disimpan di backend. Detail konfigurasi: [panduan API](s
 - **Mobile:** React Native, Expo, TypeScript, Expo Router.
 - **Backend:** FastAPI, PostgreSQL, Supabase Storage.
 - **3D Model:** Stable Fast 3D
-
-
-Detail produk: [PRD](PRD.md) · [Desain](DESIGN.md) · [Status implementasi](docs/AGENT_HANDOFF.md)
