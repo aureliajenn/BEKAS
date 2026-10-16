@@ -4,6 +4,7 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { logo, mascot, type MascotPose } from '../theme/assets';
+import { DecorCircle } from './shapes';
 import { colors, radius, space, touch, type } from '../theme/tokens';
 
 type Props = {
@@ -39,17 +40,13 @@ export function GreenHeader({ title, brand, eyebrow, onBack, pose, mascotSize = 
         pose && { minHeight: top + mascotH + overlap + (topRight ? 56 : space.lg) },
       ]}
     >
-      <View style={[styles.circle, { width: 220, height: 220, top: -80, right: -60 }]} />
-      <View style={[styles.circle, { width: 120, height: 120, bottom: -40, left: -30 }]} />
+      <DecorCircle size={220} style={{ top: -80, right: -60 }} />
+      <DecorCircle size={120} style={{ bottom: -40, left: -30 }} />
 
       {topRight ? <View style={[styles.topRight, { top: top + space.lg }]}>{topRight}</View> : null}
 
       <View style={[styles.row, pose && { paddingRight: mascotSize * 0.8 }]}>
-        {onBack ? (
-          <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel="Kembali" hitSlop={8} style={styles.back}>
-            <ChevronLeft size={24} color={colors.white} strokeWidth={2.5} />
-          </Pressable>
-        ) : null}
+        {onBack ? <BackButton onPress={onBack} bg={colors.green700} fg={colors.white} /> : null}
         <View style={{ flex: 1, gap: space.xs }}>
           {brand ? (
             <View style={styles.brand}>
@@ -86,40 +83,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.screen,
     overflow: 'hidden',
   },
-  circle: { position: 'absolute', borderRadius: radius.pill, backgroundColor: colors.white, opacity: 0.07 },
   row: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md },
-  back: {
-    width: touch.min,
-    height: touch.min,
-    borderRadius: radius.iconButton,
-    backgroundColor: colors.green700,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  back: { width: touch.min, height: touch.min, borderRadius: radius.iconButton, alignItems: 'center', justifyContent: 'center' },
   brand: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
   logo: { width: 32, height: 32, borderRadius: 10 },
   mascot: { position: 'absolute', right: space.sm },
   topRight: { position: 'absolute', right: space.screen, zIndex: 1 },
   topLeft: { minHeight: 36, justifyContent: 'center', alignItems: 'flex-start', marginBottom: space.md },
+  bar: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.screen, paddingBottom: space.sm, backgroundColor: colors.white, borderBottomWidth: 2, borderBottomColor: colors.line },
 });
 
 /** Header putih sederhana: tombol kembali + judul. */
-export function PlainHeader({ title, onBack, right }: { title: string; onBack: () => void; right?: ReactNode }) {
+export function PlainHeader({ title, onBack }: { title: string; onBack: () => void }) {
   const { top } = useSafeAreaInsets();
   return (
-    <View style={[plain.bar, { paddingTop: top + space.sm }]}>
-      <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel="Kembali" hitSlop={8} style={plain.back}>
-        <ChevronLeft size={24} color={colors.green700} strokeWidth={2.5} />
-      </Pressable>
+    <View style={[styles.bar, { paddingTop: top + space.sm }]}>
+      <BackButton onPress={onBack} bg={colors.green50} fg={colors.green700} />
       <Text style={[type.h3, { flex: 1 }]} numberOfLines={1} accessibilityRole="header">
         {title}
       </Text>
-      {right}
     </View>
   );
 }
 
-const plain = StyleSheet.create({
-  bar: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.screen, paddingBottom: space.sm, backgroundColor: colors.white, borderBottomWidth: 2, borderBottomColor: colors.line },
-  back: { width: touch.min, height: touch.min, borderRadius: radius.iconButton, backgroundColor: colors.green50, alignItems: 'center', justifyContent: 'center' },
-});
+function BackButton({ onPress, bg, fg }: { onPress: () => void; bg: string; fg: string }) {
+  return (
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel="Kembali" hitSlop={8} style={[styles.back, { backgroundColor: bg }]}>
+      <ChevronLeft size={24} color={fg} strokeWidth={2.5} />
+    </Pressable>
+  );
+}
