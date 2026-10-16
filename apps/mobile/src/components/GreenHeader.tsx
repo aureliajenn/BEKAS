@@ -17,6 +17,8 @@ type Props = {
   pose?: MascotPose;
   /** Lebar maskot (DESIGN: header 150–200). Default 110 untuk layar sekunder. */
   mascotSize?: number;
+  /** Slot kiri atas sejajar topRight, misalnya pill kategori. */
+  topLeft?: ReactNode;
   /** Slot pojok kanan atas, misalnya saldo koin. */
   topRight?: ReactNode;
   /** Ruang ekstra di bawah agar kartu berikutnya bisa menumpuk ke header. */
@@ -25,7 +27,7 @@ type Props = {
   children?: ReactNode;
 };
 
-export function GreenHeader({ title, brand, eyebrow, onBack, pose, mascotSize = 110, topRight, overlap = 0, children }: Props) {
+export function GreenHeader({ title, brand, eyebrow, onBack, pose, mascotSize = 110, topLeft, topRight, overlap = 0, children }: Props) {
   const { top } = useSafeAreaInsets();
   const mascotH = mascotSize * 1.18;
   return (
@@ -55,6 +57,7 @@ export function GreenHeader({ title, brand, eyebrow, onBack, pose, mascotSize = 
               <Text style={[type.bodyL, { color: colors.white, letterSpacing: 1.2 }]}>BEKAS</Text>
             </View>
           ) : null}
+          {topLeft ? <View style={styles.topLeft}>{topLeft}</View> : null}
           {eyebrow ? <Text style={[type.body, { color: colors.white, opacity: 0.85 }]}>{eyebrow}</Text> : null}
           <Text style={[onBack ? type.h2 : type.h1, { color: colors.white }]} accessibilityRole="header">
             {title}
@@ -97,6 +100,7 @@ const styles = StyleSheet.create({
   logo: { width: 32, height: 32, borderRadius: 10 },
   mascot: { position: 'absolute', right: space.sm },
   topRight: { position: 'absolute', right: space.screen, zIndex: 1 },
+  topLeft: { minHeight: 36, justifyContent: 'center', alignItems: 'flex-start', marginBottom: space.md },
 });
 
 /** Header putih sederhana: tombol kembali + judul. */
