@@ -1,8 +1,9 @@
-import { TriangleAlert, WifiOff } from 'lucide-react-native';
+import { WifiOff } from 'lucide-react-native';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { extraCopy } from '../theme/statusCopy';
+import { ShieldWarning } from './illustrations';
 import { Coin } from './shapes';
 import { chunkyDepth, colors, radius, space, type } from '../theme/tokens';
 
@@ -52,7 +53,7 @@ export const difficultyTone = (d: string): PillTone => (/mudah/i.test(d) ? 'easy
 export function SafetyNote({ text }: { text: string }) {
   return (
     <View style={[styles.banner, { borderRadius: radius.tile }]} accessibilityRole="alert">
-      <TriangleAlert size={20} color={colors.warnFg} strokeWidth={2.5} />
+      <ShieldWarning size={36} />
       <Text style={[type.body, styles.flex]}>{text}</Text>
     </View>
   );

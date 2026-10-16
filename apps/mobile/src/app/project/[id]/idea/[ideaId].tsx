@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { BookOpen, Sparkles } from 'lucide-react-native';
@@ -5,11 +6,13 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { goBack } from '@/lib/nav';
-import { Card, difficultyTone, OfflineBanner, Pill, SafetyNote } from '@/components/Card';
+import { ItemGrid } from '@/components/ItemGrid';
+import { Clock, CoinStack, IdeaBulb, PlantPot } from '@/components/illustrations';
+import { Card, OfflineBanner, SafetyNote } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
 import { StageStatus } from '@/components/StageStatus';
-import { ApiFailure, requestGuide } from '@/lib/api';
+import { ApiFailure, requestGuide, UPCYCLE_POINTS } from '@/lib/api';
 import { useProject } from '@/lib/useProject';
 import { colors, radius, space, type } from '@/theme/tokens';
 
@@ -39,21 +42,38 @@ export default function IdeaDetailScreen() {
 
   return (
     <View style={styles.screen}>
-      <GreenHeader title={idea.title} onBack={goBack} pose="bawaBotol">
-        <View style={styles.pills}>
-          <Pill label={idea.difficulty} tone={difficultyTone(idea.difficulty)} />
-          <Pill label={`±${idea.estimated_minutes} menit`} />
-        </View>
-      </GreenHeader>
+      <GreenHeader title={idea.title} eyebrow="Ide kerajinan" onBack={goBack} pose="bawaBotol" mascotSize={130} />
 
       <ScrollView contentContainerStyle={styles.scroll}>
         {q.isError ? <OfflineBanner /> : null}
-        <Card style={{ gap: space.sm }}>
-          <Text style={type.h3}>Kegunaan</Text>
-          <Text style={type.body}>{idea.purpose}</Text>
+        {/* Ringkasan angka penting: Fredoka besar + ilustrasi kecil. */}
+        <View style={styles.stats}>
+          <Stat bg={colors.tileBlue} art={<Clock size={36} />} value={`±${idea.estimated_minutes}`} label="menit" />
+          <Stat bg={colors.tileGreen} art={<PlantPot size={36} />} value={idea.difficulty} label="kesulitan" />
+          <Stat bg={colors.tileYellow} art={<CoinStack size={36} />} value={`+${UPCYCLE_POINTS}`} label="poin" />
+        </View>
+
+        <Card style={styles.purpose}>
+          <View style={styles.purposeArt}>
+            <IdeaBulb size={52} />
+          </View>
+          <View style={{ flex: 1, gap: space.xs }}>
+            <Text style={type.h3}>Kegunaan</Text>
+            <Text style={type.body}>{idea.purpose}</Text>
+          </View>
         </Card>
-        <BulletCard title="Alat" items={idea.tools} />
-        <BulletCard title="Bahan tambahan" note="Selain barang yang kamu foto." items={idea.extra_materials} />
+
+        <Card style={{ gap: space.md }}>
+          <Text style={type.h3}>Alat</Text>
+          {idea.tools.length ? <ItemGrid items={idea.tools} /> : <Text style={type.caption}>Tidak perlu alat khusus.</Text>}
+        </Card>
+        <Card style={{ gap: space.md }}>
+          <View>
+            <Text style={type.h3}>Bahan tambahan</Text>
+            <Text style={type.caption}>Selain barang yang kamu foto.</Text>
+          </View>
+          {idea.extra_materials.length ? <ItemGrid items={idea.extra_materials} offset={2} /> : <Text style={type.caption}>Tidak perlu bahan tambahan.</Text>}
+        </Card>
         {idea.safety_notes.map((n) => (
           <SafetyNote key={n} text={n} />
         ))}
@@ -88,30 +108,24 @@ export default function IdeaDetailScreen() {
   );
 }
 
-function BulletCard({ title, note, items }: { title: string; note?: string; items: string[] }) {
+function Stat({ bg, art, value, label }: { bg: string; art: ReactNode; value: string; label: string }) {
   return (
-    <Card style={{ gap: space.sm }}>
-      <Text style={type.h3}>{title}</Text>
-      {note ? <Text style={type.caption}>{note}</Text> : null}
-      {items.length ? (
-        items.map((it) => (
-          <View key={it} style={styles.bulletRow}>
-            <View style={styles.bullet} />
-            <Text style={[type.body, { flex: 1 }]}>{it}</Text>
-          </View>
-        ))
-      ) : (
-        <Text style={type.caption}>Tidak perlu.</Text>
-      )}
-    </Card>
+    <View style={[styles.stat, { backgroundColor: bg }]} accessible accessibilityLabel={`${value} ${label}`}>
+      {art}
+      <Text style={[type.h3, { color: colors.ink }]} numberOfLines={1}>
+        {value}
+      </Text>
+      <Text style={type.caption}>{label}</Text>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
-  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: space.sm },
   scroll: { padding: space.screen, gap: space.lg },
-  bulletRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  bullet: { width: 8, height: 8, borderRadius: radius.pill, backgroundColor: colors.green500 },
+  stats: { flexDirection: 'row', gap: space.sm },
+  stat: { flex: 1, borderRadius: radius.card, padding: space.md, alignItems: 'center', gap: 2 },
+  purpose: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  purposeArt: { width: 64, height: 64, borderRadius: radius.tile, backgroundColor: colors.tileYellow, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '-4deg' }] },
   footer: { paddingHorizontal: space.screen, paddingTop: space.sm, gap: space.sm, backgroundColor: colors.bg },
 });
