@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Card, ProgressBar } from '@/components/Card';
+import { Card, DangerBox, IlluTile, ProgressBar } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
 import { HeaderBadges } from '@/components/HeaderBadges';
@@ -20,6 +20,7 @@ import { icon3d } from '@/theme/assets';
 import { colors, radius, space, type } from '@/theme/tokens';
 
 const OVERLAP = 40;
+const TILE_R = radius.iconButton + 2;
 
 export default function HomeScreen() {
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -36,10 +37,9 @@ export default function HomeScreen() {
   useFocusEffect(
     useCallback(() => {
       getActiveProject().then(setActiveId);
-      // Saldo, peringkat, dan centang bisa berubah di layar lain.
+      // Saldo, peringkat, dan centang berubah di layar lain tanpa invalidate (RW sudah diurus rw.tsx).
       qc.invalidateQueries({ queryKey: ['wallet'] });
       qc.invalidateQueries({ queryKey: ['leaderboard'] });
-      qc.invalidateQueries({ queryKey: ['participant'] });
       qc.invalidateQueries({ queryKey: ['done'] });
     }, [qc]),
   );
@@ -96,13 +96,13 @@ export default function HomeScreen() {
               onPress={() => start('library')}
             />
             {denied ? (
-              <View style={styles.denied} accessibilityRole="alert">
-                <Text style={[type.body, { color: colors.dangerFg }]}>
-                  {denied === 'camera'
+              <DangerBox
+                text={
+                  denied === 'camera'
                     ? 'Izin kamera ditolak. Kamu tetap bisa pilih foto dari galeri, atau izinkan kamera di pengaturan HP.'
-                    : 'Izin galeri ditolak. Izinkan akses foto di pengaturan HP.'}
-                </Text>
-              </View>
+                    : 'Izin galeri ditolak. Izinkan akses foto di pengaturan HP.'
+                }
+              />
             ) : null}
           </Card>
 
@@ -111,9 +111,9 @@ export default function HomeScreen() {
           <RewardCards />
 
           <View style={[styles.row, styles.tip]}>
-            <View style={[styles.tileSm, styles.tilt, { backgroundColor: colors.white }]}>
+            <IlluTile bg={colors.white} size={56} rounded={TILE_R} tilt={-4}>
               <PlantPot size={44} />
-            </View>
+            </IlluTile>
             <Text style={[type.body, { flex: 1, color: colors.blue600 }]}>Cocok untuk botol dan wadah plastik kaku. Olah dulu, setor sisanya.</Text>
           </View>
         </View>
@@ -172,9 +172,9 @@ function RewardCards() {
         style={({ pressed }) => pressed && { opacity: 0.85 }}
       >
         <Card style={styles.row}>
-          <View style={[styles.tileSm, styles.tiltR, { backgroundColor: colors.tilePink }]}>
+          <IlluTile bg={colors.tilePink} size={56} rounded={TILE_R} tilt={4}>
             <MapPin size={46} />
-          </View>
+          </IlluTile>
           <View style={{ flex: 1 }}>
             <Text style={type.h3}>Bank sampah mitra</Text>
             <Text style={type.caption}>Setor sisa yang tidak bisa diolah.</Text>
@@ -225,9 +225,9 @@ function ResumeCard({ id }: { id: string }) {
       <Pressable accessibilityRole="button" accessibilityLabel={`Lanjutkan ${title}`} onPress={open} style={({ pressed }) => pressed && { opacity: 0.85 }}>
         <Card style={{ gap: space.md }}>
           <View style={styles.row}>
-            <View style={[styles.tileSm, styles.tilt, { backgroundColor: colors.tileGreen }]}>
+            <IlluTile bg={colors.tileGreen} size={56} rounded={TILE_R} tilt={-4}>
               <Image source={icon3d.tanamanListrik} style={styles.tileSmImg} resizeMode="contain" accessible={false} />
-            </View>
+            </IlluTile>
             <View style={{ flex: 1, gap: space.xs }}>
               <Text style={type.h3} numberOfLines={2}>
                 {title}
@@ -260,9 +260,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   body: { paddingHorizontal: space.screen, gap: space.xl },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  tileSm: { width: 56, height: 56, borderRadius: radius.iconButton + 2, alignItems: 'center', justifyContent: 'center' },
   tileSmImg: { width: 44, height: 44 },
-  denied: { backgroundColor: colors.dangerBg, borderRadius: radius.iconButton, padding: space.md },
   tiles: { flexDirection: 'row', gap: space.md },
   pastel: { gap: space.xs, minHeight: 150 },
   playDepth: { width: 52, height: 52, borderRadius: radius.iconButton, backgroundColor: colors.green700 },
@@ -272,7 +270,5 @@ const styles = StyleSheet.create({
   sparkleTR: { position: 'absolute', top: 0, right: 2 },
   sparkleBL: { position: 'absolute', bottom: 4, left: 0 },
   artSparkle: { position: 'absolute', top: 2, right: -6 },
-  tilt: { transform: [{ rotate: '-4deg' }] },
-  tiltR: { transform: [{ rotate: '4deg' }] },
   stepNum: { ...type.h3, color: colors.green700 },
 });
