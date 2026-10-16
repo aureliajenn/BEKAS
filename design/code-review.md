@@ -49,3 +49,29 @@ Setelah setiap halaman: `npm run typecheck`, screenshot halaman, dibandingkan de
 **Estimasi total: −54 baris** (temuan 1–5, 9, 11). Temuan 6–8, 10, 12 untuk konsistensi dan keterbacaan, bukan pengurangan baris.
 
 **Catatan screenshot pembanding:** screenshot "after" putaran redesign tidak tersimpan sebagai file (tidak ada `adb`). Pembandingan akan dilakukan dengan mengambil screenshot sebelum dan sesudah rapikan di sesi yang sama, pada state fixture yang sama.
+
+## Hasil eksekusi
+
+Semua 12 temuan dikerjakan dalam 14 commit (`004cb54` … `0f1304c`), di-push bertahap.
+
+| Halaman / file | Yang dirapikan | Baris (sebelum → sesudah) | Sidik visual 390×844 |
+|---|---|---|---|
+| Fondasi | tokens (`radius.frame`, `illu.coinRing/flameOuter`), `shapes.tsx` hex → token, `IlluTile`, `DangerBox`, `ScanCorners`, `useRetryJob` | +40 (komponen baru) | Beranda, Dompet, Panduan identik |
+| GreenHeader | `BackButton` bersama, `DecorCircle`, prop `right` mati dihapus | 125 → 115 | Hanya lingkaran dekor: putih+opacity 0,07 → rgba putih 7% (piksel sama) |
+| IdeaCard, ItemGrid, VerifyPanel, MeshViewerFrame, StageStatus, MascotBubble | `IlluTile`, `DangerBox`, `useRetryJob`, `ScanCorners`, import mati | −40 | Identik / tile tengah `rotate(0deg)` → none |
+| Beranda | 3 tile → `IlluTile`, `DangerBox`, invalidate `participant` dihapus | 278 → 274 | Identik (172 elemen) |
+| Hasil barang | `useRetryJob`, `IlluTile` | 190 → 183 | Identik (153) |
+| Detail ide | `IlluTile` | 131 → 130 | Identik (167) |
+| Panduan | `useRetryJob` | 164 → 158 | Identik (286) |
+| Dompet | Dipecah: `RewardRow`, `LedgerCard`, `RedeemSheet`; `IlluTile`, `DangerBox` | 246 → 260 (fungsi utama 180 → 136) | Identik selain lingkaran dekor |
+| Peringkat | `IlluTile` | 159 → 157 | Identik (161) |
+| Jalur | halo `radius.pill` | 252 → 252 | Halo 48px → 999px (lingkaran 96px tetap bulat) |
+| Bank sampah | `IlluTile` | 101 → 100 | Identik (124) |
+| Pilih RW | `IlluTile` | 99 → 98 | Identik (149) |
+| Pratinjau | `ScanCorners`, `IlluTile`, `radius.frame` | 92 → 86 | Tile tengah `rotate(0deg)` → none |
+
+**Total `src/app` + `src/components`: 3.534 → 3.517 baris (−17).** Estimasi awal −54 tidak tercapai: pemecahan Dompet menambah 14 baris (tanda tangan fungsi) dan komponen bersama baru butuh baris sendiri. Tanpa pemecahan Dompet: −31.
+
+**Cara membuktikan tampilan tidak berubah:** sebelum refactor, setiap halaman direkam sidiknya (posisi, ukuran, warna latar/teks, radius, border, opacity, transform, teks, atribut SVG setiap elemen yang terlihat) di viewport 390×844. Setelah setiap halaman dirapikan, sidik dibandingkan. Perbedaan yang tersisa hanya tiga jenis yang hasil pikselnya sama: lingkaran dekor header (teknik transparansi), `rotate(0deg)` vs tanpa transform, dan radius setengah-ukuran vs `radius.pill`.
+
+**Verifikasi lain:** `tsc --noUnusedLocals --noUnusedParameters` bersih, `npm run check` lolos, uji perilaku: retry model 3D, verifikasi ditolak (DangerBox dengan judul), sheet tukar buka/batal.
