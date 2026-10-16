@@ -3,7 +3,6 @@ import { router, useFocusEffect } from 'expo-router';
 import { Camera, ChevronRight, Images } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Card } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
@@ -20,7 +19,6 @@ export default function HomeScreen() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [denied, setDenied] = useState<'camera' | 'library' | null>(null);
-  const { bottom } = useSafeAreaInsets();
   const qc = useQueryClient();
 
   useFocusEffect(
@@ -34,6 +32,7 @@ export default function HomeScreen() {
   );
 
   const start = async (source: 'camera' | 'library') => {
+    if (busy) return;
     setBusy(true);
     try {
       const res = await pickPhoto(source);
@@ -47,7 +46,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.screen}>
       <GreenHeader brand title="Barang bekas mau dijadikan apa?" pose="menyapa" />
-      <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: bottom + space.xxl }]}>
+      <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: space.xxxl }]}>
         <Card style={{ gap: space.sm }}>
           <Text style={type.h3}>Foto satu barang bekasmu</Text>
           <Text style={type.caption}>Kami tunjukkan bentuk 3D-nya, 3 ide kerajinan, dan panduan langkah demi langkah.</Text>

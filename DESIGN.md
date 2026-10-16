@@ -129,6 +129,7 @@ app/
 ```
 
 **1. Beranda**
+- Navbar bawah global pada seluruh halaman: Beranda, Dompet, Scan di tengah, Peringkat, dan Bank sampah. Scanner memakai tombol chunky hijau menonjol dan membuka kamera dari halaman mana pun. Menu aktif mengikuti route; navbar mengikuti safe area dan berada di luar area navigasi/scroll melalui layout utama.
 - GreenHeader: logo kecil + "BEKAS", judul h1 "Barang bekas mau dijadikan apa?", maskot `menyapa` di kanan.
 - Kartu utama: CTA oranye "Foto barang" (kamera) dan tombol secondary "Pilih dari galeri".
 - Kartu "Lanjutkan proyek" jika ada project ID tersimpan lokal: foto kecil, nama barang, StageStatus ringkas (satu baris tahap terakhir).
