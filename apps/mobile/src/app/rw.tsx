@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Check, Users } from 'lucide-react-native';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -7,9 +6,12 @@ import { goBack } from '@/lib/nav';
 import { Card, OfflineBanner } from '@/components/Card';
 import { PlainHeader } from '@/components/GreenHeader';
 import { StageStatus } from '@/components/StageStatus';
+import { CheckBadge, HouseGroup, TrophyCup } from '@/components/illustrations';
 import { ApiFailure } from '@/lib/api';
 import { chooseRw, fetchRws, getParticipant } from '@/lib/rewards';
 import { colors, radius, space, type } from '@/theme/tokens';
+
+const tiles = [colors.tileGreen, colors.tilePink, colors.tileYellow, colors.tileBlue];
 
 export default function RwScreen() {
   const qc = useQueryClient();
@@ -30,7 +32,15 @@ export default function RwScreen() {
     <View style={styles.screen}>
       <PlainHeader title="Pilih RW kamu" onBack={goBack} />
       <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: bottom + space.xxl }]}>
-        <Text style={type.body}>Barang yang kamu olah ikut menambah angka RW-mu di leaderboard. Poin tetap masuk ke dompetmu sendiri.</Text>
+        <View style={styles.banner}>
+          <View style={{ flex: 1, gap: space.xs }}>
+            <Text style={type.h2}>Ikut tim RW-mu</Text>
+            <Text style={type.body}>Barang yang kamu olah menambah angka RW-mu di peringkat. Poin tetap masuk ke dompetmu sendiri.</Text>
+          </View>
+          <View style={styles.bannerArt}>
+            <HouseGroup size={92} />
+          </View>
+        </View>
         {rws.isError ? <OfflineBanner /> : null}
         {pick.isError ? (
           <StageStatus
@@ -38,7 +48,7 @@ export default function RwScreen() {
           />
         ) : null}
         {!rws.data ? <ActivityIndicator color={colors.green500} /> : null}
-        {rws.data?.map((rw) => {
+        {rws.data?.map((rw, i) => {
           const chosen = participant.data?.rwId === rw.rw_id;
           return (
             <Pressable
@@ -50,8 +60,8 @@ export default function RwScreen() {
               onPress={() => pick.mutate(rw.rw_id)}
             >
               <Card selected={chosen} style={styles.row}>
-                <View style={styles.icon}>
-                  <Users size={22} color={colors.green700} strokeWidth={2.5} />
+                <View style={[styles.icon, { backgroundColor: tiles[i % tiles.length], transform: [{ rotate: `${i % 2 ? 4 : -4}deg` }] }]}>
+                  <HouseGroup size={48} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={type.h3}>
@@ -59,11 +69,20 @@ export default function RwScreen() {
                   </Text>
                   <Text style={type.caption}>Kapten: {rw.captain_name}</Text>
                 </View>
-                {chosen ? <Check size={22} color={colors.green500} strokeWidth={2.5} /> : null}
+                {chosen ? <CheckBadge size={38} /> : null}
               </Card>
             </Pressable>
           );
         })}
+
+        {rws.data ? (
+          <View style={styles.note}>
+            <TrophyCup size={52} />
+            <Text style={[type.body, { flex: 1, color: colors.blue600 }]}>
+              Peringkat dihitung per RW dari jumlah proyek terverifikasi bulan ini, bukan per orang.
+            </Text>
+          </View>
+        ) : null}
       </ScrollView>
     </View>
   );
@@ -73,5 +92,8 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   scroll: { padding: space.screen, gap: space.md },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  icon: { width: 44, height: 44, borderRadius: radius.iconButton, backgroundColor: colors.green100, alignItems: 'center', justifyContent: 'center' },
+  icon: { width: 60, height: 60, borderRadius: radius.tile, alignItems: 'center', justifyContent: 'center' },
+  banner: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.tileBlue, borderRadius: radius.card, padding: space.lg, marginBottom: space.sm },
+  bannerArt: { width: 96, height: 96, alignItems: 'center', justifyContent: 'center' },
+  note: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.blue50, borderRadius: radius.card, padding: space.lg, marginTop: space.sm },
 });
