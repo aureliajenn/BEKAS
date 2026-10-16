@@ -1,4 +1,3 @@
-import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { mascot, type MascotPose } from '../theme/assets';
 import { colors, type } from '../theme/tokens';

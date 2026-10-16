@@ -4,6 +4,7 @@ import { mascot } from '../theme/assets';
 import { extraCopy, type JobStatus } from '../theme/statusCopy';
 import { colors, radius, space, type } from '../theme/tokens';
 import { MeshViewer } from './MeshViewer';
+import { ScanCorners } from './shapes';
 import { StageStatus } from './StageStatus';
 
 const HEIGHT = 300;
@@ -26,10 +27,7 @@ export function MeshViewerFrame({ status, meshUrl, photoUrl, labelOverride, onRe
   return (
     <View style={{ gap: space.sm }}>
       <View style={styles.frame}>
-        {/* Sudut bingkai ala scan; dekoratif. */}
-        {(['tl', 'tr', 'bl', 'br'] as const).map((c) => (
-          <View key={c} pointerEvents="none" style={[styles.corner, styles[c]]} />
-        ))}
+        <ScanCorners size={26} inset={14} rounded={10} />
         {ready ? (
           <MeshViewer url={meshUrl} height={HEIGHT} />
         ) : failed ? (
@@ -54,12 +52,7 @@ export function MeshViewerFrame({ status, meshUrl, photoUrl, labelOverride, onRe
 }
 
 const styles = StyleSheet.create({
-  frame: { height: HEIGHT, borderRadius: 28, backgroundColor: colors.green50, overflow: 'hidden', justifyContent: 'flex-end', borderWidth: 2, borderColor: colors.line },
-  corner: { position: 'absolute', width: 26, height: 26, borderColor: colors.green400, zIndex: 2 },
-  tl: { top: 14, left: 14, borderTopWidth: 4, borderLeftWidth: 4, borderTopLeftRadius: 10 },
-  tr: { top: 14, right: 14, borderTopWidth: 4, borderRightWidth: 4, borderTopRightRadius: 10 },
-  bl: { bottom: 14, left: 14, borderBottomWidth: 4, borderLeftWidth: 4, borderBottomLeftRadius: 10 },
-  br: { bottom: 14, right: 14, borderBottomWidth: 4, borderRightWidth: 4, borderBottomRightRadius: 10 },
+  frame: { height: HEIGHT, borderRadius: radius.frame, backgroundColor: colors.green50, overflow: 'hidden', justifyContent: 'flex-end', borderWidth: 2, borderColor: colors.line },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.md, padding: space.xl },
   mascot: { width: 96, height: 120 },
   // Masuk ke dalam area sudut bingkai supaya tidak tertimpa.

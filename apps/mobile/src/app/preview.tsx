@@ -11,6 +11,7 @@ import { PlainHeader } from '@/components/GreenHeader';
 import { MascotBubble } from '@/components/MascotBubble';
 import { StageStatus } from '@/components/StageStatus';
 import { GalleryBubble, IdeaBulb } from '@/components/illustrations';
+import { ScanCorners } from '@/components/shapes';
 import { icon3d } from '@/theme/assets';
 import { createProject, type Scenario } from '@/lib/api';
 import { setActiveProject } from '@/lib/storage';
@@ -41,9 +42,7 @@ export default function PreviewScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.photoCard}>
           <Image source={{ uri }} style={styles.photo} resizeMode="cover" accessibilityLabel="Foto barang yang akan dikirim" />
-          {(['tl', 'tr', 'bl', 'br'] as const).map((c) => (
-            <View key={c} pointerEvents="none" style={[styles.corner, styles[c]]} />
-          ))}
+          <ScanCorners size={30} inset={16} rounded={12} />
         </View>
 
         <MascotBubble pose="tunjukHp" text="Pastikan barangnya utuh, latarnya polos, dan cahayanya rata." />
@@ -77,16 +76,11 @@ export default function PreviewScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   scroll: { padding: space.screen, gap: space.lg },
-  photoCard: { borderRadius: 28, overflow: 'hidden', borderWidth: 2, borderColor: colors.line, backgroundColor: colors.tileGreen },
+  photoCard: { borderRadius: radius.frame, overflow: 'hidden', borderWidth: 2, borderColor: colors.line, backgroundColor: colors.tileGreen },
   photo: { width: '100%', aspectRatio: 3 / 4, maxHeight: 420 },
   checkRow: { flexDirection: 'row', gap: space.sm },
   checkItem: { flex: 1, alignItems: 'center', gap: space.xs },
   checkTile: { width: 64, height: 64, borderRadius: radius.tile, alignItems: 'center', justifyContent: 'center' },
   checkText: { color: colors.ink, textAlign: 'center' },
-  corner: { position: 'absolute', width: 30, height: 30, borderColor: colors.green400 },
-  tl: { top: 16, left: 16, borderTopWidth: 4, borderLeftWidth: 4, borderTopLeftRadius: 12 },
-  tr: { top: 16, right: 16, borderTopWidth: 4, borderRightWidth: 4, borderTopRightRadius: 12 },
-  bl: { bottom: 16, left: 16, borderBottomWidth: 4, borderLeftWidth: 4, borderBottomLeftRadius: 12 },
-  br: { bottom: 16, right: 16, borderBottomWidth: 4, borderRightWidth: 4, borderBottomRightRadius: 12 },
   actions: { flexDirection: 'row', gap: space.md, paddingHorizontal: space.screen, paddingTop: space.sm, backgroundColor: colors.bg },
 });

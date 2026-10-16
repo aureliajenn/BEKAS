@@ -69,6 +69,19 @@ export function DecorCircle({ size = 240, opacity = 0.07, style }: { size?: numb
   );
 }
 
+/** Sudut bingkai ala scan di atas foto/viewer. Taruh di dalam parent position relative. */
+export function ScanCorners({ size, inset, rounded }: { size: number; inset: number; rounded: number }) {
+  const edge = { position: 'absolute', width: size, height: size, borderColor: colors.green400, zIndex: 2 } as const;
+  return (
+    <>
+      <View pointerEvents="none" style={[edge, { top: inset, left: inset, borderTopWidth: 4, borderLeftWidth: 4, borderTopLeftRadius: rounded }]} />
+      <View pointerEvents="none" style={[edge, { top: inset, right: inset, borderTopWidth: 4, borderRightWidth: 4, borderTopRightRadius: rounded }]} />
+      <View pointerEvents="none" style={[edge, { bottom: inset, left: inset, borderBottomWidth: 4, borderLeftWidth: 4, borderBottomLeftRadius: rounded }]} />
+      <View pointerEvents="none" style={[edge, { bottom: inset, right: inset, borderBottomWidth: 4, borderRightWidth: 4, borderBottomRightRadius: rounded }]} />
+    </>
+  );
+}
+
 /** Garis putus-putus horizontal (penanda, pemisah, atau garis panduan di atas gambar). */
 export function DashedLine({
   width,

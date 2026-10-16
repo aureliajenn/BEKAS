@@ -1,4 +1,3 @@
-import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Check, Clock, RotateCw, X } from 'lucide-react-native';
 import { colors, radius, type } from '../theme/tokens';
@@ -90,7 +89,7 @@ const styles = StyleSheet.create({
   },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, minHeight: 52 },
   divider: { borderBottomWidth: 2, borderBottomColor: colors.line },
-  dot: { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  dot: { width: 28, height: 28, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   label: { flex: 1 },
   retry: {
     flexDirection: 'row',
