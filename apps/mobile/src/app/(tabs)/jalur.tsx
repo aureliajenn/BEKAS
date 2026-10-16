@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   map: { backgroundColor: colors.green50, overflow: 'hidden' },
   nodeDepth: { position: 'absolute' },
   nodeFace: { alignItems: 'center', justifyContent: 'center' },
-  halo: { position: 'absolute', width: 96, height: 96, borderRadius: 48, backgroundColor: colors.green100 },
+  halo: { position: 'absolute', width: 96, height: 96, borderRadius: radius.pill, backgroundColor: colors.green100 },
   tagWrap: { position: 'absolute', width: 300, alignItems: 'center' },
   tagBox: { borderRadius: radius.iconButton, borderWidth: 2, borderColor: colors.line, backgroundColor: colors.white },
   tagTail: { position: 'absolute', bottom: -6, width: 12, height: 12, backgroundColor: colors.white, borderRightWidth: 2, borderBottomWidth: 2, borderColor: colors.line, transform: [{ rotate: '45deg' }] },
