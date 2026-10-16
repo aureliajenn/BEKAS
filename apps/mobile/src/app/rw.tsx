@@ -3,7 +3,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { goBack } from '@/lib/nav';
-import { Card, OfflineBanner } from '@/components/Card';
+import { Card, IlluTile, OfflineBanner } from '@/components/Card';
 import { PlainHeader } from '@/components/GreenHeader';
 import { StageStatus } from '@/components/StageStatus';
 import { CheckBadge, HouseGroup, TrophyCup } from '@/components/illustrations';
@@ -60,9 +60,9 @@ export default function RwScreen() {
               onPress={() => pick.mutate(rw.rw_id)}
             >
               <Card selected={chosen} style={styles.row}>
-                <View style={[styles.icon, { backgroundColor: tiles[i % tiles.length], transform: [{ rotate: `${i % 2 ? 4 : -4}deg` }] }]}>
+                <IlluTile bg={tiles[i % tiles.length]} size={60} tilt={i % 2 ? 4 : -4}>
                   <HouseGroup size={48} />
-                </View>
+                </IlluTile>
                 <View style={{ flex: 1 }}>
                   <Text style={type.h3}>
                     {rw.name} {rw.kelurahan}
@@ -92,7 +92,6 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   scroll: { padding: space.screen, gap: space.md },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  icon: { width: 60, height: 60, borderRadius: radius.tile, alignItems: 'center', justifyContent: 'center' },
   banner: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.tileBlue, borderRadius: radius.card, padding: space.lg, marginBottom: space.sm },
   bannerArt: { width: 96, height: 96, alignItems: 'center', justifyContent: 'center' },
   note: { flexDirection: 'row', alignItems: 'center', gap: space.md, backgroundColor: colors.blue50, borderRadius: radius.card, padding: space.lg, marginTop: space.sm },
