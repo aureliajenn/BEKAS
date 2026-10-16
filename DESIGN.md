@@ -59,7 +59,7 @@ Aturan 60-30-10: 60% latar terang (bg + kartu putih), 30% hijau (header dan satu
 | Kartu ringkas Beranda (Dompet, Leaderboard) | Latar kartu pastel penuh (tileYellow untuk Dompet + `Coin`, tileBlue untuk Leaderboard), bukan putih |
 | Pill | Kesulitan: hijau/oranye/merah. Durasi: tileBlue + blue600. "Contoh tersimpan": tileYellow |
 | Kartu info | Tips/maskot: blue50. Peringatan: warnBg. Highlight/rangkuman: noteYellow |
-| Header | Hijau hanya di Beranda, Detail ide, Dompet, Leaderboard. Pratinjau, Hasil barang, Panduan, Pilih RW, Bank sampah pakai PlainHeader putih |
+| Header | Hijau di Beranda, Jalur, Detail ide, Panduan, Dompet, Leaderboard. Pratinjau, Hasil barang, Pilih RW, Bank sampah pakai PlainHeader putih |
 | Dekor | `Coin`, `Star`, `Sparkle`, `Confetti` dari `shapes.tsx` di momen hadiah/sukses |
 
 | Layar | Hijau | Oranye | Pastel |
@@ -68,7 +68,7 @@ Aturan 60-30-10: 60% latar terang (bg + kartu putih), 30% hijau (header dan satu
 | Pratinjau foto | "Kirim foto" | (tidak ada) | Bubble blue50, checklist dengan ikon di tile pastel |
 | Hasil barang | Status sukses saja | (tidak ada) | 3 IdeaCard tile hijau/biru/pink, profil barang di noteYellow |
 | Detail ide | Header | "Buat panduan" | Alat di tileBlue, bahan di tileYellow, SafetyNote warnBg |
-| Panduan | "Sudah" per langkah | (tidak ada) | Hasil yang diharapkan di noteYellow, tips blue50, kartu selesai dengan Confetti |
+| Panduan | Header, "Sudah" per langkah | (tidak ada) | Hasil yang diharapkan di noteYellow, tips blue50, kartu selesai dengan Confetti |
 | Dompet Poin | Header | Tukar (konfirmasi) | Saldo dengan `Coin`, hadiah di tile pastel bergiliran, entri + hijau / − oranye |
 | Leaderboard RW | Header | (tidak ada) | Peringkat 1/2/3 lingkaran kuning/biru/pink, RW sendiri tilePink, tantangan noteYellow |
 | Pilih RW / Bank sampah | (tidak ada) | (tidak ada) | Ikon 3D di tile pastel bergiliran, pill jenis sampah warna-warni |
