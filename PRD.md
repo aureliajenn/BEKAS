@@ -1,12 +1,14 @@
 # BEKAS — PRD Prototipe Hackathon
 
-**Versi:** 1.3 · **Tanggal revisi:** 16 Oktober 2026  
+**Versi:** 1.4 · **Tanggal revisi:** 16 Oktober 2026  
 **Platform:** Android, React Native + Expo  
 **Asumsi perencanaan:** 48 jam, 3–4 anggota, demo online, satu pekerjaan GPU aktif. Nama acara, sponsor, rubrik, anggaran, dan durasi sebenarnya belum diberikan. Jadwal serta anggaran di bawah adalah usulan, bukan komitmen pengguna.
 
 **Revisi 1.2:** komputasi GPU berjalan pada instance cloud Vast.ai dengan worker Python otomatis, menggantikan Colab Free dan transfer manual operator. MVP tidak membuat autentikasi pengguna, termasuk anonymous sign-in. Rencana pengerjaan yang selaras dengan arsitektur Vast.ai tersedia di [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 **Revisi 1.3:** menambah sistem reward "olah dulu, setor sisanya" dari brief *Sistem Reward Poin BEKAS*: verifikasi proyek upcycle, Dompet Poin, Leaderboard RW, dan daftar bank sampah mitra. Detail, kontrak API, acceptance criteria AC9–AC14, dan batas scope ada di [bagian 17](#17-sistem-reward-poin-revisi-13). Tidak menambah teknologi baru; tetap tanpa login.
+
+**Revisi 1.4:** streak mingguan (bagian 17.2, AC15) dipindah dari roadmap ke MVP sebagai variasi dari brief; layar **Jalur** yang memetakan proyek terverifikasi, proyek aktif, dan jarak ke hadiah target (AC16); navigasi bawah Beranda · Jalur · Scan · Dompet · Peringkat. Tetap tanpa login dan tanpa teknologi baru.
 
 ## 1. Ringkasan dan pitch
 
@@ -46,6 +48,8 @@ Katalog tutorial biasa adalah baseline yang masuk akal, tetapi pengguna tetap ha
 | AC12 | **Bank sampah:** daftar mitra menampilkan nama, alamat, jam buka, jenis yang diterima, dan harga per kg dari backend, serta tombol yang membuka aplikasi peta bawaan HP. Tanpa SDK peta. |
 | AC13 | **Tanpa login:** semua fitur reward berjalan dengan ID peserta acak yang disimpan lokal dan RW pilihan pengguna; tidak ada registrasi, password, atau JWT. Mengganti RW tidak memindahkan poin yang sudah tercatat ke RW lama. |
 | AC14 | **Kejujuran reward:** tidak ada klaim kg, emisi, atau "plastik terselamatkan"; penukaran ditampilkan sebagai pengajuan yang diproses mitra, bukan pencairan instan; data fixture reward berlabel "Contoh tersimpan". |
+| AC15 | **Streak mingguan (rev 1.4):** angka streak = jumlah minggu berturut-turut (Senin–Minggu, WIB) yang punya minimal satu proyek terverifikasi, dihitung backend dari ledger. Minggu berjalan yang belum ada proyek tidak memutus streak sampai minggu itu berakhir; app menampilkan pengingat "olah 1 barang minggu ini". Streak hanya tampilan, tidak menambah poin. |
+| AC16 | **Jalur (rev 1.4):** setiap titik berasal dari data nyata: titik centang = proyek terverifikasi, titik bendera = proyek aktif dengan progres langkah lokal, titik gembok = jumlah proyek yang masih dibutuhkan menuju hadiah target (selisih poin ÷ poin per proyek), kado = hadiah target. Tanpa level, kunci konten, atau progres rekaan. |
 
 Ukur cold start, waktu upload, antrean, inferensi, dan download secara terpisah. Jika target gagal, perbaiki scope, ukuran file, atau presentasi demo; jangan menyebut target sebagai performa yang sudah terbukti.
 
@@ -58,6 +62,7 @@ Ukur cold start, waktu upload, antrean, inferensi, dan download secara terpisah.
 5. **Panduan:** baca seluruh teks segera setelah valid; ilustrasi langkah 1 muncul dahulu, lalu langkah berikutnya. Centang kemajuan secara lokal.
 6. **Verifikasi (rev 1.3):** setelah semua langkah dicentang, unggah foto hasil; tunggu status; poin masuk ke dompet bila disetujui.
 7. **Dompet Poin, Leaderboard RW, Bank sampah (rev 1.3):** dibuka dari kartu di Beranda. Pilih RW sekali untuk ikut leaderboard.
+8. **Navigasi bawah (rev 1.4):** Beranda, Jalur, tombol Scan di tengah (langsung kamera), Dompet, Peringkat. Tanpa tab Profil karena tidak ada login.
 
 State wajib: upload berlangsung/gagal, foto tidak sesuai, menunggu antrean GPU, worker GPU menyiapkan model/memproses/tidak tersedia, mesh siap/gagal, ide siap/gagal, panduan siap, ilustrasi pending/siap/gagal, koneksi terputus, serta (rev 1.3) verifikasi menunggu/diperiksa/disetujui/ditolak/gagal, batas harian tercapai, saldo kurang, dan stok hadiah habis. Tampilkan nama tahap; jangan membuat persentase kemajuan palsu.
 
@@ -76,7 +81,8 @@ Golden path demo tetap foto → melihat mesh → memilih ide → panduan. **Kete
 | Should | Koreksi sederhana label barang dan preferensi alat | Setelah alur lengkap stabil |
 | Should | Riwayat beberapa proyek dan penyimpanan lokal hasil | Setelah fitur inti selesai |
 | Must (rev 1.3) | Verifikasi proyek dengan foto sesudah, Dompet Poin, Leaderboard RW, daftar bank sampah | Mobile + Backend (bagian 17) |
-| Cut (rev 1.3) | QR Saya, Mode Petugas, peta interaktif, dashboard mitra, kampanye merek, streak/badge/undian, pencairan nyata | Roadmap, bagian 17.6 |
+| Must (rev 1.4) | Streak mingguan (tampilan), layar Jalur, navigasi bawah | Mobile + Backend (field `weekly_streak`) |
+| Cut (rev 1.3) | QR Saya, Mode Petugas, peta interaktif, dashboard mitra, kampanye merek, badge/undian, bonus poin streak, misi harian, pencairan nyata | Roadmap, bagian 17.6 |
 | Cut | Fitur di luar MVP pada bagian 3 | Jangan masuk sprint hackathon |
 
 **Nyata:** upload, worker GPU otomatis di Vast.ai, SF3D/TripoSR, GLB viewer, panggilan OpenAI, penyimpanan, dan status pekerjaan. **Shortcut:** tanpa akun/autentikasi pengguna; satu instance GPU dan satu job mesh aktif; desain visual sederhana. Tim menyiapkan dan mengelola instance, tetapi foto baru diproses tanpa transfer file atau eksekusi inferensi manual. **Fixture:** foto/GLB/JSON/ilustrasi contoh dipakai untuk pengembangan dan fallback demo, dengan label “Contoh tersimpan”. Hasil contoh tidak boleh ditampilkan seolah dihasilkan dari foto baru.
@@ -323,6 +329,8 @@ Sumber: brief *Sistem Reward Poin BEKAS* (wawancara IPR, kunjungan DLH Kota Band
 - **Proyek upcycle terverifikasi:** nilai default 500 poin per proyek, dikonfigurasi di backend (`UPCYCLE_POINTS`). Nilai setor satu botol PET sekitar beberapa ratus rupiah (Rp8.000–9.000/kg), sehingga mengolah tetap lebih untung. Angka final diputuskan bersama sponsor dana edukasi.
 - **Batas anti-curang:** maksimal 3 proyek terverifikasi per peserta per hari (`DAILY_VERIFY_CAP`), satu kredit per proyek, foto sesudah tidak boleh identik dengan foto lain. Poin tidak diberikan bila AI menyatakan foto tidak menunjukkan hasil olahan dari barang yang sama.
 - **Sumber dana** dicatat di setiap entri ledger (`dana_edukasi`, `sponsor_merek`, `mitra_hadiah`) agar laporan ke PRO dan sponsor dapat diaudit.
+- **Streak mingguan (rev 1.4):** jumlah minggu berturut-turut (Senin–Minggu, WIB) dengan minimal satu proyek terverifikasi. Minggu berjalan yang masih kosong belum memutus streak. Hanya tampilan untuk variasi (brief bagian 5 poin 6); **tidak** memberi poin agar tidak mendorong upload asal-asalan. Bonus poin streak masuk roadmap.
+- **Misi harian tidak dibuat:** target harian bertabrakan dengan batas anti-curang dan mendorong verifikasi asal-asalan. Target bersama memakai tantangan RW bulanan.
 - **Penukaran** memotong saldo dengan entri negatif dan membuat pengajuan berstatus `pending`; mitra memenuhi secara manual. Pada MVP penukaran adalah **pengajuan demo**, tidak mencairkan uang.
 
 ### 17.3 Endpoint tambahan
@@ -336,7 +344,7 @@ Semua tanpa login. `participant_id` adalah UUID acak dari HP, bukan bukti identi
 | `POST /projects/{id}/verification` | Body `{participant_id}`; proyek harus punya panduan; balas signed upload target foto sesudah (bentuk sama dengan `POST /projects`) |
 | `POST /projects/{id}/verification/start` | Validasi foto (MIME, ukuran, checksum unik, batas harian); antrekan job `verification`; balas 202. Error: `daily_cap_reached`, `duplicate_photo`, `already_verified` |
 | `GET /projects/{id}` | Tambah `components.verification` dan `verification: {approved, reason, points} \| null` |
-| `GET /participants/{id}/wallet` | `{balance, point_value_idr: 1, daily_cap, verified_today, ledger[{entry_id, amount, source, sumber_dana, description, created_at}], redemptions[{redemption_id, reward_name, points, status, created_at}]}` |
+| `GET /participants/{id}/wallet` | `{balance, point_value_idr: 1, daily_cap, verified_today, weekly_streak, verified_this_week, ledger[{entry_id, amount, source, sumber_dana, description, created_at}], redemptions[{redemption_id, reward_name, points, status, created_at}]}` |
 | `GET /rewards` | `[{reward_id, name, partner, kind: pulsa\|token_listrik\|emas\|voucher, price_points, stock}]` |
 | `POST /participants/{id}/redemptions` | Body `{reward_id}`; dalam satu transaksi: kunci baris peserta, cek saldo dan stok, kurangi stok, tulis ledger negatif. Error: `insufficient_balance`, `out_of_stock` |
 | `GET /leaderboard?month=YYYY-MM` | `{month, rows[{rank, rw_id, name, kelurahan, items, captain_name}], challenge{title, target_items, reward, sponsor}}`; `items` = proyek terverifikasi bulan itu per RW |
@@ -361,15 +369,17 @@ Kredit poin ditulis dalam transaksi yang sama dengan penyelesaian job `verificat
 | Layar | Isi |
 |---|---|
 | Panduan → kartu selesai | Tombol "Foto hasil karyamu" → upload → StageStatus verifikasi → "+500 poin masuk dompet" atau alasan ditolak + foto ulang |
-| Beranda | Kartu saldo Dompet, kartu peringkat RW, kartu Bank sampah |
-| Dompet Poin | Saldo, "1 poin = Rp1", hadiah target dengan progres nyata, daftar hadiah + tukar (konfirmasi), riwayat ledger dan pengajuan |
+| Beranda | Saldo koin dan streak di header, kartu saldo Dompet, kartu peringkat RW, kartu Bank sampah |
+| Jalur (rev 1.4) | Titik proyek terverifikasi, proyek aktif (progres langkah), titik gembok menuju hadiah target, kado hadiah target. Satu maskot di titik aktif |
+| Navigasi bawah (rev 1.4) | Beranda, Jalur, Scan (tengah, membuka kamera), Dompet, Peringkat |
+| Dompet Poin | Saldo, "1 poin = Rp1", streak mingguan, hadiah target dengan progres nyata, daftar hadiah + tukar (konfirmasi), riwayat ledger dan pengajuan |
 | Leaderboard RW | Bulan berjalan, tantangan bulanan + progres RW pengguna, daftar peringkat RW, RW pengguna ditandai, kapten tim |
 | Pilih RW | Daftar RW dari API; tersimpan lokal dan dikirim ke `PUT /participants` |
 | Bank sampah | Daftar mitra; tombol "Buka di peta" |
 
 ### 17.6 Batasan scope
 
-**Masuk MVP:** verifikasi proyek dengan foto sesudah, Dompet Poin (saldo, riwayat, hadiah target, pengajuan tukar), Leaderboard RW dengan tantangan bulanan dan kapten tim, daftar bank sampah, pilih RW.
+**Masuk MVP:** verifikasi proyek dengan foto sesudah, Dompet Poin (saldo, riwayat, hadiah target, pengajuan tukar), Leaderboard RW dengan tantangan bulanan dan kapten tim, daftar bank sampah, pilih RW. Rev 1.4: streak mingguan (tampilan), layar Jalur, navigasi bawah.
 
 **Tidak masuk MVP (roadmap):**
 
@@ -379,7 +389,9 @@ Kredit poin ditulis dalam transaksi yang sama dengan penyelesaian job `verificat
 | Peta interaktif | Butuh SDK peta dan API key; daftar + peta bawaan HP cukup untuk demo |
 | Dashboard mitra (web) | Aplikasi web terpisah; data sudah tercatat (`sumber_dana`, RW, proyek) untuk dibangun nanti |
 | Poin dobel kampanye merek, bonus EPR | Butuh deteksi merek dan kontrak sponsor |
-| Streak, badge, undian | Variasi setelah pemakaian dasar terbukti |
+| Badge, undian, bonus poin streak | Variasi lanjutan setelah streak mingguan terbukti dipakai |
+| Misi harian | Bertabrakan dengan batas anti-curang harian |
+| Tab Profil | Tidak ada login, jadi tidak ada data profil |
 | Pencairan ke e-wallet, pulsa, token, emas sungguhan | Butuh autentikasi, verifikasi identitas, dan perjanjian mitra; MVP hanya pengajuan demo |
 | Potong retribusi sampah | Perlu kebijakan Pemkot |
 | Lapis 3: jual hasil kerajinan | Slide roadmap (pesanan suvenir CSR, bazar) |

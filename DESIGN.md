@@ -16,7 +16,7 @@ Gaya visual: **playful edu-app**, terinspirasi UI kit "Pidu". Ciri utamanya:
 - Maskot kucing biru 3D dan ikon 3D eco.
 - Tetap jujur: tidak ada persentase kemajuan palsu, tidak ada klaim ukuran, jenis resin, atau dampak lingkungan yang tidak diukur (PRD bagian 3, 4, 15).
 
-Canvas Design (prototype di Claude) hanya acuan **gaya visual**. Alurnya sudah diganti oleh bagian 6 di bawah. Sejak PRD 1.3, **poin dan leaderboard RW dibangun** (bagian 6b). Streak, jalur level, poin per ide, misi harian, dan statistik "plastik terselamatkan" di canvas tetap **tidak dibangun**.
+Canvas Design (prototype di Claude) hanya acuan **gaya visual**. Alurnya sudah diganti oleh bagian 6 di bawah. Sejak PRD 1.3, **poin dan leaderboard RW dibangun**; sejak PRD 1.4, **streak mingguan, layar Jalur, dan navigasi bawah** juga dibangun (bagian 6b). Misi harian, level/kunci konten, dan statistik "plastik terselamatkan" di canvas tetap **tidak dibangun**.
 
 ## 2. Design tokens
 
@@ -202,7 +202,8 @@ app/
 ├── wallet.tsx         Dompet Poin
 ├── leaderboard.tsx    Leaderboard RW
 ├── rw.tsx             Pilih RW
-└── bank-sampah.tsx    Bank sampah mitra
+├── bank-sampah.tsx    Bank sampah mitra
+└── (tabs)/            index, jalur, wallet, leaderboard dengan navigasi bawah
 ```
 
 - **Beranda:** di bawah kartu utama, dua kartu sejajar (saldo poin, peringkat RW) dan satu kartu Bank sampah. Kartu ringkas, angka pakai Fredoka.
@@ -210,6 +211,10 @@ app/
 - **Dompet Poin:** GreenHeader berisi saldo (display) dan pill "1 poin = Rp1". Kartu hadiah target dengan ProgressBar (data nyata saldo ÷ harga). Daftar hadiah: Card + harga + stok + tombol Tukar (secondary; disabled bila saldo kurang/stok 0). Konfirmasi tukar lewat sheet. Riwayat: daftar entri +/−, sumber, tanggal.
 - **Leaderboard RW:** GreenHeader bulan berjalan + maskot `senang`. Kartu tantangan bulanan + ProgressBar RW pengguna. Daftar RW: nomor peringkat dalam lingkaran, nama RW, kelurahan, kapten, jumlah barang. RW pengguna memakai Card `selected`. Belum pilih RW: kartu ajakan "Pilih RW kamu".
 - **Pilih RW / Bank sampah:** PlainHeader + daftar Card. Bank sampah: jam buka, pill jenis diterima, harga per kg, tombol secondary "Buka di peta".
+- **Navigasi bawah (PRD 1.4):** bar putih radius atas 28, lima slot: Beranda (Home), Jalur (Flag), Scan di tengah (kotak hijau chunky 64 menonjol ke atas, ikon ScanLine, langsung kamera), Dompet (Wallet), Peringkat (Trophy). Aktif: ikon + label green700, nonaktif iconIdle. Tanpa tab Profil.
+- **Badge header:** pill putih berisi `Coin` + saldo, dan `Flame` + streak minggu. Dipakai di Beranda dan Jalur.
+- **Streak mingguan:** di Dompet, kartu noteYellow dengan `Flame` besar, "N minggu berturut-turut mengolah"; bila minggu ini belum ada proyek: "Olah 1 barang minggu ini supaya streak tidak putus". Tidak memberi poin.
+- **Jalur:** GreenHeader (pill "Botol plastik" + badge koin/streak), area jalur latar green50 dengan jalan berliku (svg, stroke noteYellowBorder di bawah tileYellow). Titik 64 chunky: selesai green500 + Check, aktif 76 + Flag + cincin green100 + TagLabel "Judul · 3/5" + maskot `tunjukHp` di sampingnya, terkunci line + Lock, ujung kado accentYellow. Ikon 3D dekor bergantian kiri/kanan. Caption kado: "Pulsa Rp5.000 · 8 proyek lagi".
 - ProgressBar: track `line`, isi `green500`, tinggi 12, radius pill. Hanya untuk data nyata (saldo, jumlah barang), **bukan** untuk proses backend.
 
 ## 7. State wajib (PRD bagian 4)

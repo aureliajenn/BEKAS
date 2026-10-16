@@ -98,4 +98,6 @@ Spesifikasi lengkap ada di [PRD bagian 17.3](../PRD.md#173-endpoint-tambahan). R
 | `GET` | `/leaderboard?month=YYYY-MM` | Peringkat RW + tantangan bulanan |
 | `GET` | `/bank-sampah` | Daftar bank sampah mitra |
 
+`GET /participants/{id}/wallet` menambah `weekly_streak` (int) dan `verified_this_week` (bool) sejak PRD 1.4; aturan hitung di PRD 17.2.
+
 `GET /projects/{id}` menambah `components.verification` dan `verification: {approved, reason, points} | null`. Mobile sudah memakai bentuk ini di mode fixture (`apps/mobile/src/lib/rewards.ts`).
