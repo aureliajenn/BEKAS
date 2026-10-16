@@ -13,6 +13,8 @@ import { MascotBubble } from '@/components/MascotBubble';
 import { StageStatus } from '@/components/StageStatus';
 import { StepCard } from '@/components/StepCard';
 import { VerifyPanel } from '@/components/VerifyPanel';
+import { ItemGrid } from '@/components/ItemGrid';
+import { Scissors } from '@/components/illustrations';
 import { Confetti, DecorCircle } from '@/components/shapes';
 import { retryJob } from '@/lib/api';
 import { clearActiveProject, getDoneSteps, setDoneSteps } from '@/lib/storage';
@@ -83,14 +85,17 @@ export default function GuideScreen() {
                 accessibilityState={{ expanded: openKit }}
                 style={styles.kitHead}
               >
+                <Scissors size={34} />
                 <Text style={[type.h3, { flex: 1 }]}>Alat dan bahan</Text>
                 {openKit ? <ChevronUp size={22} color={colors.green700} strokeWidth={2.5} /> : <ChevronDown size={22} color={colors.green700} strokeWidth={2.5} />}
               </Pressable>
               {openKit ? (
-                <>
-                  <Text style={type.body}>Bahan: {guide.materials.join(', ')}</Text>
-                  <Text style={type.body}>Alat: {guide.tools.join(', ')}</Text>
-                </>
+                <View style={{ gap: space.md }}>
+                  <Text style={type.overline}>Bahan</Text>
+                  <ItemGrid items={guide.materials} offset={2} />
+                  <Text style={type.overline}>Alat</Text>
+                  <ItemGrid items={guide.tools} />
+                </View>
               ) : null}
             </Card>
             {guide.safety_notes.map((n) => (
@@ -151,7 +156,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: space.sm },
   scroll: { padding: space.screen, gap: space.lg },
-  kitHead: { flexDirection: 'row', alignItems: 'center', minHeight: 44 },
+  kitHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 44 },
   celebrate: { backgroundColor: colors.green500, borderRadius: radius.card, overflow: 'hidden', alignItems: 'center', padding: space.xxl, gap: space.sm },
   celebrateTitle: { color: colors.white, textAlign: 'center' },
   celebrateNote: { color: colors.white, textAlign: 'center' },
