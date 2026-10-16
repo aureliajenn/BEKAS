@@ -6,7 +6,7 @@ import type { LeaderboardRow } from '@/types/contracts';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Card, OfflineBanner, Pill, ProgressBar } from '@/components/Card';
+import { Card, IlluTile, OfflineBanner, Pill, ProgressBar } from '@/components/Card';
 import { ChunkyButton } from '@/components/ChunkyButton';
 import { GreenHeader } from '@/components/GreenHeader';
 import { fetchLeaderboard, getParticipant } from '@/lib/rewards';
@@ -41,9 +41,9 @@ export default function LeaderboardScreen() {
         {participant.data && !myRwId ? (
           <Card style={{ gap: space.md }}>
             <View style={styles.row}>
-              <View style={[styles.tile, { backgroundColor: colors.tileBlue }]}>
+              <IlluTile bg={colors.tileBlue} size={68}>
                 <HouseGroup size={54} />
-              </View>
+              </IlluTile>
               <View style={{ flex: 1, gap: 2 }}>
                 <Text style={type.h3}>Pilih RW kamu</Text>
                 <Text style={type.caption}>Barang yang kamu olah ikut dihitung untuk RW-mu. Peringkat per RW, bukan per orang.</Text>
@@ -58,9 +58,9 @@ export default function LeaderboardScreen() {
         {b ? (
           <Card style={{ gap: space.sm, backgroundColor: colors.noteYellowBg, borderColor: colors.noteYellowBorder }}>
             <View style={styles.row}>
-              <View style={[styles.tile, styles.tilt, { backgroundColor: colors.white }]}>
+              <IlluTile bg={colors.white} size={68} tilt={-4}>
                 <TrophyCup size={54} />
-              </View>
+              </IlluTile>
               <View style={{ flex: 1, gap: 2 }}>
                 <Text style={type.overline}>Tantangan bulan ini</Text>
                 <Text style={type.h3}>{b.challenge.title}</Text>
@@ -151,8 +151,6 @@ const styles = StyleSheet.create({
   scroll: { padding: space.screen, gap: space.lg },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   rank: { width: 44, height: 44, borderRadius: radius.pill, backgroundColor: colors.bg, borderWidth: 2, borderColor: colors.line, alignItems: 'center', justifyContent: 'center' },
-  tile: { width: 68, height: 68, borderRadius: radius.tile, alignItems: 'center', justifyContent: 'center' },
-  tilt: { transform: [{ rotate: '-4deg' }] },
   podium: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm, paddingTop: space.sm },
   podiumCol: { flex: 1, alignItems: 'center', gap: space.xs },
   podiumBlock: { width: '100%', borderTopLeftRadius: radius.tile, borderTopRightRadius: radius.tile, alignItems: 'center', paddingTop: space.sm, borderWidth: 2 },
