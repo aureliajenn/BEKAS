@@ -4,8 +4,8 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { UPCYCLE_POINTS } from '../lib/api';
 import type { CraftIdea } from '../types/contracts';
 import { ideaTiles } from '../theme/assets';
-import { colors, radius, space, type } from '../theme/tokens';
-import { Card, difficultyTone, Pill, PointsPill } from './Card';
+import { colors, space, type } from '../theme/tokens';
+import { Card, difficultyTone, IlluTile, Pill, PointsPill } from './Card';
 import { Clock } from './illustrations';
 
 type Props = { idea: CraftIdea; index: number; selected?: boolean; onPress: () => void };
@@ -20,9 +20,9 @@ export function IdeaCard({ idea, index, selected, onPress }: Props) {
       style={({ pressed }) => pressed && { opacity: 0.85 }}
     >
       <Card selected={selected} style={styles.row}>
-        <View style={[styles.tile, { backgroundColor: tile.bg }]}>
+        <IlluTile bg={tile.bg} size={72}>
           <Image source={tile.icon} style={styles.icon} resizeMode="contain" accessible={false} />
-        </View>
+        </IlluTile>
         <View style={styles.body}>
           <Text style={type.h3}>{idea.title}</Text>
           <Text style={type.caption} numberOfLines={2}>
@@ -43,7 +43,6 @@ export function IdeaCard({ idea, index, selected, onPress }: Props) {
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  tile: { width: 72, height: 72, borderRadius: radius.tile, alignItems: 'center', justifyContent: 'center' },
   icon: { width: 56, height: 56 },
   body: { flex: 1, gap: space.xs },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 2 },

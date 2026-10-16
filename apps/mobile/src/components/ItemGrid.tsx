@@ -1,7 +1,8 @@
 import type { ComponentType } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors, radius, space, type } from '../theme/tokens';
+import { colors, space, type } from '../theme/tokens';
+import { IlluTile } from './Card';
 import { GiftBox, GlueTube, IdeaBulb, PaintBrush, PlantPot, Rope, Scissors, type IlluProps } from './illustrations';
 
 /** Pilih ilustrasi dari nama alat/bahan bebas dari backend. Tidak cocok → bohlam (alat lain). */
@@ -27,9 +28,9 @@ export function ItemGrid({ items, offset = 0 }: { items: string[]; offset?: numb
         const rot = (i % 3) - 1; // -1, 0, 1 → miring tipis bergantian
         return (
           <View key={item} style={styles.cell} accessible accessibilityLabel={item}>
-            <View style={[styles.tile, { backgroundColor: tiles[(i + offset) % tiles.length], transform: [{ rotate: `${rot * 4}deg` }] }]}>
+            <IlluTile bg={tiles[(i + offset) % tiles.length]} size={68} tilt={rot * 4}>
               <Art size={46} />
-            </View>
+            </IlluTile>
             <Text style={[type.caption, styles.label]} numberOfLines={2}>
               {item}
             </Text>
@@ -43,6 +44,5 @@ export function ItemGrid({ items, offset = 0 }: { items: string[]; offset?: numb
 const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: space.md },
   cell: { width: '33.33%', alignItems: 'center', gap: space.xs, paddingHorizontal: space.xs },
-  tile: { width: 68, height: 68, borderRadius: radius.tile, alignItems: 'center', justifyContent: 'center' },
   label: { color: colors.ink, textAlign: 'center' },
 });

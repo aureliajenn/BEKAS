@@ -4,14 +4,15 @@ import { Camera, Images, Wallet } from 'lucide-react-native';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { ApiFailure, assetUri, retryJob, UPCYCLE_POINTS, USE_FIXTURES } from '../lib/api';
+import { ApiFailure, assetUri, UPCYCLE_POINTS, USE_FIXTURES } from '../lib/api';
 import { pickPhoto } from '../lib/photo';
 import { startVerification } from '../lib/rewards';
+import { useRetryJob } from '../lib/useProject';
 import { icon3d } from '../theme/assets';
 import { extraCopy } from '../theme/statusCopy';
 import { colors, radius, space, type } from '../theme/tokens';
 import type { ProjectView } from '../types/contracts';
-import { Card, PointsPill } from './Card';
+import { Card, DangerBox, PointsPill } from './Card';
 import { ChunkyButton } from './ChunkyButton';
 import { Coin, Sparkle, Star } from './shapes';
 import { StageStatus } from './StageStatus';
@@ -26,10 +27,7 @@ export function VerifyPanel({ project }: { project: ProjectView }) {
     mutationFn: (uri: string) => startVerification(project.id, uri),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['project', project.id] }),
   });
-  const retry = useMutation({
-    mutationFn: (jobId: string) => retryJob(project.id, jobId),
-    onSettled: () => qc.invalidateQueries({ queryKey: ['project', project.id] }),
-  });
+  const retry = useRetryJob(project.id);
 
   const choose = async (source: 'camera' | 'library') => {
     const res = await pickPhoto(source);
@@ -70,24 +68,11 @@ export function VerifyPanel({ project }: { project: ProjectView }) {
       {v?.job.status === 'failed' ? (
         <StageStatus items={[{ kind: 'verification', status: 'failed', onRetry: () => retry.mutate(v.job.id) }]} />
       ) : null}
-      {rejected ? (
-        <View style={styles.danger} accessibilityRole="alert">
-          <Text style={[type.bodyL, { color: colors.dangerFg }]}>Belum bisa diberi poin</Text>
-          <Text style={type.body}>{v.result!.reason}</Text>
-        </View>
-      ) : null}
+      {rejected ? <DangerBox title="Belum bisa diberi poin" text={v.result!.reason ?? ''} /> : null}
       {send.isError ? (
-        <View style={styles.danger} accessibilityRole="alert">
-          <Text style={[type.body, { color: colors.dangerFg }]}>
-            {send.error instanceof ApiFailure ? send.error.detail.message : 'Foto gagal terkirim. Coba lagi.'}
-          </Text>
-        </View>
+        <DangerBox text={send.error instanceof ApiFailure ? send.error.detail.message : 'Foto gagal terkirim. Coba lagi.'} />
       ) : null}
-      {denied ? (
-        <View style={styles.danger} accessibilityRole="alert">
-          <Text style={[type.body, { color: colors.dangerFg }]}>Izin ditolak. Izinkan kamera atau galeri di pengaturan HP.</Text>
-        </View>
-      ) : null}
+      {denied ? <DangerBox text="Izin ditolak. Izinkan kamera atau galeri di pengaturan HP." /> : null}
 
       {canSend || send.isPending ? (
         <>
@@ -141,6 +126,5 @@ const styles = StyleSheet.create({
     borderColor: colors.green400,
     backgroundColor: colors.green50,
   },
-  danger: { backgroundColor: colors.dangerBg, borderRadius: radius.iconButton, padding: space.md, gap: space.xs },
   devLink: { textAlign: 'center', textDecorationLine: 'underline' },
 });
