@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "idea_id", "title", "estimated_minutes", "materials", "tools", "safety_notes", "steps"],
+  "properties": {
+    "schema_version": {"type": "string", "enum": ["1.0"]},
+    "idea_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "title": {"type": "string", "minLength": 1, "maxLength": 160},
+    "estimated_minutes": {"type": ["integer", "null"], "minimum": 1, "maximum": 600},
+    "materials": {"type": "array", "maxItems": 40, "items": {"type": "string"}},
+    "tools": {"type": "array", "maxItems": 40, "items": {"type": "string"}},
+    "safety_notes": {"type": "array", "maxItems": 40, "items": {"type": "string"}},
+    "steps": {"type": "array", "minItems": 4, "maxItems": 6, "items": {"$ref": "#/$defs/step"}}
+  },
+  "$defs": {
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "order", "title", "instruction", "expected_result", "illustration_prompt"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1, "maxLength": 100},
+        "order": {"type": "integer", "minimum": 1, "maximum": 6},
+        "title": {"type": "string", "minLength": 1, "maxLength": 160},
+        "instruction": {"type": "string", "minLength": 1, "maxLength": 1500},
+        "expected_result": {"type": "string", "minLength": 1, "maxLength": 500},
+        "illustration_prompt": {"type": "string", "minLength": 1, "maxLength": 1200}
+      }
+    }
+  }
+}

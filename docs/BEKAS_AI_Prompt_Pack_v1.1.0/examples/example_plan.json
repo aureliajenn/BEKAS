@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "idea_id": "idea-pencil-holder",
+  "title": "Tempat pensil berlapis kertas",
+  "estimated_minutes": 35,
+  "materials": ["Botol plastik contoh", "Kertas kado", "Pita perekat dua sisi yang sesuai untuk plastik dan kertas"],
+  "tools": ["Penggaris", "Spidol", "Gunting yang sesuai bahan", "Amplas halus"],
+  "safety_notes": [
+    "Gunakan botol yang diketahui tidak pernah berisi bahan berbahaya.",
+    "Pemotongan plastik ditangani orang dewasa; rapikan tepi tajam.",
+    "Jangan memanaskan atau melelehkan plastik; hasil bukan untuk makanan atau minuman."
+  ],
+  "steps": [
+    {
+      "id": "step-01",
+      "order": 1,
+      "title": "Bersihkan botol",
+      "instruction": "Lepas label, cuci botol yang diketahui aman dengan sabun, bilas, lalu keringkan seluruh permukaannya.",
+      "expected_result": "Botol utuh, bersih dan kering tanpa label.",
+      "illustration_prompt": "Botol contoh utuh tanpa label, bersih dan kering. Bentuk sama dengan render sumber; belum ada potongan atau lapisan kertas."
+    },
+    {
+      "id": "step-02",
+      "order": 2,
+      "title": "Tandai batas potong",
+      "instruction": "Gunakan penggaris sebagai panduan dan spidol untuk menandai garis melingkar sesuai lokasi pada render tahap. Sesuaikan tinggi dengan pensil yang akan disimpan; jangan menyalin ukuran dari gambar.",
+      "expected_result": "Botol masih utuh dengan satu garis batas potong melingkar.",
+      "illustration_prompt": "Botol contoh tetap utuh dengan garis spidol melingkar pada lokasi yang ditunjukkan render tahap. Tidak ada angka ukuran, kertas atau bagian terpotong."
+    },
+    {
+      "id": "step-03",
+      "order": 3,
+      "title": "Potong bagian atas",
+      "instruction": "Minta orang dewasa memotong mengikuti tanda menggunakan gunting yang sesuai untuk bahan botol. Jika bahan sulit dipotong dengan aman, hentikan dan pilih wadah yang lebih mudah dikerjakan. Pisahkan bagian atas.",
+      "expected_result": "Bagian bawah botol menjadi wadah terbuka; bagian atas sudah dipisahkan.",
+      "illustration_prompt": "Wadah bagian bawah botol dengan bagian atas terpisah di sampingnya, mengikuti bentuk render tahap. Belum ada kertas pembungkus."
+    },
+    {
+      "id": "step-04",
+      "order": 4,
+      "title": "Rapikan tepi",
+      "instruction": "Minta orang dewasa menghaluskan seluruh tepi potongan dengan amplas halus. Jangan lanjutkan bila masih ada ujung atau sisi tajam.",
+      "expected_result": "Wadah terbuka dengan tepi yang sudah dihaluskan.",
+      "illustration_prompt": "Wadah botol terpotong tanpa lapisan tambahan, tepi atas rapi sesuai render. Bentuk dan proporsi tetap sama dengan tahap sebelumnya."
+    },
+    {
+      "id": "step-05",
+      "order": 5,
+      "title": "Siapkan lapisan kertas",
+      "instruction": "Lingkarkan kertas kado pada badan wadah untuk menentukan kebutuhan. Tandai memakai penggaris dan spidol dengan sedikit area tumpang tindih, lalu potong kertas dengan gunting. Jangan menutup bukaan atau dasar wadah.",
+      "expected_result": "Potongan kertas siap dipasang di samping wadah yang belum dilapisi.",
+      "illustration_prompt": "Wadah botol terpotong dan potongan kertas kado persegi panjang terpisah di sampingnya. Kertas belum menempel; cocok dengan render tahap."
+    },
+    {
+      "id": "step-06",
+      "order": 6,
+      "title": "Pasang lapisan kertas",
+      "instruction": "Pasang pita perekat dua sisi yang sesuai bahan pada bidang tempel, lalu lilit dan tekan kertas kado hingga menempel. Pastikan sambungan kuat, tepi tetap aman, dasar stabil dan bukaan atas tidak tertutup sebelum digunakan.",
+      "expected_result": "Tempat pensil berlapis kertas dengan dasar stabil dan bukaan atas bebas.",
+      "illustration_prompt": "Wadah akhir berupa bagian bawah botol berlapis kertas kado sesuai render tahap. Bukaan atas dan dasar tetap bebas; tanpa pita hias, warna baru atau ornamen tambahan."
+    }
+  ]
+}

@@ -12,7 +12,7 @@ import { MascotBubble } from '@/components/MascotBubble';
 import { StageStatus } from '@/components/StageStatus';
 import { assetUri, createProject, USE_FIXTURES, type Scenario } from '@/lib/api';
 import { setActiveProject } from '@/lib/storage';
-import { pencilProcessAssets } from '@/theme/assets';
+import { pencilInitialAssets } from '@/theme/assets';
 import { extraCopy } from '@/theme/statusCopy';
 import { colors, space, type } from '@/theme/tokens';
 
@@ -21,8 +21,8 @@ const checklist = ['Satu barang terlihat utuh', 'Latar sederhana', 'Pencahayaan 
 export default function PreviewScreen() {
   const { uri, scenario } = useLocalSearchParams<{ uri: string; scenario?: Scenario }>();
   const { bottom } = useSafeAreaInsets();
-  const dummyPhoto = pencilProcessAssets['mesh-01'].illustration;
-  const photoUri = USE_FIXTURES && dummyPhoto ? assetUri(dummyPhoto) : uri;
+  const dummyPhoto = pencilInitialAssets.illustration;
+  const photoUri = USE_FIXTURES ? assetUri(dummyPhoto) : uri;
 
   const send = useMutation({
     mutationFn: () => createProject(photoUri, scenario),
@@ -38,7 +38,7 @@ export default function PreviewScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         {USE_FIXTURES ? <Pill label={extraCopy.cachedSample} tone="cached" /> : null}
         <View style={styles.photoCard}>
-          <Image source={USE_FIXTURES && dummyPhoto ? dummyPhoto : { uri: photoUri }} style={styles.photo}
+          <Image source={USE_FIXTURES ? dummyPhoto : { uri: photoUri }} style={styles.photo}
             resizeMode={USE_FIXTURES ? 'contain' : 'cover'}
             accessibilityLabel={USE_FIXTURES ? 'Gambar contoh botol plastik utuh' : 'Foto barang yang akan dikirim'} />
         </View>

@@ -14,7 +14,6 @@ type Props = {
   illustrationAsset?: number;
   modelAsset?: number;
   illustrationStatus?: JobStatus;
-  illustrationPlaceholder?: string;
   onRetry?: () => void;
 };
 
@@ -50,10 +49,10 @@ export function ProcessVisual(props: Props) {
         ) : props.illustrationAsset || props.illustrationUrl ? (
           <Image source={props.illustrationAsset ?? { uri: props.illustrationUrl }}
             style={styles.image} resizeMode="contain" accessibilityLabel={`Ilustrasi ${props.title}`} />
-        ) : props.illustrationPlaceholder || !props.illustrationStatus ? (
+        ) : !props.illustrationStatus || props.illustrationStatus === 'succeeded' ? (
           <View style={styles.empty}>
             <ImageIcon size={32} color={colors.iconIdle} strokeWidth={2.5} />
-            <Text style={styles.caption}>{props.illustrationPlaceholder ?? 'Ilustrasi proses ini belum tersedia.'}</Text>
+            <Text style={styles.caption}>Ilustrasi proses ini belum tersedia.</Text>
           </View>
         ) : (
           <View style={styles.empty}>

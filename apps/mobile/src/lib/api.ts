@@ -1,9 +1,9 @@
 import { Asset } from 'expo-asset';
 
-import { icon3d, pencilProcessAssets } from '@/theme/assets';
+import { icon3d, pencilInitialAssets } from '@/theme/assets';
 import type { ApiError, JobState, ProjectView, VerificationResult } from '@/types/contracts';
 
-import { needsNewPhoto, pencilIdeaId, pencilMeshStates, sampleGuide, sampleIdeas } from './fixtures';
+import { needsNewPhoto, pencilAssetsForStep, pencilIdeaId, sampleGuide, sampleIdeas } from './fixtures';
 import { getJSON, listKeys, setJSON } from './storage';
 import { fromApi, type ProjectResponse } from './wire';
 
@@ -215,7 +215,7 @@ async function fixtureProject(id: string): Promise<ProjectView> {
     input_url: s.inputUri,
     mesh: {
       job: mesh,
-      url: meshReady && pencilProcessAssets['mesh-01'].model ? assetUri(pencilProcessAssets['mesh-01'].model) : undefined,
+      url: meshReady ? assetUri(pencilInitialAssets.model) : undefined,
       model: 'Contoh tersimpan',
       worker_state: sc === 'gpu_unavailable' ? 'unavailable' : mesh.status === 'running' && t < 7000 && !s.retries?.[mesh.id] ? 'preparing' : undefined,
     },
@@ -232,8 +232,7 @@ async function fixtureProject(id: string): Promise<ProjectView> {
     view.guide = { job: guide, result };
     if (s.ideaId === pencilIdeaId) {
       result?.steps.forEach((step) => {
-        const state = pencilMeshStates.find((mesh) => mesh.after_step_id === step.id);
-        const illustration = state ? pencilProcessAssets[state.id]?.illustration : undefined;
+        const illustration = pencilAssetsForStep(step.id)?.illustration;
         if (illustration) {
           view.illustrations[step.id] = {
             job: { id: `job-ill-${step.id}`, status: 'succeeded' },

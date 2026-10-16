@@ -80,8 +80,6 @@ export interface ProjectView {
   selected_idea_id?: string;
   guide?: { job: JobState; result?: GuideResult };
   illustrations: Record<string, { job: JobState; url?: string }>;
-  /** Pesan statis saat aset ilustrasi fixture belum tersedia, bukan job berjalan. */
-  illustration_placeholder?: string;
   verification?: { job: JobState; result?: VerificationResult };
 }
 

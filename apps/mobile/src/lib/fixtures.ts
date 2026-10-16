@@ -1,12 +1,13 @@
 import type { GuideResult, IdeasResult } from '@/types/contracts';
+import { pencilInitialAssets, pencilProcessAssets } from '@/theme/assets';
 import pencilDemo from '../../assets/demo/tempat-pensil/content.json';
 
 export const pencilIdeaId = pencilDemo.idea.id;
-export const pencilMeshStates = pencilDemo.mesh_states;
-
-// Contoh tersimpan untuk pengembangan UI. Selalu tampil berlabel "Contoh tersimpan".
-export const SAMPLE_GLB =
-  'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/WaterBottle/glTF-Binary/WaterBottle.glb';
+export function pencilAssetsForStep(stepId?: string) {
+  if (!stepId) return pencilInitialAssets;
+  const state = pencilDemo.mesh_states.find((mesh) => mesh.after_step_id === stepId);
+  return state ? pencilProcessAssets[state.id] : undefined;
+}
 
 export const sampleIdeas: IdeasResult = {
   schema_version: '1.0',

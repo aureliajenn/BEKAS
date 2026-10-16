@@ -1,1 +1,1 @@
-export { default } from '../../guide';
+export { default } from '@/screens/GuideScreen';

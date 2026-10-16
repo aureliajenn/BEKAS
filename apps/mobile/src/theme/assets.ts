@@ -16,8 +16,10 @@ export const mascot = {
 
 export type MascotPose = keyof typeof mascot;
 
+export type ProcessAssets = { illustration?: number; model?: number };
+
 /** Satu pasangan ilustrasi/model untuk setiap kondisi demo tempat pensil. */
-export const pencilProcessAssets: Record<string, { illustration?: number; model?: number }> = {
+export const pencilProcessAssets: Record<string, { illustration: number; model: number }> = {
   'mesh-01': {
     illustration: require('../../assets/demo/tempat-pensil/illustrations/p1.png'),
     model: require('../../assets/demo/tempat-pensil/models/bottle-1.glb'),
@@ -39,6 +41,8 @@ export const pencilProcessAssets: Record<string, { illustration?: number; model?
     model: require('../../assets/demo/tempat-pensil/models/bottle-5.glb'),
   },
 };
+
+export const pencilInitialAssets = pencilProcessAssets['mesh-01'];
 
 /** Pose maskot per layar/state, sesuai DESIGN.md bagian 5. */
 export const mascotFor = {

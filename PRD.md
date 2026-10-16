@@ -57,7 +57,7 @@ Ukur cold start, waktu upload, antrean, inferensi, dan download secara terpisah.
 2. **Pratinjau foto:** satu objek utuh, latar sederhana, pencahayaan merata; kirim foto.
 3. **Hasil barang:** lihat status pembuatan 3D dan rekomendasi secara terpisah. Saat siap, putar/zoom mesh dan baca 3 kartu ide.
 4. **Detail ide:** lihat kegunaan, alat, bahan tambahan, kesulitan, dan perkiraan durasi; pilih “Buat panduan”.
-5. **Panduan:** baca seluruh teks segera setelah valid; ilustrasi langkah 1 muncul dahulu, lalu langkah berikutnya. Centang kemajuan secara lokal.
+5. **Panduan:** satu page per proses dengan judul, instruksi, hasil yang diharapkan, serta tombol tukar Ilustrasi 2D / Model 3D. Teks tiap proses dapat dibuka segera setelah panduan valid tanpa menunggu aset. Page persiapan mendahului langkah pengerjaan; demo tempat pensil memiliki lima page (kondisi awal + empat langkah). Navigasi Berikutnya menyimpan langkah selesai secara lokal. Mesh per proses memakai aset demo terkurasi bila tersedia; backend saat ini hanya menghasilkan mesh barang awal.
 6. **Verifikasi (rev 1.3):** setelah semua langkah dicentang, unggah foto hasil; tunggu status; poin masuk ke dompet bila disetujui.
 7. **Dompet Poin, Leaderboard RW, Bank sampah (rev 1.3):** dibuka dari kartu di Beranda. Pilih RW sekali untuk ikut leaderboard.
 

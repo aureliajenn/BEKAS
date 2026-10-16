@@ -30,9 +30,7 @@ build/
 .DS_Store
 Thumbs.db
 
-# Model weights and generated GPU output
-gpu/checkpoints/
-gpu/outputs/
+# Model weights
 *.safetensors
 *.ckpt
 *.pth

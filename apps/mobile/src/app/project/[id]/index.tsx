@@ -13,7 +13,7 @@ import { StageStatus } from '@/components/StageStatus';
 import { retryJob } from '@/lib/api';
 import { clearActiveProject } from '@/lib/storage';
 import { useProject } from '@/lib/useProject';
-import { mascot, pencilProcessAssets } from '@/theme/assets';
+import { mascot, pencilInitialAssets } from '@/theme/assets';
 import { extraCopy } from '@/theme/statusCopy';
 import { colors, radius, space, type } from '@/theme/tokens';
 
@@ -67,7 +67,7 @@ export default function ResultScreen() {
                 <MeshViewerFrame
                   status={p.mesh.job.status}
                   meshUrl={p.mesh.url}
-                  meshAsset={p.is_fixture ? pencilProcessAssets['mesh-01'].model : undefined}
+                  meshAsset={p.is_fixture ? pencilInitialAssets.model : undefined}
                   photoUrl={p.input_url}
                   labelOverride={
                     p.mesh.worker_state === 'unavailable'

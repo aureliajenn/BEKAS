@@ -84,7 +84,7 @@ Use one fresh client/session per mesh job, preserving it across that job's calls
 ## 5. Phase 1 — Align architecture specifications
 
 - [x] Update `PRD.md` architecture, mesh acceptance/recovery wording, runtime assumptions, and setup instructions for hosted SF3D.
-- [x] Update `IMPLEMENTATION_PLAN.md` and supersede Vast.ai tasks in `docs/development-todo.md` with this migration sequence. Old implementation plan archived with an explicit historical label.
+- [x] Update `IMPLEMENTATION_PLAN.md` with the hosted-SF3D sequence. The obsolete Vast.ai development checklist has been removed; pending delivery work is tracked in the active implementation plan.
 - [x] Update `docs/api-contract.md`: preserve application endpoints; retire worker endpoints.
 - [x] Distinguish confirmed API behavior from untested performance targets. Hosted queue wait is part of observed latency.
 

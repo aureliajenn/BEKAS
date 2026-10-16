@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "id": "bottle-pencil-example",
+  "ready_for_integration": false,
+  "asset_source": "team_created",
+  "display_label": "Contoh tersimpan",
+  "display_name": "Botol plastik contoh",
+  "object": {
+    "description": "Botol plastik berbadan tegak dengan leher, tutup dan dasar yang dapat berdiri.",
+    "visible_parts": ["Badan botol", "Leher botol", "Tutup", "Dasar botol"],
+    "material_description": "Plastik; jenis resin tidak diketahui",
+    "uncertainties": ["Ukuran fisik tidak diukur dari render", "Ketebalan dan jenis resin belum diketahui"],
+    "dimensions_mm": null
+  },
+  "source_model": "models/source.glb",
+  "reference_images": ["references/front.jpg", "references/side.jpg", "references/perspective.jpg"],
+  "craft": {
+    "id": "idea-pencil-holder",
+    "title": "Tempat pensil berlapis kertas",
+    "purpose": "Merapikan pensil dan pulpen pada meja menggunakan bagian bawah botol.",
+    "difficulty": "Mudah",
+    "estimated_minutes": 35,
+    "extra_materials": ["Kertas kado", "Pita perekat dua sisi yang sesuai untuk plastik dan kertas"],
+    "tools": ["Penggaris", "Spidol", "Gunting yang sesuai bahan", "Amplas halus"],
+    "safety_notes": ["Gunakan botol yang diketahui tidak pernah berisi bahan berbahaya.", "Pemotongan plastik ditangani orang dewasa; rapikan tepi tajam."]
+  },
+  "stages": [
+    {"id": "step-01", "order": 1, "title": "Bersihkan botol", "action": "Lepas label, cuci dan keringkan botol.", "before": "Botol utuh belum disiapkan.", "after": "Botol utuh bersih dan kering tanpa label.", "model_after": "stages/step-01.glb", "reference_image": "references/step-01.jpg", "tools": [], "safety_notes": ["Pastikan bekas isi botol diketahui aman."]},
+    {"id": "step-02", "order": 2, "title": "Tandai batas potong", "action": "Tandai garis melingkar sesuai render tahap tanpa mengarang ukuran.", "before": "Botol utuh bersih.", "after": "Botol utuh dengan satu garis batas potong.", "model_after": "stages/step-02.glb", "reference_image": "references/step-02.jpg", "tools": ["Penggaris", "Spidol"], "safety_notes": []},
+    {"id": "step-03", "order": 3, "title": "Potong bagian atas", "action": "Potong mengikuti tanda dan pisahkan bagian atas.", "before": "Botol utuh bertanda.", "after": "Wadah bagian bawah dan bagian atas terpisah.", "model_after": "stages/step-03.glb", "reference_image": "references/step-03.jpg", "tools": ["Gunting yang sesuai bahan"], "safety_notes": ["Pemotongan ditangani orang dewasa; hentikan jika alat tidak sesuai."]},
+    {"id": "step-04", "order": 4, "title": "Rapikan tepi", "action": "Haluskan seluruh tepi potongan.", "before": "Wadah terbuka dengan tepi baru dipotong.", "after": "Wadah terbuka dengan tepi dihaluskan.", "model_after": "stages/step-04.glb", "reference_image": "references/step-04.jpg", "tools": ["Amplas halus"], "safety_notes": ["Jangan gunakan jika masih ada sisi tajam."]},
+    {"id": "step-05", "order": 5, "title": "Siapkan lapisan kertas", "action": "Ukur kebutuhan kertas pada wadah, tandai dan potong sebelum dipasang.", "before": "Wadah belum dilapisi.", "after": "Wadah dan kertas siap pasang masih terpisah.", "model_after": "stages/step-05.glb", "reference_image": "references/step-05.jpg", "tools": ["Penggaris", "Spidol", "Gunting yang sesuai bahan"], "safety_notes": []},
+    {"id": "step-06", "order": 6, "title": "Pasang lapisan kertas", "action": "Rekatkan kertas dengan pita perekat dua sisi dan periksa hasilnya.", "before": "Wadah dan kertas terpisah.", "after": "Wadah berlapis kertas; bukaan atas dan dasar tetap bebas.", "model_after": "stages/step-06.glb", "reference_image": "references/step-06.jpg", "tools": [], "safety_notes": ["Periksa tepi, sambungan dan kestabilan sebelum dipakai."]}
+  ],
+  "constraints": {
+    "available_tools": ["Penggaris", "Spidol", "Gunting yang sesuai bahan", "Amplas halus"],
+    "allowed_actions": ["Membersihkan", "Menandai", "Memotong dengan aman", "Menghaluskan", "Melapisi dengan kertas"],
+    "forbidden_actions": ["Memanaskan plastik", "Menambahkan pita hias atau ornamen yang tidak dibuat tim"],
+    "safety_notes": ["Bukan untuk makanan atau minuman."]
+  }
+}

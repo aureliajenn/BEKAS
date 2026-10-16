@@ -2,7 +2,7 @@
 
 > Dokumen ini mengatur **tampilan**. Alur, scope, dan state mengikuti **PRD.md** (v1.2). Kalau ada konflik, PRD yang menang.
 > Stack: React Native + Expo + TypeScript + Expo Router, target Android.
-> Aset ada di `assets/` (logo, maskot, ikon 3D, PNG transparan). Starter code ada di `starter/` (lihat bagian 9).
+> Aset ada di `apps/mobile/assets/`. Komponen dan tema aktif ada di `apps/mobile/src/` (lihat bagian 9).
 
 ## 1. Konsep
 
@@ -20,7 +20,7 @@ Canvas Design (prototype di Claude) hanya acuan **gaya visual**. Alurnya sudah d
 
 ## 2. Design tokens
 
-Sumber kebenaran: `starter/theme/tokens.ts`. Ringkasan:
+Sumber kebenaran: `apps/mobile/src/theme/tokens.ts`. Ringkasan:
 
 | Token | Hex | Pakai di |
 |---|---|---|
@@ -65,7 +65,7 @@ Dua font saja, dimuat dengan `@expo-google-fonts/fredoka` dan `@expo-google-font
 
 ## 4. Komponen
 
-**ChunkyButton** (`starter/components/ChunkyButton.tsx`, sudah jadi). Variant: `primary`, `cta`, `secondary`, `disabled`. Tinggi 56, radius 18, lebar penuh di bawah layar. Saat ditekan, muka tombol turun 5px menutup bayangan.
+**ChunkyButton** (`apps/mobile/src/components/ChunkyButton.tsx`). Variant: `primary`, `cta`, `secondary`; state nonaktif melalui prop `disabled`. Tinggi 56, radius 18, lebar penuh di bawah layar. Saat ditekan, muka tombol turun 5px menutup bayangan.
 
 **GreenHeader**: latar green500, radius bawah 32, padding atas mengikuti safe area + 16, samping 20. Dekor 1 sampai 2 lingkaran putih opacity 6 sampai 8%. Boleh ada maskot "nongol" di kanan bawah.
 
@@ -75,9 +75,9 @@ Dua font saja, dimuat dengan `@expo-google-fonts/fredoka` dan `@expo-google-font
 
 **Pill**: radius 999, padding 4x10. Warna: mudah (green100/green700), sedang (#FFEBD6/#A34E00), sulit (#FDECEA/#B42318), info (blue50/blue600), "Contoh tersimpan" (#FFF6D6/#8A6400).
 
-**StageStatus** (`starter/components/StageStatus.tsx`, sudah jadi): daftar status per komponen (Foto, Model 3D, Ide, Panduan, Ilustrasi). Setiap baris menampilkan **nama tahap** dan ikon status, tanpa persentase. Baris gagal punya tombol "Coba lagi". Teksnya diambil dari `starter/theme/statusCopy.ts`.
+**StageStatus** (`apps/mobile/src/components/StageStatus.tsx`): daftar status per komponen (Foto, Model 3D, Ide, Panduan, Ilustrasi). Setiap baris menampilkan **nama tahap** dan ikon status, tanpa persentase. Baris gagal punya tombol "Coba lagi". Teksnya diambil dari `apps/mobile/src/theme/statusCopy.ts`.
 
-**MascotBubble** (`starter/components/MascotBubble.tsx`, sudah jadi): maskot 64 sampai 84 di kiri + bubble blue50, radius `20 20 20 6`.
+**MascotBubble** (`apps/mobile/src/components/MascotBubble.tsx`): maskot 64 sampai 84 di kiri + bubble blue50, radius `20 20 20 6`.
 
 **MeshViewerFrame**: kartu bg green50, radius 28, tinggi sekitar 300, berisi WebView `<model-viewer>`. Di bawahnya caption tetap: "Model 3D ini hanya gambaran bentuk, bukan ukuran asli." Saat mesh belum siap, tampilkan foto asli redup + StageStatus mesh. Saat gagal: maskot bingung + "Model 3D belum tersedia; ide tetap dapat digunakan."
 
@@ -94,7 +94,7 @@ assets/
 └── ikon/    18 ikon 3D eco
 ```
 
-Mapping file ada di `starter/theme/assets.ts`.
+Mapping file ada di `apps/mobile/src/theme/assets.ts`.
 
 **Logo**: kotak lime dengan panah daur ulang, botol, dan daun. Untuk app icon (`app.json` → `icon`, `android.adaptiveIcon`), splash, dan header Beranda kecil.
 
@@ -124,7 +124,8 @@ app/
 └── project/[id]/
     ├── index.tsx             3. Hasil barang
     ├── idea/[ideaId].tsx     4. Detail ide
-    └── guide.tsx             5. Panduan
+    ├── guide.tsx             5. Masuk / lanjutkan panduan
+    └── guide/step/[stepId].tsx   Page per proses dan penyelesaian
 ```
 
 **1. Beranda**
@@ -158,8 +159,9 @@ app/
 
 **5. Panduan**
 - Header: judul, daftar alat/bahan ringkas (bisa dilipat), SafetyNote.
-- Teks semua langkah tampil begitu panduan valid, **tidak menunggu ilustrasi**.
-- 4 sampai 6 StepCard. Ilustrasi muncul bertahap (langkah 1 dulu).
+- Satu page persiapan, lalu satu page per langkah dengan judul proses, instruksi dan hasil yang diharapkan. Teks **tidak menunggu ilustrasi**.
+- Tiap page proses punya tombol **Ilustrasi 2D / Model 3D** dengan status terpilih yang aksesibel. Mesh proses yang belum tersedia memakai placeholder jujur; jangan menampilkan mesh awal sebagai hasil proses berikutnya.
+- Tombol Sebelumnya / Berikutnya di bawah safe area konten; Berikutnya menyimpan langkah selesai. Demo tempat pensil: lima page (persiapan + empat langkah), dipetakan ke lima kondisi mesh.
 - Checkbox per langkah disimpan lokal. Indikator progres = "2 dari 5 langkah dicentang" (ini data nyata, boleh).
 - Semua dicentang: kartu selesai dengan maskot `senang` dan "Kerajinanmu jadi!". Tanpa klaim gram plastik atau emisi.
 - Di kartu selesai: tombol "Foto hasil karyamu" untuk verifikasi poin (bagian 6b).
@@ -211,10 +213,10 @@ Aturan: tampilkan **nama tahap**, jangan pernah persentase atau progress bar pal
 - Jangan sarankan membakar atau melelehkan plastik. Langkah memotong selalu disertai catatan tepi tajam (datang dari backend, tampilkan sebagai SafetyNote).
 - Hindari: gradasi, glassmorphism, sudut tajam, bayangan blur pada tombol, teks putih di atas green400, lebih dari satu tombol oranye per layar, font selain Fredoka dan Nunito.
 
-## 9. Starter code
+## 9. Source UI aktif
 
 ```
-starter/
+apps/mobile/src/
 ├── theme/
 │   ├── tokens.ts        warna, radius, spasi, tipografi
 │   ├── fonts.ts         hook useBekasFonts()
@@ -226,7 +228,7 @@ starter/
     └── MascotBubble.tsx
 ```
 
-Salin `starter/theme` ke `apps/mobile/src/theme` dan `starter/components` ke `apps/mobile/src/components`. Folder `logo/`, `maskot/`, `ikon/` berada di `apps/mobile/assets/` (Metro tidak bisa `require` file di luar project; path di `assets.ts` mengasumsikan susunan ini).
+Gunakan komponen dan tema yang sudah tersedia langsung. Folder `logo/`, `maskot/`, `ikon/`, dan `demo/` berada di `apps/mobile/assets/`; semua registrasi aset melalui `src/theme/assets.ts`.
 
 Install:
 
@@ -234,32 +236,8 @@ Install:
 npx expo install @expo-google-fonts/fredoka @expo-google-fonts/nunito expo-font expo-splash-screen react-native-svg lucide-react-native react-native-safe-area-context
 ```
 
-## 10. Prompt untuk Claude Code
+## 10. Verifikasi perubahan UI
 
-Jalankan bertahap, cek hasil di HP setiap tahap.
-
-```
-Tahap 1. Baca PRD.md, DESIGN.md, dan CLAUDE.md. Salin starter/ ke src/ sesuai
-DESIGN.md bagian 9, pasang dependency, muat font di app/_layout.tsx dengan
-useBekasFonts. Buat halaman sementara /dev/components yang menampilkan
-ChunkyButton semua variant, StageStatus, dan MascotBubble.
-```
-
-```
-Tahap 2. Buat komponen sisa dari DESIGN.md bagian 4: GreenHeader, Card,
-IdeaCard, Pill, MeshViewerFrame (WebView + model-viewer, versi terkunci),
-StepCard, SafetyNote, OfflineBanner. Tambahkan ke /dev/components.
-```
-
-```
-Tahap 3. Buat 5 layar sesuai DESIGN.md bagian 6 dengan fixture JSON yang
-mengikuti kontrak IdeasResult dan GuideResult di PRD bagian 8. Belum
-sambung ke API. Pastikan setiap state di DESIGN.md bagian 7 bisa dipicu
-dari fixture.
-```
-
-```
-Tahap 4. Sambungkan ke FastAPI sesuai endpoint di PRD bagian 9: upload
-via signed URL, polling 2 sampai 3 detik saat foreground, berhenti saat
-background, project ID dan centang langkah disimpan lokal.
-```
+- Jalankan `npm run typecheck` dan `npm run check` dari `apps/mobile`.
+- Periksa alur dummy di browser, lalu kamera, gesture viewer, safe area dan pemulihan progres di Android fisik.
+- Pekerjaan integrasi tersisa mengikuti `IMPLEMENTATION_PLAN.md`; jangan membangun ulang layar dan komponen yang sudah tersedia.

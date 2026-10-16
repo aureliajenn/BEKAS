@@ -53,7 +53,7 @@ export function MeshViewerFrame({ status, meshUrl, meshAsset, photoUrl, labelOve
 }
 
 const styles = StyleSheet.create({
-  frame: { height: HEIGHT, borderRadius: 28, backgroundColor: colors.green50, overflow: 'hidden', justifyContent: 'flex-end' },
+  frame: { height: HEIGHT, borderRadius: radius.card, backgroundColor: colors.green50, overflow: 'hidden', justifyContent: 'flex-end' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.md, padding: space.xl },
   mascot: { width: 96, height: 120 },
   statusDock: { padding: space.md },

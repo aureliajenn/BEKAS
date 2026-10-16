@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "input_status": "accepted",
+  "explanation": null,
+  "object_profile": {
+    "label": "Botol plastik contoh",
+    "visible_parts": ["Badan botol", "Leher botol", "Tutup", "Dasar botol"],
+    "material_guess": "Plastik; jenis resin tidak diketahui",
+    "uncertainties": ["Ukuran fisik tidak diukur dari render", "Ketebalan dan jenis resin belum diketahui"]
+  },
+  "ideas": [
+    {
+      "id": "idea-pencil-holder",
+      "title": "Tempat pensil berlapis kertas",
+      "purpose": "Merapikan pensil dan pulpen pada meja menggunakan bagian bawah botol.",
+      "difficulty": "Mudah",
+      "estimated_minutes": 35,
+      "extra_materials": ["Kertas kado", "Pita perekat dua sisi yang sesuai untuk plastik dan kertas"],
+      "tools": ["Penggaris", "Spidol", "Gunting yang sesuai bahan", "Amplas halus"],
+      "safety_notes": ["Gunakan botol yang diketahui tidak pernah berisi bahan berbahaya.", "Pemotongan plastik ditangani orang dewasa; rapikan tepi tajam."]
+    },
+    {
+      "id": "idea-cable-holder",
+      "title": "Wadah kabel kecil",
+      "purpose": "Memisahkan gulungan kabel yang sedang tidak terhubung ke listrik.",
+      "difficulty": "Mudah",
+      "estimated_minutes": 25,
+      "extra_materials": ["Pita pelindung tepi"],
+      "tools": ["Spidol", "Gunting yang sesuai bahan", "Amplas halus"],
+      "safety_notes": ["Pastikan wadah kering dan kabel tidak terhubung ke listrik.", "Amankan seluruh tepi potongan."]
+    },
+    {
+      "id": "idea-planter",
+      "title": "Pot tanaman hias kecil",
+      "purpose": "Menggunakan bagian bawah botol sebagai wadah tanaman hias nonpangan.",
+      "difficulty": "Sedang",
+      "estimated_minutes": 30,
+      "extra_materials": ["Media tanam", "Bibit tanaman hias", "Alas penampung air"],
+      "tools": ["Spidol", "Gunting yang sesuai bahan", "Amplas halus", "Alat pelubang yang sesuai untuk plastik"],
+      "safety_notes": ["Pembuatan lubang dan pemotongan ditangani orang dewasa tanpa memanaskan plastik.", "Bukan untuk tanaman pangan atau kontak makanan."]
+    }
+  ]
+}

@@ -1,3 +1,6 @@
+export const MODEL_VIEWER_SCRIPT =
+  process.env.EXPO_PUBLIC_MODEL_VIEWER_SCRIPT_URL || 'https://cdn.jsdelivr.net/npm/@google/model-viewer@4.0.0/dist/model-viewer.min.js';
+
 const escapeAttribute = (value: string) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
 // The document is also written to cache on native, keeping large GLBs out of the RN bridge.

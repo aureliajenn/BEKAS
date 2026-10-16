@@ -5,13 +5,13 @@ import { ActivityIndicator, Platform, StyleSheet, Text, View } from 'react-nativ
 
 import { colors, space, type } from '@/theme/tokens';
 import { extraCopy } from '@/theme/statusCopy';
-import { meshViewerHtml } from '@/lib/meshViewerHtml';
+import { meshViewerHtml, MODEL_VIEWER_SCRIPT } from '@/lib/meshViewerHtml';
 import { ChunkyButton } from './ChunkyButton';
-import { MeshViewer, MODEL_VIEWER_SCRIPT } from './MeshViewer';
+import { MeshViewer, type MeshSource } from './MeshViewer';
 
 /** Loads a bundled GLB for both browser iframe and Android WebView. */
 export function LocalMeshViewer({ asset: moduleId, height = 300 }: { asset: number; height?: number }) {
-  const [model, setModel] = useState<{ asset: number; url?: string; documentUri?: string; error?: boolean }>();
+  const [model, setModel] = useState<{ asset: number; source?: MeshSource; error?: boolean }>();
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export function LocalMeshViewer({ asset: moduleId, height = 300 }: { asset: numb
         if (Platform.OS === 'web') {
           // Nested routes need an absolute asset URL inside srcDoc.
           const url = new URL(asset.uri, window.location.href).href;
-          if (active) setModel({ asset: moduleId, url });
+          if (active) setModel({ asset: moduleId, source: { url } });
         } else {
           await asset.downloadAsync();
           const directory = new Directory(Paths.cache, 'bekas-model-viewer');
@@ -33,7 +33,7 @@ export function LocalMeshViewer({ asset: moduleId, height = 300 }: { asset: numb
             const base64 = await new File(asset.localUri ?? asset.uri).base64();
             document.write(meshViewerHtml(`data:model/gltf-binary;base64,${base64}`, MODEL_VIEWER_SCRIPT, colors.green50));
           }
-          if (active) setModel({ asset: moduleId, documentUri: document.uri });
+          if (active) setModel({ asset: moduleId, source: { documentUri: document.uri } });
         }
       } catch {
         if (active) setModel({ asset: moduleId, error: true });
@@ -44,14 +44,13 @@ export function LocalMeshViewer({ asset: moduleId, height = 300 }: { asset: numb
   }, [moduleId, attempt]);
 
   const current = model?.asset === moduleId ? model : undefined;
-  if (current?.url) return <MeshViewer key={moduleId} url={current.url} height={height} />;
-  if (current?.documentUri) return <MeshViewer key={moduleId} documentUri={current.documentUri} height={height} />;
+  if (current?.source) return <MeshViewer key={moduleId} {...current.source} height={height} />;
 
   return (
     <View style={[styles.state, { height }]} accessibilityLiveRegion="polite">
       {current?.error ? <>
         <Text style={styles.caption}>{extraCopy.meshViewerFailed}</Text>
-        <ChunkyButton label="Coba lagi" variant="secondary" onPress={() => {
+        <ChunkyButton label={extraCopy.retry} variant="secondary" onPress={() => {
           setModel(undefined);
           setAttempt((value) => value + 1);
         }} />

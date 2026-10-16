@@ -13,8 +13,8 @@ import { MeshViewerFrame } from '@/components/MeshViewerFrame';
 import { StageStatus } from '@/components/StageStatus';
 import { StepCard } from '@/components/StepCard';
 import { assetUri, scenarios, type Scenario } from '@/lib/api';
-import { SAMPLE_GLB, sampleGuide, sampleIdeas } from '@/lib/fixtures';
-import { icon3d } from '@/theme/assets';
+import { sampleGuide, sampleIdeas } from '@/lib/fixtures';
+import { icon3d, pencilInitialAssets } from '@/theme/assets';
 import { extraCopy } from '@/theme/statusCopy';
 import { colors, space, type } from '@/theme/tokens';
 
@@ -88,7 +88,7 @@ export default function DevComponents() {
         <OfflineBanner />
 
         <Text style={type.overline}>MeshViewerFrame</Text>
-        <MeshViewerFrame status="succeeded" meshUrl={SAMPLE_GLB} />
+        <MeshViewerFrame status="succeeded" meshAsset={pencilInitialAssets.model} />
         <MeshViewerFrame status="queued" labelOverride={extraCopy.meshWorkerUnavailable} />
         <MeshViewerFrame status="failed" onRetry={noop} />
 

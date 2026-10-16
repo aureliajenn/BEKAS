@@ -30,6 +30,8 @@ Ilustrasi ditampilkan dengan `contain` agar gambar utuh tidak terpotong. Folder 
 
 `pencilProcessAssets` pada `src/theme/assets.ts` mendaftarkan ID `mesh-01` sampai `mesh-05`: field `illustration` untuk `require` PNG dan `model` untuk `require` GLB. Pemetaan page memakai `after_step_id` dari `content.json`, bukan posisi array.
 
+`pencilInitialAssets` dipakai bersama oleh pratinjau, hasil barang, dan demo komponen. `pencilAssetsForStep()` di `src/lib/fixtures.ts` memusatkan pemetaan aset per langkah. Route panduan meneruskan ke `src/screens/GuideScreen.tsx`; komponen persiapan/penyelesaian dan hook `useGuideProgress` menangani isi serta penyimpanan progres lokal.
+
 Metro mengenali GLB lewat `metro.config.js`. Pada Android, aset model diunduh ke cache; dokumen viewer berisi data URI model ditulis sebagai file HTML di cache. WebView menerima URI dokumen, bukan string HTML/base64 besar melalui bridge React Native. Pada web, viewer memakai URL aset absolut. Library `model-viewer` masih membutuhkan koneksi untuk diambil dari CDN bila tidak dikonfigurasi ke host sendiri.
 
 `bottle-1.glb` berukuran 15.110.248 byte (sekitar 14,41 MiB); base64-nya 20.147.000 karakter. Frontend tidak menerapkan batas 10 MiB: itu target optimasi, bukan penolakan otomatis. Model ini lolos pemeriksaan header GLB v2, tidak membutuhkan buffer/tekstur eksternal, dan berhasil dimuat dalam uji Chromium melalui HTTP serta dokumen HTML lokal. Uji Android fisik masih diperlukan. Viewer kini melaporkan status load/error dan menyediakan Coba lagi; pemuatan yang tidak selesai dalam 60 detik menampilkan pesan gagal, bukan area kosong.

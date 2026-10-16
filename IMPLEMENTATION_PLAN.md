@@ -33,4 +33,4 @@ Reward features remain specified by PRD 1.3 and are not removed by this migratio
 - Live Space smoke command: `python -m app.smoke_sf3d input.jpg output.glb` from `services/api`.
 - Use bounded command timeouts. Temporary database startup is a short background command, followed by finite tests and shutdown in `finally`; do not leave verification servers running.
 
-Historical Vast.ai plan: [archive](docs/VASTAI_IMPLEMENTATION_PLAN.legacy.md), not an active deployment requirement.
+Current setup and operational commands: [API README](services/api/README.md).

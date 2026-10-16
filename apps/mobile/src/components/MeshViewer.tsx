@@ -1,27 +1,28 @@
-import { createElement, useEffect, useMemo, useRef, useState } from 'react';
+import { createElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Platform, StyleSheet, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { meshViewerHtml } from '@/lib/meshViewerHtml';
+import { meshViewerHtml, MODEL_VIEWER_SCRIPT } from '@/lib/meshViewerHtml';
 import { extraCopy } from '@/theme/statusCopy';
 import { colors, space, type } from '@/theme/tokens';
 import { ChunkyButton } from './ChunkyButton';
 
-// Versi terkunci. Sebelum demo, host salinan tepercaya di backend lalu isi EXPO_PUBLIC_MODEL_VIEWER_SCRIPT_URL (PRD §9).
-export const MODEL_VIEWER_SCRIPT =
-  process.env.EXPO_PUBLIC_MODEL_VIEWER_SCRIPT_URL || 'https://cdn.jsdelivr.net/npm/@google/model-viewer@4.0.0/dist/model-viewer.min.js';
+export type MeshSource =
+  | { url: string; documentUri?: never }
+  | { url?: never; documentUri: string };
 
 /** GLB viewer: putar dan cubit-zoom. Hanya pratinjau bentuk, bukan ukuran nyata. */
-export function MeshViewer({ url, documentUri, height = 260 }: { url?: string; documentUri?: string; height?: number }) {
+export function MeshViewer({ url, documentUri, height = 260 }: MeshSource & { height?: number }) {
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [attempt, setAttempt] = useState(0);
   const iframe = useRef<HTMLIFrameElement>(null);
   const html = useMemo(() => documentUri ? undefined : meshViewerHtml(url ?? '', MODEL_VIEWER_SCRIPT, colors.green50), [url, documentUri]);
-  const receive = (data: { source?: string; type?: string }) => {
-    if (data?.source !== 'bekas-model-viewer') return;
+  const receive = useCallback((data: unknown) => {
+    if (!data || typeof data !== 'object' || !('source' in data) || !('type' in data)) return;
+    if (data.source !== 'bekas-model-viewer') return;
     if (data.type === 'loaded') setStatus('loaded');
     if (data.type === 'error') setStatus('error');
-  };
+  }, []);
   useEffect(() => {
     setStatus('loading');
     const timeout = setTimeout(() => setStatus((prev) => prev === 'loading' ? 'error' : prev), 60000);
@@ -33,7 +34,7 @@ export function MeshViewer({ url, documentUri, height = 260 }: { url?: string; d
       clearTimeout(timeout);
       if (Platform.OS === 'web') window.removeEventListener('message', onMessage);
     };
-  }, [url, documentUri, attempt]);
+  }, [url, documentUri, attempt, receive]);
 
   return (
     <View style={{ height, overflow: 'hidden' }}>

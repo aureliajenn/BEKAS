@@ -1,4 +1,3 @@
-import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Check, Clock, RotateCw, X } from 'lucide-react-native';
 import { colors, radius, type } from '../theme/tokens';
